@@ -1,0 +1,12 @@
+Resolution
+
+Algorithme de backtracking avec plusieurs regles pour eliminer certaines possibilites
+Objectif general de l'algo::
+	Vider la grille de bulle avant d'avoir le compteur a 0
+	optimiser le gains de point apres un certain nombre de coups(definis)
+-ne pas recreer de nouvelles bulle(a preciser)
+-privilegier les bulle de status 4,3(point de depart)
+-privilegier les combos
+-verifier que le compteur n'atteigne pas 0 lors de la preparation des combos
+-creer des chaines de "destruction" creer les combos
+

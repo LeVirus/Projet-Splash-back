@@ -1,0 +1,9 @@
+Regle:: Eclater toutes les bulles
+Bulle:: 4 etats 
+cliquer fais passer un etat au dessus
+cliquer sur une bulle niveau 4 fait eclater la bulle et envoie des projectiles dans toutes les directions possibles
+(4 si 2d)
+un compteur est initialise en debut de partie 1 point est perdu a chaque clic
+un point est gagne toutes les 3 bulles eclatees; hors bulle cliquee; 
+si le compteur est a 0 a la fin de la resolution des bulles eclates la partie est terminee
+Si une case vide est cliquee une bulle d'etat 1 est alors cree
