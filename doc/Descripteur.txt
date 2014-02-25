@@ -1,4 +1,5 @@
 Regle:: Eclater toutes les bulles
+Grille de 6*6 cases
 Bulle:: 4 etats 
 cliquer fais passer un etat au dessus
 cliquer sur une bulle niveau 4 fait eclater la bulle et envoie des projectiles dans toutes les directions possibles
