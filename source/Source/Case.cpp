@@ -27,6 +27,7 @@ Case::Case(unsigned int taille){
 bool Case::changerEtat(){
 	etat++;
 	if(etat>5)eclater();
+	return true;
 }
 
 /**
@@ -35,7 +36,7 @@ bool Case::changerEtat(){
  * @return true sinon
  */
 bool Case::eclater(){
-
+	return true;
 }
 
 /**
