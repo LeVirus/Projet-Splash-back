@@ -1,11 +1,19 @@
 #include "Moteur.hpp"
 
 
-
+/**
+ * Constructeur de la classe Moteur.
+ *	appel de la fonction "initMoteur()"
+ */
 Moteur::Moteur(){
 	initMoteur();
 }
 
+/**
+ * Initialisation des objets necessaires au moteur
+ * @return true tous les objets sont créés avec succés
+ * @return false sinon
+ */
 bool Moteur::initMoteur(){
 	device = irr::createDevice (
 			irr::video::EDT_OPENGL,
@@ -23,18 +31,18 @@ bool Moteur::initMoteur(){
 
 	/*cube =         // pointeur vers le node
 		sceneManager->addCubeSceneNode(        // la creation du cube
-				10.0f,                             // cote de 10 unites
-				0,                                 // parent = racine
-				-1,                                // pas d'ID
-				irr::core::vector3df(              // le vecteur de position
-					0.0f,                          // origine en X
-					0.0f,                          // origine en Y
-					20.0f));*/                       // +20 unites en Z
+		10.0f,                             // cote de 10 unites
+		0,                                 // parent = racine
+		-1,                                // pas d'ID
+		irr::core::vector3df(              // le vecteur de position
+		0.0f,                          // origine en X
+		0.0f,                          // origine en Y
+		20.0f));*/                       // +20 unites en Z
 
 	//cube->setMaterialFlag(irr::video::EMF_WIREFRAME, true);
 	grille=sceneManager->addMeshSceneNode (sceneManager->getMesh ("Ressources/Grille.obj"));//0 noeud parent(racine)
 	grille->setMaterialFlag(irr::video::EMF_WIREFRAME, true);
-//1 id
+	//1 id
 
 	// pointeur vers le node
 	irr::SKeyMap keyMap[5];                    // re-assigne les commandes
@@ -56,9 +64,14 @@ bool Moteur::initMoteur(){
 			-1,                                    // pas de numero d'ID
 			keyMap,                                // on change la keymap
 			5);                                    // avec une taille de 5
-
+	return true;
 }
 
+/**
+ * Boucle générale du moteur physique
+ * @return false si la fonction a fermer suite à un problème
+ * @return true Si la fonction a fermer aprés avoir reçu un signal d'arret
+ */
 bool Moteur::launch(){
 	while(device->run()) {
 		driver->beginScene (true, true,
@@ -67,8 +80,12 @@ bool Moteur::launch(){
 		driver->endScene ();
 	}
 	device->drop (); 
+	return true;
 }
 
+/**
+ * Destructeur de la class Moteur.  
+ */
 Moteur::~Moteur(){
 
 }

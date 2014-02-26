@@ -1,13 +1,24 @@
+#ifndef BAS
+#define BAS
+
 #include "Grille.hpp"
 #include "Moteur.hpp"
 
+/**
+ * @class Base
+ * classe contenant tous les objets necessaires au logiciel
+ */
 class Base{
 	private:
 		Grille grille;
 		Moteur moteur;
-		unsigned int pointActuel, largeurG, longueurG, hauteurG;
+		unsigned int pointActuel, niveauActuel;
 	public:
 		Base();
-		afficherGrille();
+		void initJeu();
+		void lancerJeu();
+		void afficherEtatActuel()const;
 		~Base();
 };
+
+#endif
