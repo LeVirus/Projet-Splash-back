@@ -3,11 +3,14 @@
 
 using namespace std;
 
+Grille *memGrille;
+
 /**
  * Constructeur de Grille
  *	Initialise la grille (tableau 2 dimensions), 
  */
 Grille::Grille(){
+	memGrille=this;
 	tabGrille.resize(6);
 	for(unsigned int i=0;i<tabGrille.size();++i)
 		tabGrille[i].resize(6);
@@ -34,7 +37,10 @@ bool Grille::appliquerClick(unsigned int x, unsigned int y){
 *  en fonction du niveau actuel
  */
 void Grille::genererGrille(unsigned int lvl){
-
+	for(unsigned int j=0;j<tabGrille.size();++j)
+		for(unsigned int i=0;i<tabGrille[j].size();++i){
+			tabGrille[j][i].setEtat(rand()%4);//aleatoire pour le moment
+		}
 }
 
 /**

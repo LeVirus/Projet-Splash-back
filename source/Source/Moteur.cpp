@@ -1,5 +1,7 @@
+#include <iostream>
 #include "Moteur.hpp"
 
+using namespace std;
 
 /**
  * Constructeur de la classe Moteur.
@@ -27,21 +29,27 @@ bool Moteur::initMoteur(){
 	sceneManager = device->getSceneManager ();
 	//sceneManager = irr::core::vector3df (5,0,0)); // scene manager		
 
-
-
-	/*cube =         // pointeur vers le node
-		sceneManager->addCubeSceneNode(        // la creation du cube
-		10.0f,                             // cote de 10 unites
-		0,                                 // parent = racine
-		-1,                                // pas d'ID
-		irr::core::vector3df(              // le vecteur de position
-		0.0f,                          // origine en X
-		0.0f,                          // origine en Y
-		20.0f));*/                       // +20 unites en Z
-
-	//cube->setMaterialFlag(irr::video::EMF_WIREFRAME, true);
-	grille=sceneManager->addMeshSceneNode (sceneManager->getMesh ("Ressources/Grille.obj"));//0 noeud parent(racine)
-	grille->setMaterialFlag(irr::video::EMF_WIREFRAME, true);
+	irr::scene::IMeshSceneNode* cube;         // pointeur vers le node
+		irr::f32 x=0.0f ,y=0.0f,z=0.0f;
+	for(unsigned int i=0;i<36;++i){
+		cube=sceneManager->addCubeSceneNode(        // la creation du cube
+				10.0f,                             // cote de 10 unites
+				0,                                 // parent = racine
+				-1,                                // pas d'ID
+				irr::core::vector3df(              // le vecteur de position
+					x,                          // origine en X
+					y,                          // origine en Y
+					z));                       // +20 unites en Z
+	cube->setMaterialFlag(irr::video::EMF_WIREFRAME, true);
+		cout<<x<<" "<<y<<" "<<z<<endl;
+		x+=10.0f;
+		if(x>=60.0f){
+			x=0.0f;
+			y+=10.0f;
+		}
+	}
+	//grille=sceneManager->addMeshSceneNode (sceneManager->getMesh ("Ressources/Grille.obj"));//0 noeud parent(racine)
+	//grille->setMaterialFlag(irr::video::EMF_WIREFRAME, true);
 	//1 id
 
 	// pointeur vers le node

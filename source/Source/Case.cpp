@@ -2,7 +2,7 @@
 
 /**
  * Constructeur par défaut de la classe Case.
-* etat mis à 0
+ * etat mis à 0
  */
 Case::Case(){
 	etat=0;
@@ -17,6 +17,14 @@ Case::Case(unsigned int taille){
 	else {
 		etat=taille;
 	}
+}
+
+/**
+ * Fonction permettant de modifier l'état de la bulle
+ * @param nbr La nouvelle valeur de la bulle
+ */
+void Case::setEtat(unsigned int nbr){
+	etat=nbr;
 }
 
 /**

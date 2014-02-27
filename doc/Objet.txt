@@ -19,6 +19,10 @@ Moteur::
 	initScene();
 	launch();
 
+Temps::
+	initChrono();
+	getTick();//donner la valeur du temps a un instant t
+
 Algo::
 	recevoirCoordonnee();//Recevoir signal de la classe "Moteur"
 	resoudreChaine();//lorsqu'une bulle eclate l'algo envoie les mis a jour a la classe "Grille" ainsi qu'à la classe "Moteur"
@@ -31,6 +35,8 @@ Cas d'utilisation Click sur Case sphere taille 4(eclater)_______________________
 1) Recupération du signal de la souris sur la case correspondantes dans la classe "Moteur"
 2) Envoie de ce signal a la classe "Grille"
 3) Mise a jour sur la "Case" correspondante 
-4) Si une ou plusieurs bulles éclatent la classe "Algo" recupère l'information et envoie les mis a jour 
-à "Moteur" (pour les animations) et à "Grille" pour la mémorisation (cette étape est répété tant qu'au moins une bulle éclate)
-Si aucune Bulle n'éclate l'information est envoyé a "Moteur" pour l'animation et le tour est terminé
+4) Si une ou plusieurs bulles éclatent la classe "Algo" recupère l'information tout en calculant les changements des autres bulles.
+Le tout est mémorisé dans une structure et "Grille" est mis à jour. (cette étape est répété tant qu'au moins une bulle éclate)
+5) La structure de mémorisation des évènements ("Algo") est envoyé à "Moteur" pour exécuter les animations
+La classe "Temps" est utilisée pour la synchronisation.
+6)Si le compteur est à 0 le jeu s'arrête.

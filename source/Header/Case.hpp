@@ -12,6 +12,7 @@ class Case{
 	public:
 		Case();
 		Case(unsigned int taille);
+		void setEtat(unsigned int nbr);
 		bool changerEtat();
 		unsigned int getEtat();
 		bool eclater();
