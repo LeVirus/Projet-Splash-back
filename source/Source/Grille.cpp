@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Grille.hpp"
+#include "constantes.hpp"
 
 using namespace std;
 
@@ -27,14 +28,24 @@ Grille::Grille(){
  * @return true si aucun problemes n'est repporte
  * @return false sinon
  */
-bool Grille::appliquerClick(unsigned int x, unsigned int y){
-	return tabGrille[y][x].changerEtat();
+bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
+	if(largeurG<x || longueurG<y)return false;
+	if(tabGrille[y][x].changerEtat())resolutionEclatement(x,y);
 }
 
 /**
  * @param lvl Indique le niveau actuel
  * Generation de la grille aleatoirement la difficulte est determine
-*  en fonction du niveau actuel
+ *  en fonction du niveau actuel
+ */
+void resolutionEclatement(unsigned int x, unsigned int y){
+	
+}
+
+/**
+ * @param lvl Indique le niveau actuel
+ * Generation de la grille aleatoirement la difficulte est determine
+ *  en fonction du niveau actuel
  */
 void Grille::genererGrille(unsigned int lvl){
 	for(unsigned int j=0;j<tabGrille.size();++j)

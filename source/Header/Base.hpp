@@ -12,6 +12,7 @@ class Base{
 	private:
 		Grille grille;
 		Moteur moteur;
+	Algo algo;
 		unsigned int pointActuel, niveauActuel;
 	public:
 		Base();

@@ -1,10 +1,14 @@
 #include "Case.hpp"
+#include "Grille.hpp"
+
+extern Grille *memGrille;
 
 /**
  * Constructeur par défaut de la classe Case.
  * etat mis à 0
  */
 Case::Case(){
+eclater=false;
 	etat=0;
 }
 
@@ -29,13 +33,13 @@ void Case::setEtat(unsigned int nbr){
 
 /**
  * Change l'etat de la case si l'etat depasse la valeur max la fonction eclater() est appelée
- * @return false si l'operation a reussie
+ * @return false si la bulle n'eclate pas
  * @return true sinon
  */
 bool Case::changerEtat(){
 	etat++;
-	if(etat>5)eclater();
-	return true;
+	if(etat>4)return true;
+	return false;
 }
 
 /**
@@ -44,11 +48,22 @@ bool Case::changerEtat(){
  * @return true sinon
  */
 bool Case::eclater(){
+	etat=0;
+	eclater=true;
 	return true;
 }
 
 /**
- * Destructeur de la class GestionEnvironnement.  
+ * Retourne l'etat de la bulle
+ * @return Case.eclater true si la bulle a ete eclater dans le tour
+* false sinon
+ */
+bool Case::getEclater(){
+	return eclater;
+}
+
+/**
+ * Retourne l'etat de la bulle
  * @return Case.etat l'etat actuel de la case(taille bulle)
  */
 unsigned int Case::getEtat(){

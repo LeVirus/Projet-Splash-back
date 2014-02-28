@@ -9,6 +9,7 @@
 class Case{
 	private: 
 		unsigned int etat;
+		bool eclater;
 	public:
 		Case();
 		Case(unsigned int taille);
