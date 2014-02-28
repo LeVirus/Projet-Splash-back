@@ -19,7 +19,8 @@ struct ActionBulle{
  */
 class Grille{
 	private:
-		std::list<ActionBulle> memActionBulle;
+		std::list<*ActionBulle> memActionBulle;
+		std::list<*ActionBulle>::iterator itMemBulle;
 		std::vector<std::vector<Case>> tabGrille;
 		unsigned int largeurG, longueurG, hauteurG;
 	public:

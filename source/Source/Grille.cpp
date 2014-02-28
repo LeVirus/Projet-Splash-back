@@ -39,7 +39,40 @@ bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
  *  en fonction du niveau actuel
  */
 void resolutionEclatement(unsigned int x, unsigned int y){
-	
+	unsigned int temps=0;
+	ActionBulle* mem;
+	if(y>0){
+		mem=new ActionBulle;
+		ActionBulle.temps=temps;
+		ActionBulle.direction=HAUT;
+		ActionBulle.coX=x;
+		ActionBulle.coY=y-1;
+		memActionBulle.push_back(mem);
+	}
+	if(y<6){
+		mem=new ActionBulle;
+		ActionBulle.temps=temps;
+		ActionBulle.direction=BAS;
+		ActionBulle.coX=x;
+		ActionBulle.coY=y+1;
+		memActionBulle.push_back(mem);
+	}
+	if(x<6){
+		mem=new ActionBulle;
+		ActionBulle.temps=temps;
+		ActionBulle.direction=DROITE;
+		ActionBulle.coX=x;
+		ActionBulle.coY=x+1;
+		memActionBulle.push_back(mem);
+	}
+	if(x>0){
+		mem=new ActionBulle;
+		ActionBulle.temps=temps;
+		ActionBulle.direction=GAUCHE;
+		ActionBulle.coX=x-1;
+		ActionBulle.coY=y;
+		memActionBulle.push_back(mem);
+	}
 }
 
 /**
