@@ -66,7 +66,7 @@ bool Case::getEclater(){
  * Retourne l'etat de la bulle
  * @return Case.etat l'etat actuel de la case(taille bulle)
  */
-unsigned int Case::getEtat(){
+unsigned int Case::getEtat()const{
 	return etat;
 }
 

@@ -15,7 +15,7 @@ class Case{
 		Case(unsigned int taille);
 		void setEtat(unsigned int nbr);
 		bool changerEtat();
-		unsigned int getEtat();
+		unsigned int getEtat()const;
 		bool eclater();
 		~Case();
 };

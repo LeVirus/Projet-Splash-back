@@ -38,48 +38,6 @@ bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
  * Generation de la grille aleatoirement la difficulte est determine
  *  en fonction du niveau actuel
  */
-void resolutionEclatement(unsigned int x, unsigned int y){
-	unsigned int temps=0;
-	ActionBulle* mem;
-	if(y>0){
-		mem=new ActionBulle;
-		ActionBulle.temps=temps;
-		ActionBulle.direction=HAUT;
-		ActionBulle.coX=x;
-		ActionBulle.coY=y-1;
-		memActionBulle.push_back(mem);
-	}
-	if(y<6){
-		mem=new ActionBulle;
-		ActionBulle.temps=temps;
-		ActionBulle.direction=BAS;
-		ActionBulle.coX=x;
-		ActionBulle.coY=y+1;
-		memActionBulle.push_back(mem);
-	}
-	if(x<6){
-		mem=new ActionBulle;
-		ActionBulle.temps=temps;
-		ActionBulle.direction=DROITE;
-		ActionBulle.coX=x;
-		ActionBulle.coY=x+1;
-		memActionBulle.push_back(mem);
-	}
-	if(x>0){
-		mem=new ActionBulle;
-		ActionBulle.temps=temps;
-		ActionBulle.direction=GAUCHE;
-		ActionBulle.coX=x-1;
-		ActionBulle.coY=y;
-		memActionBulle.push_back(mem);
-	}
-}
-
-/**
- * @param lvl Indique le niveau actuel
- * Generation de la grille aleatoirement la difficulte est determine
- *  en fonction du niveau actuel
- */
 void Grille::genererGrille(unsigned int lvl){
 	for(unsigned int j=0;j<tabGrille.size();++j)
 		for(unsigned int i=0;i<tabGrille[j].size();++i){
@@ -88,9 +46,16 @@ void Grille::genererGrille(unsigned int lvl){
 }
 
 /**
+ * Renvoie une référence constante du tableau représentatif du jeu
+ */
+		const *std::vector<std::vector<Case>> Grille::getTab()const{
+	return &tabGrille;
+}
+
+/**
  * Affichage de la grille en console
  */
-void Grille::afficherGrille(){
+void Grille::afficherGrille()const{
 	for(unsigned int j=0;j<tabGrille.size();++j)
 		for(unsigned int i=0;i<tabGrille[j].size();++i){
 			cout<<tabGrille[j][i].getEtat();
