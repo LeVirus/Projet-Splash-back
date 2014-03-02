@@ -36,7 +36,7 @@ class Algo{
 void resolutionEclatement(unsigned int x, unsigned int y);
 		void jouer();
 		void resolution();
-void trouverDestination(unsigned int x, unsigned int y, unsigned int direction);
+void trouverDestination(unsigned int x, unsigned int y);
 		~Algo();
 };
 

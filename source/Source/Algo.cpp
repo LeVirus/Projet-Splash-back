@@ -55,122 +55,121 @@ void Algo::resolutionEclatement(unsigned int x, unsigned int y){
 	}
 
 	memOrigineEclat.push_back(memOrigin);//premier eclatement
-	if(y>0){
-		memMove=new DestinationBulle;
-		DestinationBulle.temps=temps;
-		DestinationBulle.direction=HAUT;
-		DestinationBulle.coX=x;
-		DestinationBulle.coY=y-1;
-		memDestinationBulle.push_back(memMove);
-	}
-	if(y<6){
-		memMove=new DestinationBulle;
-		DestinationBulle.temps=temps;
-		DestinationBulle.direction=BAS;
-		DestinationBulle.coX=x;
-		DestinationBulle.coY=y+1;
-		memDestinationBulle.push_back(memMove);
-	}
-	if(x<6){
-		memMove=new DestinationBulle;
-		DestinationBulle.temps=temps;
-		DestinationBulle.direction=DROITE;
-		DestinationBulle.coX=x;
-		DestinationBulle.coY=x+1;
-		memDestinationBulle.push_back(memMove);
-	}
-	if(x>0){
-		memMove=new DestinationBulle;
-		DestinationBulle.temps=temps;
-		DestinationBulle.direction=GAUCHE;
-		DestinationBulle.coX=x-1;
-		DestinationBulle.coY=y;
-		memDestinationBulle.push_back(memMove);
-	}
 }
 
-DestinationBulle *Algo::trouverDestination(unsigned int x, unsigned int y, unsigned int direction){
+void Algo::trouverDestination(unsigned int x, unsigned int y){
 	DestinationBulle *tmp=new DestinationBulle;
 	tmp->direction=direction;
-	switch(destination){
-		case BAS:
-			for(unsigned int i=y;i<NBR_CASE_Y;i++)
-				if(memTabGrille[x][i]->getEtat()>0){
-					tmp->coX=x;
-					tmp->coY=i;
-					tmp->temps=i-y;
-					memDestinationBulle.push_back(tmp);
-					return;
-				}
-			break;
-		case HAUT:
-			for(unsigned int i=y;i>=0;i--)
-				if(memTabGrille[x][i]->getEtat()>0){
-					tmp->coX=x;
-					tmp->coY=i;
-					tmp->temps=y-i;
-					memDestinationBulle.push_back(tmp);
-					return;
-				}
-			break;
-		case DROITE:
-			for(unsigned int i=x;i<NBR_CASE_X;i++)
-				if(memTabGrille[i][y]->getEtat()>0){
-					tmp->coX=i;
-					tmp->coY=y;
-					tmp->temps=i-x;
-					memDestinationBulle.push_back(tmp);
-					return;
-				}
-			break;
-		case GAUCHE:
-			for(unsigned int i=x;i>=0;i--)
-				if(memTabGrille[x][i]->getEtat()>0){
-					tmp->coX=i;
-					tmp->coY=y;
-					tmp->temps=y-i;
-					memDestinationBulle.push_back(tmp);
-					return;
-				}
-			break;
-		default:
-			cout<<"erreur direction"<<endl;
-			return;
-	};
-
-//si aucun obstacles rencontrés
-	switch(direction){
-		case BAS:
+	//switch(destination){
+	//case BAS:
+	tmp->direction=BAS;
+	for(unsigned int i=y;i<NBR_CASE_Y;i++)
+		if(memTabGrille[x][i]->getEtat()>0){
 			tmp->coX=x;
-			tmp->coY=100;
+			tmp->coY=i;
+			tmp->temps=i-y;
+			memDestinationBulle.push_back(tmp);
+			break;
+		}
+		else if(i==NBR_CASE_Y-1){//si aucun obstacle rencontré
+			tmp->coX=x;
+			tmp->coY=100;//100 représente le bord correspondant en fonction de la direction
 			tmp->temps=NBR_CASE_Y-i+1;
 			memDestinationBulle.push_back(tmp);
-			return;
+		}
+	//break;
+	//case HAUT:
+tmp=new DestinationBulle;
+	tmp->direction=HAUT;
+	for(unsigned int i=y;i>=0;i--)
+		if(memTabGrille[x][i]->getEtat()>0){
+			tmp->coX=x;
+			tmp->coY=i;
+			tmp->temps=y-i;
+			memDestinationBulle.push_back(tmp);
 			break;
-		case HAUT:
+		}
+		else if(i==NBR_CASE_Y-1){//si aucun obstacle rencontré
 			tmp->coX=x;
 			tmp->coY=100;
 			tmp->temps=y+1;
 			memDestinationBulle.push_back(tmp);
-			return;
-			break;
-		case GAUCHE:
-			tmp->coX=100;
+		}
+	//		break;
+	//case DROITE:
+tmp=new DestinationBulle;
+	tmp->direction=DROITE;
+	for(unsigned int i=x;i<NBR_CASE_X;i++)
+		if(memTabGrille[i][y]->getEtat()>0){
+			tmp->coX=i;
 			tmp->coY=y;
-			tmp->temps=x+1;
+			tmp->temps=i-x;
 			memDestinationBulle.push_back(tmp);
-			return;
 			break;
-		case DROITE:
+		}
+		else if(i==NBR_CASE_Y-1){//si aucun obstacle rencontré
 			tmp->coX=100;
 			tmp->coY=y;
 			tmp->temps=NBR_CASE_X-x+1;
 			memDestinationBulle.push_back(tmp);
-			return;
+		}
+	//break;
+	//case GAUCHE:
+tmp=new DestinationBulle;
+	tmp->direction=GAUCHE;
+	for(unsigned int i=x;i>=0;i--)
+		if(memTabGrille[x][i]->getEtat()>0){
+			tmp->coX=i;
+			tmp->coY=y;
+			tmp->temps=y-i;
+			memDestinationBulle.push_back(tmp);
 			break;
+		}
+		else if(i==NBR_CASE_Y-1){//si aucun obstacle rencontré
+			tmp->coX=100;
+			tmp->coY=y;
+			tmp->temps=x+1;
+			memDestinationBulle.push_back(tmp);
+		}
+	//break;
+	//default:
+	//cout<<"erreur direction"<<endl;
+	//return;
+	//};
+
+	//si aucun obstacles rencontrés
+	/*switch(direction){
+		case BAS:
+		tmp->coX=x;
+		tmp->coY=100;//100 représente le bord correspondant en fonction de la direction
+		tmp->temps=NBR_CASE_Y-i+1;
+		memDestinationBulle.push_back(tmp);
+		return;
+		break;
+		case HAUT:
+		tmp->coX=x;
+		tmp->coY=100;
+		tmp->temps=y+1;
+		memDestinationBulle.push_back(tmp);
+		return;
+		break;
+		case GAUCHE:
+		tmp->coX=100;
+		tmp->coY=y;
+		tmp->temps=x+1;
+		memDestinationBulle.push_back(tmp);
+		return;
+		break;
+		case DROITE:
+		tmp->coX=100;
+		tmp->coY=y;
+		tmp->temps=NBR_CASE_X-x+1;
+		memDestinationBulle.push_back(tmp);
+		return;
+		break;
 		default:
-			break;
-	};
+		break;
+		};*/
 }
 
 Algo::~Algo(){
