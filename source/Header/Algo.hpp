@@ -13,6 +13,7 @@ class Case;
  */
 struct DestinationBulle{
 	unsigned int temps, direction, coX, coY;
+	bool traite;
 };
 
 /**
