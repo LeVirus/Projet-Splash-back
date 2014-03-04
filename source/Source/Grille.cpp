@@ -1,9 +1,11 @@
 #include <iostream>
 #include "Grille.hpp"
+#include "Algo.hpp"
 #include "constantes.hpp"
 
 using namespace std;
 
+extern Algo *memoAlgo;
 Grille *memGrille;
 
 /**
@@ -11,6 +13,8 @@ Grille *memGrille;
  *	Initialise la grille (tableau 2 dimensions), 
  */
 Grille::Grille(){
+	if(memoAlgo)memAlgo=memoAlgo;
+	else cout<<"erreur alloc memAlgo"<<endl;
 	memGrille=this;
 	tabGrille.resize(6);
 	for(unsigned int i=0;i<tabGrille.size();++i)
@@ -30,7 +34,8 @@ Grille::Grille(){
  */
 bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
 	if(largeurG<x || longueurG<y)return false;
-	if(tabGrille[y][x].changerEtat())resolutionEclatement(x,y);
+	if(tabGrille[y][x].changerEtat())memAlgo->resolutionEclatement(x,y);
+	return true;
 }
 
 /**
@@ -48,8 +53,8 @@ void Grille::genererGrille(unsigned int lvl){
 /**
  * Renvoie une référence constante du tableau représentatif du jeu
  */
-		const *std::vector<std::vector<Case>> Grille::getTab()const{
-	return &tabGrille;
+const std::vector<std::vector<Case>> &Grille::getTab()const{
+	return tabGrille;
 }
 
 /**

@@ -1,7 +1,9 @@
 #ifndef ALG
 #define ALG
 
+#include <iostream>
 #include <vector>
+#include <list>
 #include "Case.hpp"
 
 class Grille;
@@ -27,17 +29,19 @@ struct OrigineEclatement{
 class Algo{
 	private:
 		Grille *memoG;
+		unsigned int memoTempsEclat;
 		std::vector<std::vector<Case>> *memTabGrille;
-		std::list<*OrigineEclatement> memOrigineEclat;
-		std::list<*OrigineEclatement>::iterator itMemOrigin;
-		std::list<*DestinationBulle> memDestinationBulle;
-		std::list<*DestinationBulle>::iterator itMemBulle;
+		std::list<OrigineEclatement*> memOrigineEclat;
+		std::list<OrigineEclatement*>::iterator itMemOrigin;
+		std::list<DestinationBulle*> memDestinationBulle;
+		std::list<DestinationBulle*>::iterator itMemBulle, itMemBulleB;
 	public:
 		Algo();
-void resolutionEclatement(unsigned int x, unsigned int y);
+		void resolutionEclatement(unsigned int x, unsigned int y);
 		void jouer();
-		void resolution();
-void trouverDestination(unsigned int x, unsigned int y);
+		void trouverDestination(unsigned int x, unsigned int y);
+		void appliquerDestination();
+		void afficherList()const;
 		~Algo();
 };
 

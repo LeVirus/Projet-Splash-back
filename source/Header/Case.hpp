@@ -9,14 +9,12 @@
 class Case{
 	private: 
 		unsigned int etat;
-		bool eclater;
 	public:
 		Case();
 		Case(unsigned int taille);
 		void setEtat(unsigned int nbr);
 		bool changerEtat();
 		unsigned int getEtat()const;
-		bool eclater();
 		~Case();
 };
 

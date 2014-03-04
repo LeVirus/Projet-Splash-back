@@ -38,28 +38,11 @@ void Case::setEtat(unsigned int nbr){
  */
 bool Case::changerEtat(){
 	etat++;
-	if(etat>4)return true;
+	if(etat>4){
+		etat=0;
+		return true;
+	}
 	return false;
-}
-
-/**
- * Suprimme la bulle (etat mis a 0) et envoie l'info a la classe Algo
- * @return false si l'operation a reussie
- * @return true sinon
- */
-bool Case::eclater(){
-	etat=0;
-	eclater=true;
-	return true;
-}
-
-/**
- * Retourne l'etat de la bulle
- * @return Case.eclater true si la bulle a ete eclater dans le tour
-* false sinon
- */
-bool Case::getEclater(){
-	return eclater;
 }
 
 /**
