@@ -17,18 +17,20 @@ Base::Base(){
  * toutes les conditions necessaires au lancement( verif() )
  */
 void Base::lancerJeu(){
+	unsigned int x, y;
+	grille.genererGrille(0);
 	do{
 		if(pointActuel==0)break;
+		afficherEtatActuel();
 		cout<<"x?"<<endl;
 		cin>>x;
 		cout<<"y?"<<endl;
 		cin>>y;
-		if(!grille.appliquerClick(x,y)){
+		if(!grille.appliquerChangeCase(x,y)){
 			cout<<"erreur entre case"<<endl;
 			continue;
 		}
 		pointActuel--;
-		afficherEtatActuel();
 	}while(true);
 }
 

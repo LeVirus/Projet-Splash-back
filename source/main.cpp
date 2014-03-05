@@ -1,9 +1,9 @@
 #include <iostream>
-#include "Moteur.hpp"
+#include "Base.hpp"
 
 using namespace std;
 
 int main(){
-	Moteur m;
-	m.launch();		
+	 Base m;
+	m.lancerJeu();		
 }

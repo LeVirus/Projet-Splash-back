@@ -3,6 +3,7 @@
 
 #include "Grille.hpp"
 #include "Moteur.hpp"
+#include "Algo.hpp"
 
 /**
  * @class Base
@@ -10,9 +11,9 @@
  */
 class Base{
 	private:
+	//	Moteur moteur;
+		Algo algo;
 		Grille grille;
-		Moteur moteur;
-	Algo algo;
 		unsigned int pointActuel, niveauActuel;
 	public:
 		Base();

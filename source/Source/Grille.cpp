@@ -34,8 +34,19 @@ Grille::Grille(){
  */
 bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
 	if(largeurG<x || longueurG<y)return false;
-	if(tabGrille[y][x].changerEtat())memAlgo->resolutionEclatement(x,y);
+	if(tabGrille[y][x].changerEtat())memAlgo->resolutionEclatement(x,y);//si changerEtat retourne true ==> eclatement
 	return true;
+}
+
+/**
+ * @param lvl Indique le niveau actuel
+ * Generation de la grille aleatoirement la difficulte est determine
+ *  en fonction du niveau actuel
+ */
+
+unsigned int Grille::getTabValue(unsigned int x, unsigned int y)const{
+	if(x>largeurG || y>longueurG)return 1000;//si erreur
+	return tabGrille[x][y].getEtat();
 }
 
 /**
@@ -53,8 +64,8 @@ void Grille::genererGrille(unsigned int lvl){
 /**
  * Renvoie une référence constante du tableau représentatif du jeu
  */
-const std::vector<std::vector<Case>> &Grille::getTab()const{
-	return tabGrille;
+const std::vector<std::vector<Case>> *Grille::getTab()const{
+	return &tabGrille;
 }
 
 /**
@@ -63,8 +74,8 @@ const std::vector<std::vector<Case>> &Grille::getTab()const{
 void Grille::afficherGrille()const{
 	for(unsigned int j=0;j<tabGrille.size();++j)
 		for(unsigned int i=0;i<tabGrille[j].size();++i){
-			cout<<tabGrille[j][i].getEtat();
-			if(j==tabGrille[i].size()-1)cout<<endl;
+			cout<<tabGrille[i][j].getEtat();
+			if(i==tabGrille[j].size()-1)cout<<endl;
 		}
 }
 

@@ -7,7 +7,6 @@
 #include "Case.hpp"
 
 class Grille;
-class Case;
 
 /**                                                                    
  * @struct DestinationBulle
@@ -30,7 +29,7 @@ class Algo{
 	private:
 		Grille *memoG;
 		unsigned int memoTempsEclat;
-		std::vector<std::vector<Case>> *memTabGrille;
+		//const std::vector<std::vector<Case>> *memTabGrille;
 		std::list<OrigineEclatement*> memOrigineEclat;
 		std::list<OrigineEclatement*>::iterator itMemOrigin;
 		std::list<DestinationBulle*> memDestinationBulle;
@@ -39,6 +38,7 @@ class Algo{
 		Algo();
 		void resolutionEclatement(unsigned int x, unsigned int y);
 		void jouer();
+void liaisonGrille();
 		void trouverDestination(unsigned int x, unsigned int y);
 		void appliquerDestination();
 		void afficherList()const;

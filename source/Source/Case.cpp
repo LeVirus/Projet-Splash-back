@@ -8,7 +8,6 @@ extern Grille *memGrille;
  * etat mis à 0
  */
 Case::Case(){
-eclater=false;
 	etat=0;
 }
 
