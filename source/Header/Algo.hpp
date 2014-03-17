@@ -31,12 +31,14 @@ class Algo{
 		unsigned int memoTempsEclat;
 		//const std::vector<std::vector<Case>> *memTabGrille;
 		std::list<OrigineEclatement*> memOrigineEclat;
-		std::list<OrigineEclatement*>::iterator itMemOrigin;
+		std::list<OrigineEclatement*>::iterator itMemOrigin, itMemOriginB;
 		std::list<DestinationBulle*> memDestinationBulle;
 		std::list<DestinationBulle*>::iterator itMemBulle, itMemBulleB;
 	public:
 		Algo();
 		void resolutionEclatement(unsigned int x, unsigned int y);
+		std::list<DestinationBulle*>::iterator findItBulle(unsigned int x, unsigned int y);
+		std::list<OrigineEclatement*>::iterator findItEclat(unsigned int x, unsigned int y);
 		void jouer();
 void liaisonGrille();
 		void trouverDestination(unsigned int x, unsigned int y);

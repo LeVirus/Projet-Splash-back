@@ -36,7 +36,7 @@ void Algo::jouer(){
 		cin>>x;
 		cout<<"y?"<<endl;
 		cin>>y;
-	//	memGrille->appliquerClick(x,y);
+		//	memGrille->appliquerClick(x,y);
 	}while(true);
 }
 
@@ -46,16 +46,18 @@ void Algo::jouer(){
  *  en fonction du niveau actuel
  */
 void Algo::afficherList()const{
-		std::list<DestinationBulle*>::const_iterator itMemBulleT;
-		std::list<OrigineEclatement*>::const_iterator itMemOriginT;
-		for(itMemBulleT=memDestinationBulle.begin();itMemBulleT!=memDestinationBulle.end();itMemBulleT++){
-	cout<<(*itMemBulleT)->coX<<"<<x  y>>"<<(*itMemBulleT)->coY<<endl;
-	cout<<(*itMemBulleT)->temps<<"temps  "<<endl;
-}
-		for(itMemOriginT=memOrigineEclat.begin();itMemOriginT!=memOrigineEclat.end();itMemOriginT++){
-	cout<<(*itMemOriginT)->coXO<<"<<x  y>>"<<(*itMemOriginT)->coYO<<endl;
-	cout<<(*itMemOriginT)->tempsO<<"temps  "<<endl;
-}
+	std::list<DestinationBulle*>::const_iterator itMemBulleT;
+	std::list<OrigineEclatement*>::const_iterator itMemOriginT;
+	cout<<"Destination::"<<endl<<endl;
+	for(itMemBulleT=memDestinationBulle.begin();itMemBulleT!=memDestinationBulle.end();itMemBulleT++){
+		cout<<(*itMemBulleT)->coX<<"<<x  y>>"<<(*itMemBulleT)->coY<<endl;
+		cout<<(*itMemBulleT)->temps<<"temps  "<<endl;
+	}
+	cout<<"Origine::"<<endl<<endl;
+	for(itMemOriginT=memOrigineEclat.begin();itMemOriginT!=memOrigineEclat.end();itMemOriginT++){
+		cout<<(*itMemOriginT)->coXO<<"<<x  y>>"<<(*itMemOriginT)->coYO<<endl;
+		cout<<(*itMemOriginT)->tempsO<<"temps  "<<endl;
+	}
 }
 
 /**
@@ -72,13 +74,49 @@ void Algo::resolutionEclatement(unsigned int x, unsigned int y){
 	//si la liste "Origine" est vide "temps" est init à 0
 	if(memOrigineEclat.empty())memOrigin->tempsO=0;
 	//sinon "temps" est récupéré dans la variable globale
-	else memOrigin->tempsO=(*itMemBulleB)->temps;
+	else {
+		itMemBulleB=findItBulle(memOrigin->coXO, memOrigin->coYO);
+		memOrigin->tempsO=(*itMemBulleB)->temps;
+	}
 
 	memOrigineEclat.push_back(memOrigin);
 
 	trouverDestination(x,y);
+	afficherList();
 	// declenchement du traitement des destinations uniquement si premier eclatement
 	if( memOrigineEclat.size()==1 )appliquerDestination();
+}
+
+/**
+ * @param x Indique l'absisce de iterator recherché
+ * @param y Indique l'ordonnée de iterator recherché
+ *	 Fonction qui trouve l'iterator qui a les coordonnées 
+ */
+std::list<DestinationBulle*>::iterator Algo::findItBulle(unsigned int x, unsigned int y){
+	std::list<DestinationBulle*>::iterator itMemBulleT;
+	for(itMemBulleT=memDestinationBulle.begin();itMemBulleT!=memDestinationBulle.end();itMemBulleT++){
+		if( (*itMemBulleT)->coX == x  &&  (*itMemBulleT)->coY == y )
+			return itMemBulleT;
+	}
+	cout<<"erreur iterator non trouve"<<endl;
+(*itMemBulleT)->coX=1000;//indique une erreur dans l'iterator
+	return itMemBulleT;
+}
+
+/**
+ * @param x Indique l'absisce de iterator recherché
+ * @param y Indique l'ordonnée de iterator recherché
+ *	 Fonction qui trouve l'iterator qui a les coordonnées 
+ */
+std::list<OrigineEclatement*>::iterator Algo::findItEclat(unsigned int x, unsigned int y){
+		std::list<OrigineEclatement*>::iterator itMemEclatT;
+	for(itMemEclatT=memOrigineEclat.begin();itMemEclatT!=memOrigineEclat.end();itMemEclatT++){
+		if( (*itMemEclatT)->coXO == x  &&  (*itMemEclatT)->coYO == y )
+			return itMemEclatT;
+	}
+	cout<<"erreur iterator non trouve"<<endl;
+(*itMemEclatT)->coXO=1000;//indique une erreur dans l'iterator
+	return itMemEclatT;
 }
 
 /**
@@ -102,6 +140,8 @@ void Algo::appliquerDestination(){
 			if( (*itMemBulle)->temps == cmpt ){
 				//memo du temps de la destination (utile pour l'eventuel éclatement)
 				memoTempsEclat=(*itMemBulle)->temps;
+
+
 				memoG->appliquerChangeCase( (*itMemBulle)->coX , (*itMemBulle)->coY);
 				(*itMemBulle)->traite=true;
 			}
@@ -118,24 +158,30 @@ void Algo::appliquerDestination(){
  */
 void Algo::trouverDestination(unsigned int x, unsigned int y){
 	DestinationBulle *tmp=new DestinationBulle;
+	itMemOriginB=findItEclat(x, y);
+	//trouver le temps initial du point d'eclatement
+	unsigned int tempsOrigine=(*itMemOriginB)->tempsO;
+
 	//case BAS:
 	tmp->direction=BAS;
 	for(unsigned int i=y;i<NBR_CASE_Y;i++){
 		if(memoG->getTabValue(x, i)>0){//si une case contient une bulle
 			tmp->coX=x;
 			tmp->coY=i;
-			tmp->temps=NBR_CASE_Y-i;
+			tmp->temps=tempsOrigine + i - x;
+			cerr<<tmp->temps<<"final="<<tempsOrigine<<"tmpO"<<i<<"+i"<<x<<"-x"<<endl<<endl<<endl;
 			break;
 		}
 		else if(i==NBR_CASE_Y-1){//si aucun obstacle rencontré
 			tmp->coX=x;
 			tmp->coY=100;//100 représente le bord correspondant en fonction de la direction
-			tmp->temps=NBR_CASE_Y-i+1;//temps=nbr max de case - pos init +1
+			tmp->temps=tempsOrigine + NBR_CASE_Y-x+1;//temps=nbr max de case - pos init +1
 		}
 	}
 	tmp->traite=false;
 	memDestinationBulle.push_back(tmp);
-	//break;
+
+
 	//case HAUT:
 	tmp=new DestinationBulle;
 	tmp->direction=HAUT;
@@ -143,19 +189,21 @@ void Algo::trouverDestination(unsigned int x, unsigned int y){
 		if(memoG->getTabValue(x, i)>0){//si une case contient une bulle
 			tmp->coX=x;
 			tmp->coY=i;
-			tmp->temps=y-i;
+			tmp->temps=tempsOrigine + y-i;
 			break;
 		}
 		else if(i==0){//si aucun obstacle rencontré
 			tmp->coX=x;
 			tmp->coY=100;
-			tmp->temps=y+1;
+			tmp->temps=tempsOrigine + y+1;
 			break;
 		}
 	}
 	tmp->traite=false;
 	memDestinationBulle.push_back(tmp);
-	//		break;
+
+
+
 	//case DROITE:
 	tmp=new DestinationBulle;
 	tmp->direction=DROITE;
@@ -163,19 +211,22 @@ void Algo::trouverDestination(unsigned int x, unsigned int y){
 		if(memoG->getTabValue(i, y)>0){//si une case contient une bulle
 			tmp->coX=i;
 			tmp->coY=y;
-			tmp->temps=i-x;
+			tmp->temps=tempsOrigine + i-x;
 			break;
 		}
 		else if(i==NBR_CASE_X-1){//si aucun obstacle rencontré
 			tmp->coX=100;
 			tmp->coY=y;
-			tmp->temps=NBR_CASE_X-x+1;
+			tmp->temps=tempsOrigine + NBR_CASE_X-x+1;
 			break;
 		}
 	}
 	tmp->traite=false;
 	memDestinationBulle.push_back(tmp);
-	//break;
+
+
+
+
 	//case GAUCHE:
 	tmp=new DestinationBulle;
 	tmp->direction=GAUCHE;
@@ -183,13 +234,13 @@ void Algo::trouverDestination(unsigned int x, unsigned int y){
 		if(memoG->getTabValue(i, y)>0){//si une case contient une bulle
 			tmp->coX=i;
 			tmp->coY=y;
-			tmp->temps=y-i;
+			tmp->temps=tempsOrigine + x-i;
 			break;
 		}
 		else if(i==0){//si aucun obstacle rencontré
 			tmp->coX=100;
 			tmp->coY=y;
-			tmp->temps=x+1;
+			tmp->temps=tempsOrigine + x+1;
 			break;
 		}
 	}

@@ -34,7 +34,7 @@ Grille::Grille(){
  */
 bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
 	if(largeurG<x || longueurG<y)return false;
-	if(tabGrille[y][x].changerEtat())memAlgo->resolutionEclatement(x,y);//si changerEtat retourne true ==> eclatement
+	if(tabGrille[x][y].changerEtat())memAlgo->resolutionEclatement(x,y);//si changerEtat retourne true ==> eclatement
 	return true;
 }
 
@@ -43,7 +43,6 @@ bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
  * Generation de la grille aleatoirement la difficulte est determine
  *  en fonction du niveau actuel
  */
-
 unsigned int Grille::getTabValue(unsigned int x, unsigned int y)const{
 	if(x>largeurG || y>longueurG)return 1000;//si erreur
 	return tabGrille[x][y].getEtat();

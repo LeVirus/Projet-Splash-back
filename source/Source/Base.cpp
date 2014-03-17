@@ -18,6 +18,7 @@ Base::Base(){
  */
 void Base::lancerJeu(){
 	unsigned int x, y;
+	algo.liaisonGrille();
 	grille.genererGrille(0);
 	do{
 		if(pointActuel==0)break;
