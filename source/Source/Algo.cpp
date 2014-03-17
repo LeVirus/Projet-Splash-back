@@ -75,14 +75,16 @@ void Algo::resolutionEclatement(unsigned int x, unsigned int y){
 	if(memOrigineEclat.empty())memOrigin->tempsO=0;
 	//sinon "temps" est récupéré dans la variable globale
 	else {
+		cerr<<"avant"<<endl;
 		itMemBulleB=findItBulle(memOrigin->coXO, memOrigin->coYO);
+		cerr<<"apres"<<endl;
 		memOrigin->tempsO=(*itMemBulleB)->temps;
 	}
 
 	memOrigineEclat.push_back(memOrigin);
 
 	trouverDestination(x,y);
-	afficherList();
+	//afficherList();
 	// declenchement du traitement des destinations uniquement si premier eclatement
 	if( memOrigineEclat.size()==1 )appliquerDestination();
 }
@@ -95,8 +97,12 @@ void Algo::resolutionEclatement(unsigned int x, unsigned int y){
 std::list<DestinationBulle*>::iterator Algo::findItBulle(unsigned int x, unsigned int y){
 	std::list<DestinationBulle*>::iterator itMemBulleT;
 	for(itMemBulleT=memDestinationBulle.begin();itMemBulleT!=memDestinationBulle.end();itMemBulleT++){
-		if( (*itMemBulleT)->coX == x  &&  (*itMemBulleT)->coY == y )
-			return itMemBulleT;
+	cerr<<"kikoo temps=1"<<endl;
+		if(!(*itMemBulleT))break;
+		if( (*itMemBulleT)->coX == x  &&  (*itMemBulleT)->coY == y ){
+	cerr<<"kikoo temps=2"<<endl;
+			return itMemBulleT;}
+	cerr<<"kikoo temps=3"<<endl;
 	}
 	cout<<"erreur iterator non trouve"<<endl;
 (*itMemBulleT)->coX=1000;//indique une erreur dans l'iterator
@@ -157,6 +163,7 @@ void Algo::appliquerDestination(){
  *	 Fonction qui trouve les destinations des "projectiles" apres l'éclatement
  */
 void Algo::trouverDestination(unsigned int x, unsigned int y){
+	cerr<<"x"<<x<<"  y"<<y<<endl;
 	DestinationBulle *tmp=new DestinationBulle;
 	itMemOriginB=findItEclat(x, y);
 	//trouver le temps initial du point d'eclatement
@@ -168,7 +175,7 @@ void Algo::trouverDestination(unsigned int x, unsigned int y){
 		if(memoG->getTabValue(x, i)>0){//si une case contient une bulle
 			tmp->coX=x;
 			tmp->coY=i;
-			tmp->temps=tempsOrigine + i - x;
+			tmp->temps=tempsOrigine + i - y;
 			cerr<<tmp->temps<<"final="<<tempsOrigine<<"tmpO"<<i<<"+i"<<x<<"-x"<<endl<<endl<<endl;
 			break;
 		}
