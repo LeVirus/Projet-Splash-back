@@ -37,7 +37,6 @@ class Algo{
 	public:
 		Algo();
 		void resolutionEclatement(unsigned int x, unsigned int y);
-		std::list<DestinationBulle*>::iterator findItBulle(unsigned int x, unsigned int y);
 		std::list<OrigineEclatement*>::iterator findItEclat(unsigned int x, unsigned int y);
 		void jouer();
 void liaisonGrille();

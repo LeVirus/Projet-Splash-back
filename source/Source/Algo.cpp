@@ -48,16 +48,21 @@ void Algo::jouer(){
 void Algo::afficherList()const{
 	std::list<DestinationBulle*>::const_iterator itMemBulleT;
 	std::list<OrigineEclatement*>::const_iterator itMemOriginT;
+
+	cout<<"AFFICHAGE"<<endl;
+
 	cout<<"Destination::"<<endl<<endl;
 	for(itMemBulleT=memDestinationBulle.begin();itMemBulleT!=memDestinationBulle.end();itMemBulleT++){
 		cout<<(*itMemBulleT)->coX<<"<<x  y>>"<<(*itMemBulleT)->coY<<endl;
 		cout<<(*itMemBulleT)->temps<<"temps  "<<endl;
 	}
+
 	cout<<"Origine::"<<endl<<endl;
 	for(itMemOriginT=memOrigineEclat.begin();itMemOriginT!=memOrigineEclat.end();itMemOriginT++){
 		cout<<(*itMemOriginT)->coXO<<"<<x  y>>"<<(*itMemOriginT)->coYO<<endl;
 		cout<<(*itMemOriginT)->tempsO<<"temps  "<<endl;
 	}
+	cout<<"FIN AFFICHAGE"<<endl;
 }
 
 /**
@@ -75,38 +80,16 @@ void Algo::resolutionEclatement(unsigned int x, unsigned int y){
 	if(memOrigineEclat.empty())memOrigin->tempsO=0;
 	//sinon "temps" est récupéré dans la variable globale
 	else {
-		cerr<<"avant"<<endl;
-		itMemBulleB=findItBulle(memOrigin->coXO, memOrigin->coYO);
-		cerr<<"apres"<<endl;
-		memOrigin->tempsO=(*itMemBulleB)->temps;
+		//itMemBulleB=findItBulle(memOrigin->coXO, memOrigin->coYO);
+		memOrigin->tempsO=memoTempsEclat;//(*itMemBulleB)->temps;
 	}
 
 	memOrigineEclat.push_back(memOrigin);
 
 	trouverDestination(x,y);
-	//afficherList();
+	afficherList();
 	// declenchement du traitement des destinations uniquement si premier eclatement
 	if( memOrigineEclat.size()==1 )appliquerDestination();
-}
-
-/**
- * @param x Indique l'absisce de iterator recherché
- * @param y Indique l'ordonnée de iterator recherché
- *	 Fonction qui trouve l'iterator qui a les coordonnées 
- */
-std::list<DestinationBulle*>::iterator Algo::findItBulle(unsigned int x, unsigned int y){
-	std::list<DestinationBulle*>::iterator itMemBulleT;
-	for(itMemBulleT=memDestinationBulle.begin();itMemBulleT!=memDestinationBulle.end();itMemBulleT++){
-	cerr<<"kikoo temps=1"<<endl;
-		if(!(*itMemBulleT))break;
-		if( (*itMemBulleT)->coX == x  &&  (*itMemBulleT)->coY == y ){
-	cerr<<"kikoo temps=2"<<endl;
-			return itMemBulleT;}
-	cerr<<"kikoo temps=3"<<endl;
-	}
-	cout<<"erreur iterator non trouve"<<endl;
-(*itMemBulleT)->coX=1000;//indique une erreur dans l'iterator
-	return itMemBulleT;
 }
 
 /**
@@ -163,7 +146,6 @@ void Algo::appliquerDestination(){
  *	 Fonction qui trouve les destinations des "projectiles" apres l'éclatement
  */
 void Algo::trouverDestination(unsigned int x, unsigned int y){
-	cerr<<"x"<<x<<"  y"<<y<<endl;
 	DestinationBulle *tmp=new DestinationBulle;
 	itMemOriginB=findItEclat(x, y);
 	//trouver le temps initial du point d'eclatement
@@ -176,7 +158,6 @@ void Algo::trouverDestination(unsigned int x, unsigned int y){
 			tmp->coX=x;
 			tmp->coY=i;
 			tmp->temps=tempsOrigine + i - y;
-			cerr<<tmp->temps<<"final="<<tempsOrigine<<"tmpO"<<i<<"+i"<<x<<"-x"<<endl<<endl<<endl;
 			break;
 		}
 		else if(i==NBR_CASE_Y-1){//si aucun obstacle rencontré
