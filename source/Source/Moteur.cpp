@@ -27,10 +27,11 @@ bool Moteur::initMoteur(){
 			0);
 	driver = device->getVideoDriver();
 	sceneManager = device->getSceneManager ();
+	device->getCursorControl ()-> setVisible (true);
 	//sceneManager = irr::core::vector3df (5,0,0)); // scene manager		
 
-	irr::scene::IMeshSceneNode* cube;         // pointeur vers le node
-		irr::f32 x=0.0f ,y=0.0f,z=0.0f;
+	irr::scene::IMeshSceneNode* cube, *sphere;         // pointeur vers le node
+	irr::f32 x=0.0f ,y=0.0f,z=0.0f;
 	for(unsigned int i=0;i<36;++i){
 		cube=sceneManager->addCubeSceneNode(        // la creation du cube
 				10.0f,                             // cote de 10 unites
@@ -40,7 +41,19 @@ bool Moteur::initMoteur(){
 					x,                          // origine en X
 					y,                          // origine en Y
 					z));                       // +20 unites en Z
-	cube->setMaterialFlag(irr::video::EMF_WIREFRAME, true);
+		cube->setMaterialFlag(irr::video::EMF_WIREFRAME, true);
+		sphere=sceneManager->addSphereSceneNode	(	
+				 5.0f,  //taille rayon f32
+				 16, //nombre de polycount?? s32
+				0,// noeud parent
+				-1, //id s32
+		//		const core::vector3df &		position = 
+irr::core::vector3df(0, 0, 0),
+	//			const core::vector3df &		rotation = 
+irr::core::vector3df(0, 0, 0),
+//				const core::vector3df &		scale = 
+irr::core::vector3df(1.0f, 1.0f, 1.0f) 
+				);	
 		cout<<x<<" "<<y<<" "<<z<<endl;
 		x+=10.0f;
 		if(x>=60.0f){

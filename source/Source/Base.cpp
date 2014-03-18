@@ -17,6 +17,11 @@ Base::Base(){
  * toutes les conditions necessaires au lancement( verif() )
  */
 void Base::lancerJeu(){
+	//tmp
+		moteur.initMoteur();
+		moteur.launch();
+		return;
+	//tmp
 	unsigned int x, y;
 	algo.liaisonGrille();
 	grille.genererGrille(0);

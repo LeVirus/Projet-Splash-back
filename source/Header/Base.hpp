@@ -11,7 +11,7 @@
  */
 class Base{
 	private:
-	//	Moteur moteur;
+		Moteur moteur;
 		Algo algo;
 		Grille grille;
 		unsigned int pointActuel, niveauActuel;
