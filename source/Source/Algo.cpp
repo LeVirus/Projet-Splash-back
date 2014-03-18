@@ -80,8 +80,7 @@ void Algo::resolutionEclatement(unsigned int x, unsigned int y){
 	if(memOrigineEclat.empty())memOrigin->tempsO=0;
 	//sinon "temps" est récupéré dans la variable globale
 	else {
-		//itMemBulleB=findItBulle(memOrigin->coXO, memOrigin->coYO);
-		memOrigin->tempsO=memoTempsEclat;//(*itMemBulleB)->temps;
+		memOrigin->tempsO=memoTempsEclat;
 	}
 
 	memOrigineEclat.push_back(memOrigin);

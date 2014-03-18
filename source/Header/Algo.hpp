@@ -29,7 +29,6 @@ class Algo{
 	private:
 		Grille *memoG;
 		unsigned int memoTempsEclat;
-		//const std::vector<std::vector<Case>> *memTabGrille;
 		std::list<OrigineEclatement*> memOrigineEclat;
 		std::list<OrigineEclatement*>::iterator itMemOrigin, itMemOriginB;
 		std::list<DestinationBulle*> memDestinationBulle;
