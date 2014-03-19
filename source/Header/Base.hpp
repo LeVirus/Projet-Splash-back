@@ -11,9 +11,9 @@
  */
 class Base{
 	private:
-		Moteur moteur;
 		Algo algo;
 		Grille grille;
+		Moteur moteur;
 		unsigned int pointActuel, niveauActuel;
 	public:
 		Base();

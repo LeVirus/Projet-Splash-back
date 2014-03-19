@@ -18,7 +18,10 @@ Base::Base(){
  */
 void Base::lancerJeu(){
 	//tmp
+		grille.genererGrille(0);
+		grille.afficherGrille();
 		moteur.initMoteur();
+		moteur.initSphere();
 		moteur.launch();
 		return;
 	//tmp

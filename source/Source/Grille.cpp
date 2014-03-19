@@ -78,6 +78,10 @@ void Grille::afficherGrille()const{
 		}
 }
 
+const std::vector<std::vector<Case>> &Grille::getTabGrille()const{
+	return tabGrille;
+}
+
 /**
  * Destructeur de la class Grille.  
  */

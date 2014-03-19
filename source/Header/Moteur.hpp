@@ -1,3 +1,6 @@
+#ifndef MOT
+#define MOT
+
 #include <irrlicht/irrlicht.h>
 
 /**
@@ -13,7 +16,10 @@ class Moteur{
 		irr::scene::IMeshSceneNode* cube, *grille;
 	public:
 		Moteur();
+		void initSphere();
 		bool initMoteur();
 		bool launch();
 		~Moteur();
 };
+
+#endif
