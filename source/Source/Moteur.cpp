@@ -157,6 +157,12 @@ bool Moteur::launch(){
 	while(device->run()) {
 
 		//tmp
+
+		// Crée un rayon partant du curseur de la souris.
+		irr::core::line3df ray = sceneManager->getSceneCollisionManager()->getRayFromScreenCoordinates(
+				receiver.GetMouseState().Position, camera);
+
+
 		if(receiver.IsKeyDown(irr::KEY_KEY_W))
 			nodePosition.Y += 2;//MOVEMENT_SPEED * frameDeltaTime;
 		else if(receiver.IsKeyDown(irr::KEY_KEY_S))
