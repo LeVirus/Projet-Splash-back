@@ -3,6 +3,7 @@
 #include "Moteur.hpp"
 #include "Case.hpp"
 #include "Grille.hpp"
+#include "MyEvent.hpp"
 
 using namespace std;
 
@@ -22,6 +23,10 @@ Moteur::Moteur(){
  * @return false sinon
  */
 bool Moteur::initMoteur(){
+
+	// créer le moteur
+	MyEventReceiver receiver;
+
 	device = irr::createDevice (
 			irr::video::EDT_OPENGL,
 			irr::core::dimension2d<irr::u32>(800,600),
@@ -29,7 +34,8 @@ bool Moteur::initMoteur(){
 			false,
 			true,
 			false,
-			0);
+			&receiver);
+
 	driver = device->getVideoDriver();
 	sceneManager = device->getSceneManager ();
 	device->getCursorControl ()-> setVisible (true);
@@ -95,11 +101,11 @@ void Moteur::initSphere(){
 			taille=tmp[i][j].getEtat();
 			switch(taille){
 				case 0:
-			x+=10.0f;
-			if(x>=60.0f){
-				x=0.0f;
-				y+=10.0f;
-			}
+					x+=10.0f;
+					if(x>=60.0f){
+						x=0.0f;
+						y+=10.0f;
+					}
 					continue;
 					break;
 				case 1:
@@ -130,6 +136,7 @@ void Moteur::initSphere(){
 					//				const core::vector3df &		scale = 
 					irr::core::vector3df(1.0f, 1.0f, 1.0f) 
 					);	
+			lstSphere.push_back(sphere);//memo du pointeur de la sphere dans la liste
 			x+=10.0f;
 			if(x>=60.0f){
 				x=0.0f;
@@ -145,7 +152,25 @@ void Moteur::initSphere(){
  * @return true Si la fonction a fermer aprés avoir reçu un signal d'arret
  */
 bool Moteur::launch(){
+	MyEventReceiver receiver;
+	irr::core::vector3df nodePosition = (* lstSphere.begin() )->getPosition();//tmp
 	while(device->run()) {
+
+		//tmp
+		if(receiver.IsKeyDown(irr::KEY_KEY_W))
+			nodePosition.Y += 2;//MOVEMENT_SPEED * frameDeltaTime;
+		else if(receiver.IsKeyDown(irr::KEY_KEY_S))
+			nodePosition.Y -=  2;//MOVEMENT_SPEED * frameDeltaTime;
+
+		if(receiver.IsKeyDown(irr::KEY_KEY_A))
+			nodePosition.X -=  2;//MOVEMENT_SPEED * frameDeltaTime;
+		else if(receiver.IsKeyDown(irr::KEY_KEY_D))
+			nodePosition.X +=  2;//MOVEMENT_SPEED * frameDeltaTime;
+
+		(* lstSphere.begin() )->setPosition(nodePosition);
+
+		//tmp
+
 		driver->beginScene (true, true,
 				irr::video::SColor(255,255,255,255));
 		sceneManager->drawAll ();

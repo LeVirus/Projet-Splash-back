@@ -1,6 +1,7 @@
 #ifndef MOT
 #define MOT
 
+#include <list>
 #include <irrlicht/irrlicht.h>
 
 /**
@@ -14,6 +15,7 @@ class Moteur{
 		irr::video::IVideoDriver* driver ;
 		irr::scene::ISceneManager *sceneManager;
 		irr::scene::IMeshSceneNode* cube, *grille;
+		std::list<irr::scene::IMeshSceneNode*> lstSphere;
 	public:
 		Moteur();
 		void initSphere();
