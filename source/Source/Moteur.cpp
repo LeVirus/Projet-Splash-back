@@ -96,8 +96,8 @@ void Moteur::initSphere(){
 	irr::f32 x=0.0f ,y=0.0f,z=0.0f, tailleSphere;
 	unsigned int taille;
 	std::vector<std::vector<Case>> tmp=memGrille->getTabGrille();
-	for(unsigned int i=0;i<tmp.size();i++)
-		for(unsigned int j=0;j<tmp[i].size();j++){
+	for(unsigned int j=0;j<tmp[i].size();j++)
+		for(unsigned int i=0;i<tmp.size();i++){
 			taille=tmp[i][j].getEtat();
 			switch(taille){
 				case 0:
@@ -136,7 +136,12 @@ void Moteur::initSphere(){
 					//				const core::vector3df &		scale = 
 					irr::core::vector3df(1.0f, 1.0f, 1.0f) 
 					);	
-			lstSphere.push_back(sphere);//memo du pointeur de la sphere dans la liste
+			Bulle *a=new Bulle;
+			a->noeudBulle=sphere;
+			a->x=i;
+			a->y=j;
+			a->move=false;
+			lstSphere.push_back(a);//memo du pointeur de la sphere dans la liste
 			x+=10.0f;
 			if(x>=60.0f){
 				x=0.0f;
@@ -152,18 +157,49 @@ void Moteur::initSphere(){
  * @return true Si la fonction a fermer aprés avoir reçu un signal d'arret
  */
 bool Moteur::launch(){
+	irr::core::vector3df outCollisionPoint;
+	irr::core::triangle3df outTriangle;
+	irr::core::line3df ray; 
+	irr::scene::ISceneCollisionManager* collisionManager = 
+		scene->getSceneCollisionManager();
 	MyEventReceiver receiver;
-	irr::core::vector3df nodePosition = (* lstSphere.begin() )->getPosition();//tmp
+
+	//irr::core::vector3df nodePosition = 
+		//(* lstSphere.begin() )->getPosition();//tmp
 	while(device->run()) {
 
-		//tmp
+
+		if(receiver.IsKeyDown(irr::EMIE_LMOUSE_PRESSED_DOWN)){
 
 		// Crée un rayon partant du curseur de la souris.
-		irr::core::line3df ray = sceneManager->getSceneCollisionManager()->getRayFromScreenCoordinates(
-				receiver.GetMouseState().Position, camera);
+			ray = collisionManager->getRayFromScreenCoordinates(
+						device->getCursorControl()->getPosition()
+						, camera);
 
 
-		if(receiver.IsKeyDown(irr::KEY_KEY_W))
+			irr::scene::IMeshSceneNode* node = 
+				collisionManager->getSceneNodeAndCollisionPointFromRay(
+						ray, outCollisionPoint, outTriangle);
+
+	//si !node aucune collision avec un noeud
+			if(node){
+				for(itLstSphere=lstSphere.begin(); 
+					itLstSphere!=lstSphere.end() ; ++itLstSphere){
+					if((*itLstSphere)->move)continue;//si bulle mouvante
+					if( (*itLstSphere)->noeudBulle == node ){
+//identification du noeud
+						memGrille->appliquerChangeCase(
+							(*itLstSphere)->x, (*itLstSphere)->y);
+//appel de la fonction dans Grille
+						break;
+					}
+				}
+				//recu quelque chose
+			}
+		}
+
+
+/*		if(receiver.IsKeyDown(irr::KEY_KEY_W))
 			nodePosition.Y += 2;//MOVEMENT_SPEED * frameDeltaTime;
 		else if(receiver.IsKeyDown(irr::KEY_KEY_S))
 			nodePosition.Y -=  2;//MOVEMENT_SPEED * frameDeltaTime;
@@ -174,7 +210,7 @@ bool Moteur::launch(){
 			nodePosition.X +=  2;//MOVEMENT_SPEED * frameDeltaTime;
 
 		(* lstSphere.begin() )->setPosition(nodePosition);
-
+*/
 		//tmp
 
 		driver->beginScene (true, true,
@@ -187,8 +223,19 @@ bool Moteur::launch(){
 }
 
 /**
+ * Fonction permettant de vider la liste en suprimmant 
+ * les objet declaré dynamiquement
+ */
+void Moteur::viderListeBulle(){
+	while( !lstSphere.empty() ){
+		delete (* lstSphere.begin() ) -> noeudBulle;
+		lstSphere.erase( lstSphere.begin() );
+	}
+}
+
+/**
  * Destructeur de la class Moteur.  
  */
 Moteur::~Moteur(){
-
+	viderListeBulle();
 }
