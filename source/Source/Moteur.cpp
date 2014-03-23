@@ -3,7 +3,6 @@
 #include "Moteur.hpp"
 #include "Case.hpp"
 #include "Grille.hpp"
-#include "MyEvent.hpp"
 
 using namespace std;
 
@@ -53,7 +52,7 @@ bool Moteur::initMoteur(){
 					y,                          // origine en Y
 					z));                       // +20 unites en Z
 		cube->setMaterialFlag(irr::video::EMF_WIREFRAME, true);
-		cout<<x<<" "<<y<<" "<<z<<endl;
+		//cout<<x<<" "<<y<<" "<<z<<endl;
 		x+=10.0f;
 		if(x>=60.0f){
 			x=0.0f;
@@ -77,7 +76,8 @@ bool Moteur::initMoteur(){
 	keyMap[4].Action = irr::EKA_JUMP_UP;       // saut
 	keyMap[4].KeyCode = irr::KEY_SPACE;        // barre espace
 
-	sceneManager->addCameraSceneNodeFPS(       // ajout de la camera FPS
+	camera = sceneManager->addCameraSceneNodeFPS(       
+	// ajout de la camera FPS
 			0,                                     // pas de noeud parent
 			100.0f,                                // vitesse de rotation
 			0.1f,                                  // vitesse de deplacement
@@ -96,8 +96,8 @@ void Moteur::initSphere(){
 	irr::f32 x=0.0f ,y=0.0f,z=0.0f, tailleSphere;
 	unsigned int taille;
 	std::vector<std::vector<Case>> tmp=memGrille->getTabGrille();
-	for(unsigned int j=0;j<tmp[i].size();j++)
-		for(unsigned int i=0;i<tmp.size();i++){
+	for(unsigned int j=0;j<tmp.size();j++)
+		for(unsigned int i=0;i<tmp[j].size();i++){
 			taille=tmp[i][j].getEtat();
 			switch(taille){
 				case 0:
@@ -161,23 +161,23 @@ bool Moteur::launch(){
 	irr::core::triangle3df outTriangle;
 	irr::core::line3df ray; 
 	irr::scene::ISceneCollisionManager* collisionManager = 
-		scene->getSceneCollisionManager();
-	MyEventReceiver receiver;
-
+		sceneManager->getSceneCollisionManager();
 	//irr::core::vector3df nodePosition = 
 		//(* lstSphere.begin() )->getPosition();//tmp
 	while(device->run()) {
 
 
-		if(receiver.IsKeyDown(irr::EMIE_LMOUSE_PRESSED_DOWN)){
+	cerr<<"dd"<<endl;
+		if(receiver.leftButtonIsPressed()){
 
+	cerr<<"sksdf"<<endl;
 		// Crée un rayon partant du curseur de la souris.
 			ray = collisionManager->getRayFromScreenCoordinates(
 						device->getCursorControl()->getPosition()
 						, camera);
 
 
-			irr::scene::IMeshSceneNode* node = 
+			irr::scene::ISceneNode* node = 
 				collisionManager->getSceneNodeAndCollisionPointFromRay(
 						ray, outCollisionPoint, outTriangle);
 
@@ -190,16 +190,16 @@ bool Moteur::launch(){
 //identification du noeud
 						memGrille->appliquerChangeCase(
 							(*itLstSphere)->x, (*itLstSphere)->y);
+						memGrille->afficherGrille();
 //appel de la fonction dans Grille
 						break;
 					}
 				}
-				//recu quelque chose
 			}
 		}
 
 
-/*		if(receiver.IsKeyDown(irr::KEY_KEY_W))
+		if(receiver.IsKeyDown(irr::KEY_KEY_W))
 			nodePosition.Y += 2;//MOVEMENT_SPEED * frameDeltaTime;
 		else if(receiver.IsKeyDown(irr::KEY_KEY_S))
 			nodePosition.Y -=  2;//MOVEMENT_SPEED * frameDeltaTime;
@@ -210,13 +210,16 @@ bool Moteur::launch(){
 			nodePosition.X +=  2;//MOVEMENT_SPEED * frameDeltaTime;
 
 		(* lstSphere.begin() )->setPosition(nodePosition);
-*/
+
 		//tmp
 
+	cerr<<"ds"<<endl;
 		driver->beginScene (true, true,
 				irr::video::SColor(255,255,255,255));
+	cerr<<"ts"<<endl;
 		sceneManager->drawAll ();
 		driver->endScene ();
+	cerr<<"ss"<<endl;
 	}
 	device->drop (); 
 	return true;

@@ -11,6 +11,13 @@ MyEventReceiver::MyEventReceiver(){
 }
 
 /**
+ *  Fonction renvoie LeftButtonDown
+ */
+bool MyEventReceiver::leftButtonIsPressed(){
+	return MouseState.LeftButtonDown;
+}
+
+/**
  *	Fonction (surchargee) qui recupere l'evenement
  */
 // Ceci est la méthode que nous devons implémenter

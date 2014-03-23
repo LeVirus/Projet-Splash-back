@@ -26,6 +26,7 @@ class MyEventReceiver: public irr::IEventReceiver{
 		MyEventReceiver();
 		virtual bool OnEvent(const irr::SEvent& event);
 		virtual bool IsKeyDown(irr::EKEY_CODE keyCode) const;
+		bool leftButtonIsPressed();
 };
 
 #endif

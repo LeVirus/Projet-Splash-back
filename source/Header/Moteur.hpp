@@ -1,8 +1,9 @@
 #ifndef MOT
 #define MOT
 
-#include <list>
 #include <irrlicht/irrlicht.h>
+#include "MyEvent.hpp"
+#include <list>
 
 
 /**
@@ -27,9 +28,11 @@ class Moteur{
 		irr::IrrlichtDevice *device;
 		irr::video::IVideoDriver* driver ;
 		irr::scene::ISceneManager *sceneManager;
+		irr::scene::ICameraSceneNode *camera;
 		irr::scene::IMeshSceneNode* cube, *grille;
-		std::list<*Bulle> lstSphere;
-		std::list<*Bulle>::iterator itLstSphere;
+		MyEventReceiver receiver;
+		std::list<Bulle*> lstSphere;
+		std::list<Bulle*>::iterator itLstSphere;
 	public:
 		Moteur();
 		void initSphere();
