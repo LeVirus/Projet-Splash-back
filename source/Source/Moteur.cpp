@@ -23,9 +23,6 @@ Moteur::Moteur(){
  */
 bool Moteur::initMoteur(){
 
-	// créer le moteur
-	MyEventReceiver receiver;
-
 	device = irr::createDevice (
 			irr::video::EDT_OPENGL,
 			irr::core::dimension2d<irr::u32>(800,600),
@@ -167,10 +164,10 @@ bool Moteur::launch(){
 	while(device->run()) {
 
 
-	cerr<<"dd"<<endl;
+	//cerr<<"dd"<<endl;
 		if(receiver.leftButtonIsPressed()){
 
-	cerr<<"sksdf"<<endl;
+				cerr<<"left detected"<<endl;
 		// Crée un rayon partant du curseur de la souris.
 			ray = collisionManager->getRayFromScreenCoordinates(
 						device->getCursorControl()->getPosition()
@@ -183,6 +180,7 @@ bool Moteur::launch(){
 
 	//si !node aucune collision avec un noeud
 			if(node){
+				cerr<<"node detected"<<endl;
 				for(itLstSphere=lstSphere.begin(); 
 					itLstSphere!=lstSphere.end() ; ++itLstSphere){
 					if((*itLstSphere)->move)continue;//si bulle mouvante
@@ -199,7 +197,7 @@ bool Moteur::launch(){
 		}
 
 
-		if(receiver.IsKeyDown(irr::KEY_KEY_W))
+/*		if(receiver.IsKeyDown(irr::KEY_KEY_W))
 			nodePosition.Y += 2;//MOVEMENT_SPEED * frameDeltaTime;
 		else if(receiver.IsKeyDown(irr::KEY_KEY_S))
 			nodePosition.Y -=  2;//MOVEMENT_SPEED * frameDeltaTime;
@@ -210,16 +208,19 @@ bool Moteur::launch(){
 			nodePosition.X +=  2;//MOVEMENT_SPEED * frameDeltaTime;
 
 		(* lstSphere.begin() )->setPosition(nodePosition);
-
+*/
 		//tmp
 
-	cerr<<"ds"<<endl;
+
+
 		driver->beginScene (true, true,
 				irr::video::SColor(255,255,255,255));
-	cerr<<"ts"<<endl;
 		sceneManager->drawAll ();
 		driver->endScene ();
-	cerr<<"ss"<<endl;
+
+
+
+	//cerr<<"ss"<<endl;
 	}
 	device->drop (); 
 	return true;

@@ -13,7 +13,7 @@
  * si le noeud est mouvant
  */
 struct Bulle{
-	irr::scene::IMeshSceneNode *noeudBulle;
+	irr::scene::ISceneNode *noeudBulle;
 	unsigned int x,y;
 	bool move;
 };
