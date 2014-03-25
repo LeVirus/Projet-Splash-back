@@ -20,6 +20,7 @@ void Base::lancerJeu(){
 	//tmp
 		grille.genererGrille(0);
 		grille.afficherGrille();
+	algo.liaisonGrille();
 		moteur.initMoteur();
 		moteur.initSphere();
 		moteur.launch();

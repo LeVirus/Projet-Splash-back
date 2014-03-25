@@ -71,6 +71,8 @@ void Algo::afficherList()const{
  *  en fonction du niveau actuel
  */
 void Algo::resolutionEclatement(unsigned int x, unsigned int y){
+
+		cout<<"resol Algo"<<endl;
 	OrigineEclatement* memOrigin;
 	memOrigin=new OrigineEclatement;//instancier le point d'eclatement
 	memOrigin->coXO=x;//init des variables positions
@@ -145,6 +147,7 @@ void Algo::appliquerDestination(){
  *	 Fonction qui trouve les destinations des "projectiles" apres l'éclatement
  */
 void Algo::trouverDestination(unsigned int x, unsigned int y){
+		cout<<"Alg trouver"<<endl;
 	DestinationBulle *tmp=new DestinationBulle;
 	itMemOriginB=findItEclat(x, y);
 	//trouver le temps initial du point d'eclatement

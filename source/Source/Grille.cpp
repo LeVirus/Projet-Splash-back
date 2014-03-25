@@ -33,9 +33,15 @@ Grille::Grille(){
  * @return false sinon
  */
 bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
-	if(largeurG<x || longueurG<y)return false;
-	if(tabGrille[x][y].changerEtat())memAlgo->resolutionEclatement(x,y);//si changerEtat retourne true ==> eclatement
-	return true;
+	if(largeurG<x || longueurG<y){
+		cout<<"erreur select"<<endl;
+			return false;
+}
+	if(tabGrille[x][y].changerEtat()){
+		memAlgo->resolutionEclatement(x,y);//si changerEtat retourne true ==> eclatement
+		return false;//signale si il y a au moins un eclatement
+		}
+	return true;//simple changement de taille d'une bulle
 }
 
 /**
@@ -44,7 +50,7 @@ bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
  *  en fonction du niveau actuel
  */
 unsigned int Grille::getTabValue(unsigned int x, unsigned int y)const{
-	if(x>largeurG || y>longueurG)return 1000;//si erreur
+	if(x>=largeurG || y>=longueurG)return 1000;//si erreur
 	return tabGrille[x][y].getEtat();
 }
 

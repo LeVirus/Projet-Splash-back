@@ -14,6 +14,7 @@
  */
 struct Bulle{
 	irr::scene::ISceneNode *noeudBulle;
+	irr::scene::ITriangleSelector *triangleCol;
 	unsigned int x,y;
 	bool move;
 };

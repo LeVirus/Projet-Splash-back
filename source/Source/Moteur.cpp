@@ -37,6 +37,7 @@ bool Moteur::initMoteur(){
 	device->getCursorControl ()-> setVisible (true);
 	//sceneManager = irr::core::vector3df (5,0,0)); // scene manager		
 
+
 	irr::scene::IMeshSceneNode* cube;         // pointeur vers le node
 	irr::f32 x=0.0f ,y=0.0f,z=0.0f;
 	for(unsigned int i=0;i<36;++i){
@@ -53,9 +54,11 @@ bool Moteur::initMoteur(){
 		x+=10.0f;
 		if(x>=60.0f){
 			x=0.0f;
-			y+=10.0f;
+			y-=10.0f;
 		}
 	}
+
+
 	//grille=sceneManager->addMeshSceneNode (sceneManager->getMesh ("Ressources/Grille.obj"));//0 noeud parent(racine)
 	//grille->setMaterialFlag(irr::video::EMF_WIREFRAME, true);
 	//1 id
@@ -74,13 +77,15 @@ bool Moteur::initMoteur(){
 	keyMap[4].KeyCode = irr::KEY_SPACE;        // barre espace
 
 	camera = sceneManager->addCameraSceneNodeFPS(       
-	// ajout de la camera FPS
+			// ajout de la camera FPS
 			0,                                     // pas de noeud parent
 			100.0f,                                // vitesse de rotation
 			0.1f,                                  // vitesse de deplacement
 			-1,                                    // pas de numero d'ID
 			keyMap,                                // on change la keymap
 			5);                                    // avec une taille de 5
+
+
 	return true;
 }
 
@@ -101,7 +106,7 @@ void Moteur::initSphere(){
 					x+=10.0f;
 					if(x>=60.0f){
 						x=0.0f;
-						y+=10.0f;
+						y-=10.0f;
 					}
 					continue;
 					break;
@@ -122,6 +127,8 @@ void Moteur::initSphere(){
 					break;
 			}
 			sphere=sceneManager->addSphereSceneNode	(	
+
+
 					tailleSphere,  //taille rayon f32
 					16, //nombre de polycount?? s32
 					0,// noeud parent
@@ -134,15 +141,21 @@ void Moteur::initSphere(){
 					irr::core::vector3df(1.0f, 1.0f, 1.0f) 
 					);	
 			Bulle *a=new Bulle;
+					a->triangleCol = sceneManager->createOctreeTriangleSelector(
+						sphere->getMesh(), sphere, 128);
 			a->noeudBulle=sphere;
 			a->x=i;
 			a->y=j;
 			a->move=false;
+
+			sphere->setTriangleSelector(a->triangleCol);
+
+
 			lstSphere.push_back(a);//memo du pointeur de la sphere dans la liste
 			x+=10.0f;
 			if(x>=60.0f){
 				x=0.0f;
-				y+=10.0f;
+				y-=10.0f;
 			}
 		}
 
@@ -160,36 +173,42 @@ bool Moteur::launch(){
 	irr::scene::ISceneCollisionManager* collisionManager = 
 		sceneManager->getSceneCollisionManager();
 	//irr::core::vector3df nodePosition = 
-		//(* lstSphere.begin() )->getPosition();//tmp
+	//(* lstSphere.begin() )->getPosition();//tmp
 	while(device->run()) {
 
 
-	//cerr<<"dd"<<endl;
+		//cerr<<"dd"<<endl;
 		if(receiver.leftButtonIsPressed()){
 
-				cerr<<"left detected"<<endl;
-		// Crée un rayon partant du curseur de la souris.
+			cerr<<"left detected"<<endl;
+			// Crée un rayon partant du curseur de la souris.
 			ray = collisionManager->getRayFromScreenCoordinates(
-						device->getCursorControl()->getPosition()
-						, camera);
+					device->getCursorControl()->getPosition()
+					, camera);
+
+
 
 
 			irr::scene::ISceneNode* node = 
 				collisionManager->getSceneNodeAndCollisionPointFromRay(
 						ray, outCollisionPoint, outTriangle);
 
-	//si !node aucune collision avec un noeud
+
+
+			//si !node aucune collision avec un noeud
 			if(node){
 				cerr<<"node detected"<<endl;
 				for(itLstSphere=lstSphere.begin(); 
-					itLstSphere!=lstSphere.end() ; ++itLstSphere){
+						itLstSphere!=lstSphere.end() ; ++itLstSphere){
 					if((*itLstSphere)->move)continue;//si bulle mouvante
 					if( (*itLstSphere)->noeudBulle == node ){
-//identification du noeud
+				cerr<<"node d"<<endl;
+				cerr<<(*itLstSphere)->x<<"x  y"<<(*itLstSphere)->y<<endl;
+						//identification du noeud
 						memGrille->appliquerChangeCase(
-							(*itLstSphere)->x, (*itLstSphere)->y);
+								(*itLstSphere)->x, (*itLstSphere)->y);
 						memGrille->afficherGrille();
-//appel de la fonction dans Grille
+						//appel de la fonction dans Grille
 						break;
 					}
 				}
@@ -197,18 +216,18 @@ bool Moteur::launch(){
 		}
 
 
-/*		if(receiver.IsKeyDown(irr::KEY_KEY_W))
-			nodePosition.Y += 2;//MOVEMENT_SPEED * frameDeltaTime;
-		else if(receiver.IsKeyDown(irr::KEY_KEY_S))
-			nodePosition.Y -=  2;//MOVEMENT_SPEED * frameDeltaTime;
+		/*		if(receiver.IsKeyDown(irr::KEY_KEY_W))
+					nodePosition.Y += 2;//MOVEMENT_SPEED * frameDeltaTime;
+					else if(receiver.IsKeyDown(irr::KEY_KEY_S))
+					nodePosition.Y -=  2;//MOVEMENT_SPEED * frameDeltaTime;
 
-		if(receiver.IsKeyDown(irr::KEY_KEY_A))
-			nodePosition.X -=  2;//MOVEMENT_SPEED * frameDeltaTime;
-		else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-			nodePosition.X +=  2;//MOVEMENT_SPEED * frameDeltaTime;
+					if(receiver.IsKeyDown(irr::KEY_KEY_A))
+					nodePosition.X -=  2;//MOVEMENT_SPEED * frameDeltaTime;
+					else if(receiver.IsKeyDown(irr::KEY_KEY_D))
+					nodePosition.X +=  2;//MOVEMENT_SPEED * frameDeltaTime;
 
-		(* lstSphere.begin() )->setPosition(nodePosition);
-*/
+					(* lstSphere.begin() )->setPosition(nodePosition);
+		 */
 		//tmp
 
 
@@ -220,7 +239,7 @@ bool Moteur::launch(){
 
 
 
-	//cerr<<"ss"<<endl;
+		//cerr<<"ss"<<endl;
 	}
 	device->drop (); 
 	return true;
