@@ -13,7 +13,7 @@
  * si le noeud est mouvant
  */
 struct Bulle{
-	irr::scene::ISceneNode *noeudBulle;
+	irr::scene::IMeshSceneNode *noeudBulle;
 	irr::scene::ITriangleSelector *triangleCol;
 	unsigned int x,y;
 	bool move;
@@ -26,6 +26,7 @@ struct Bulle{
  */
 class Moteur{
 	private:
+		bool actionEnCours;
 		irr::IrrlichtDevice *device;
 		irr::video::IVideoDriver* driver ;
 		irr::scene::ISceneManager *sceneManager;
@@ -40,6 +41,7 @@ class Moteur{
 		bool initMoteur();
 		bool launch();
 		void viderListeBulle();
+		void changerTailleSphere(std::list<Bulle*>::iterator it);
 		~Moteur();
 };
 

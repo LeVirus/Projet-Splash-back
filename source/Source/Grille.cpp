@@ -37,11 +37,9 @@ bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
 		cout<<"erreur select"<<endl;
 			return false;
 }
-	if(tabGrille[x][y].changerEtat()){
-		memAlgo->resolutionEclatement(x,y);//si changerEtat retourne true ==> eclatement
-		return false;//signale si il y a au moins un eclatement
-		}
-	return true;//simple changement de taille d'une bulle
+	if(tabGrille[x][y].changerEtat())
+		memAlgo->resolutionEclatement(x,y);
+	return true;
 }
 
 /**

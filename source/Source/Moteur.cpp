@@ -13,6 +13,7 @@ extern Grille *memGrille;
  *	appel de la fonction "initMoteur()"
  */
 Moteur::Moteur(){
+	actionEnCours=false;
 	initMoteur();
 }
 
@@ -141,8 +142,8 @@ void Moteur::initSphere(){
 					irr::core::vector3df(1.0f, 1.0f, 1.0f) 
 					);	
 			Bulle *a=new Bulle;
-					a->triangleCol = sceneManager->createOctreeTriangleSelector(
-						sphere->getMesh(), sphere, 128);
+			a->triangleCol = sceneManager->createOctreeTriangleSelector(
+					sphere->getMesh(), sphere, 128);
 			a->noeudBulle=sphere;
 			a->x=i;
 			a->y=j;
@@ -175,11 +176,11 @@ bool Moteur::launch(){
 	//irr::core::vector3df nodePosition = 
 	//(* lstSphere.begin() )->getPosition();//tmp
 	while(device->run()) {
-
+if( !receiver.leftButtonIsPressed() )actionEnCours=false;
 
 		//cerr<<"dd"<<endl;
-		if(receiver.leftButtonIsPressed()){
-
+		if(!actionEnCours  && receiver.leftButtonIsPressed()){
+actionEnCours=true;
 			cerr<<"left detected"<<endl;
 			// Crée un rayon partant du curseur de la souris.
 			ray = collisionManager->getRayFromScreenCoordinates(
@@ -202,17 +203,26 @@ bool Moteur::launch(){
 						itLstSphere!=lstSphere.end() ; ++itLstSphere){
 					if((*itLstSphere)->move)continue;//si bulle mouvante
 					if( (*itLstSphere)->noeudBulle == node ){
-				cerr<<"node d"<<endl;
-				cerr<<(*itLstSphere)->x<<"x  y"<<(*itLstSphere)->y<<endl;
 						//identification du noeud
 						memGrille->appliquerChangeCase(
 								(*itLstSphere)->x, (*itLstSphere)->y);
+
+						if( memGrille->getTabValue( (*itLstSphere)->x, (*itLstSphere)->y ) == 0 ){//si eclatement
+
+						}
+
+						else{//si aucun eclatement
+							changerTailleSphere( itLstSphere );
+						}
+
+
 						memGrille->afficherGrille();
 						//appel de la fonction dans Grille
 						break;
 					}
 				}
 			}
+		
 		}
 
 
@@ -244,6 +254,68 @@ bool Moteur::launch(){
 	device->drop (); 
 	return true;
 }
+
+
+/**
+ * Fonction permettant de changer graphiquement la taille d'une sphere
+ * (en fonction de sa taille actuelle)
+ */
+void Moteur::changerTailleSphere(std::list<Bulle*>::iterator it){
+	unsigned int tailleSphere;
+	if(!(*it)){
+		cout<<"erreur pointeur changerTailleSphere"<<endl;
+		return;
+	}
+	Bulle *b=new Bulle;
+	b->x=(*it)->x;
+	b->y=(*it)->y;
+	b->move=false;
+	switch( memGrille->getTabValue(b->x, b->y) ){
+		case 0:
+			break;
+		case 1:
+			tailleSphere=2.0f;
+			break;
+		case 2:
+			tailleSphere=3.0f;
+			break;
+		case 3:
+			tailleSphere=4.0f;
+			break;
+		case 4:
+			tailleSphere=5.0f;
+			break;
+		default:
+			cerr<<"erreur taille non valide initSphere"<<endl;
+			break;
+	}
+	b->noeudBulle = sceneManager->addSphereSceneNode	(	
+
+
+			tailleSphere,  //taille rayon f32
+			16, //nombre de polycount?? s32
+			0,// noeud parent
+			-1, //id s32
+			//		const core::vector3df &		position = 
+			(*it)->noeudBulle->getPosition(),
+			//			const core::vector3df &		rotation = 
+			irr::core::vector3df(0, 0, 0),
+			//				const core::vector3df &		scale = 
+			irr::core::vector3df(1.0f, 1.0f, 1.0f) 
+			);	
+	b->triangleCol = sceneManager->createOctreeTriangleSelector(
+			b->noeudBulle->getMesh(), b->noeudBulle, 128);
+	b->noeudBulle->setTriangleSelector(b->triangleCol);
+
+
+	lstSphere.push_back(b);//memo du pointeur de la sphere dans la liste
+
+	(*it)->noeudBulle->remove();
+	delete (*it);
+	lstSphere.erase(it);
+}
+
+
 
 /**
  * Fonction permettant de vider la liste en suprimmant 
