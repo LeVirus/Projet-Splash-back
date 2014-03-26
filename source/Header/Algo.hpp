@@ -25,6 +25,12 @@ struct OrigineEclatement{
 	unsigned int coXO, coYO, tempsO;                                     
 };
 
+
+struct AnimList{
+		std::list<OrigineEclatement*> *memListOrigine;
+		std::list<DestinationBulle*> *memListDestination;
+};
+
 class Algo{
 	private:
 		Grille *memoG;
@@ -41,6 +47,7 @@ class Algo{
 void liaisonGrille();
 		void trouverDestination(unsigned int x, unsigned int y);
 		void appliquerDestination();
+	const	AnimList getListAnim();
 		void afficherList()const;
 		~Algo();
 };

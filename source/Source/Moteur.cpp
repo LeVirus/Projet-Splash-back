@@ -1,5 +1,6 @@
 #include <iostream>
 #include <vector>
+#include <ctime>
 #include "Moteur.hpp"
 #include "Case.hpp"
 #include "Grille.hpp"
@@ -7,12 +8,14 @@
 using namespace std;
 
 extern Grille *memGrille;
+extern Algo *memoAlgo;
 
 /**
  * Constructeur de la classe Moteur.
  *	appel de la fonction "initMoteur()"
  */
 Moteur::Moteur(){
+	animEnCours=false;
 	actionEnCours=false;
 	initMoteur();
 }
@@ -173,28 +176,44 @@ bool Moteur::launch(){
 	irr::core::line3df ray; 
 	irr::scene::ISceneCollisionManager* collisionManager = 
 		sceneManager->getSceneCollisionManager();
+	unsigned int tempsInit, tempsCourrant;
+	std::list<OrigineEclatement*>::iterator itOrigine;
 	//irr::core::vector3df nodePosition = 
 	//(* lstSphere.begin() )->getPosition();//tmp
 	while(device->run()) {
-if( !receiver.leftButtonIsPressed() )actionEnCours=false;
+		if( !receiver.leftButtonIsPressed() )actionEnCours=false;
 
-		//cerr<<"dd"<<endl;
-		if(!actionEnCours  && receiver.leftButtonIsPressed()){
-actionEnCours=true;
+
+		if(animEnCours){
+			tempsCourrant=clock()-tempsInit;
+			if( itOrigine!=memListAnim.memListOrigine->end() ){
+				//comparaison du temps actuel convertis en secondes avec le temps
+				//du point Origine de l'eclatement
+				if((*itOrigine)->tempsO<=tempsCourrant/1000){
+				//recup de l'iterator correspondant
+					getListeBulle( (*itOrigine)->x, (*itOrigine)->y );
+					changerTailleSphere( itLstSphere );
+//pusher les 4 spheres mouvantes
+//creer une nouvelle liste
+				}
+				itOrigine++;
+			}
+		}
+
+
+		//action souris________________________________________________
+
+		if(!actionEnCours  && !animEnCours  &&  receiver.leftButtonIsPressed()){
+			actionEnCours=true;
 			cerr<<"left detected"<<endl;
 			// Crée un rayon partant du curseur de la souris.
 			ray = collisionManager->getRayFromScreenCoordinates(
 					device->getCursorControl()->getPosition()
 					, camera);
 
-
-
-
 			irr::scene::ISceneNode* node = 
 				collisionManager->getSceneNodeAndCollisionPointFromRay(
 						ray, outCollisionPoint, outTriangle);
-
-
 
 			//si !node aucune collision avec un noeud
 			if(node){
@@ -207,14 +226,19 @@ actionEnCours=true;
 						memGrille->appliquerChangeCase(
 								(*itLstSphere)->x, (*itLstSphere)->y);
 
-						if( memGrille->getTabValue( (*itLstSphere)->x, (*itLstSphere)->y ) == 0 ){//si eclatement
-
+						if( memGrille->getTabValue( 
+									(*itLstSphere)->x, (*itLstSphere)->y )
+								== 0 ){//si eclatement
+itOrigine=memListAnim.memListOrigine->begin();
+							memListAnim=memoAlgo->getListAnim();
+							tempsInit=clock();//init du chrono
+							animEnCours=true;
+							posOrigine=0;
 						}
 
 						else{//si aucun eclatement
 							changerTailleSphere( itLstSphere );
 						}
-
 
 						memGrille->afficherGrille();
 						//appel de la fonction dans Grille
@@ -222,8 +246,13 @@ actionEnCours=true;
 					}
 				}
 			}
-		
+
 		}
+
+		//action souris________________________________________________
+
+
+
 
 
 		/*		if(receiver.IsKeyDown(irr::KEY_KEY_W))
@@ -257,6 +286,20 @@ actionEnCours=true;
 
 
 /**
+ * Fonction permettant de recuperer l'iterator correspondant aux
+ * coordonnees envoyees en argument 
+ * L'iterator est memorise dans itLstSphere
+ */
+void Moteur::getItListBulle(unsigned int x, unsigned int y){
+	for(itLstSphere=lstSphere.begin(); 
+			itLstSphere!=lstSphere.end() ; ++itLstSphere){
+		if( (*itLstSphere)->x==x  &&  (*itLstSphere)->y==y )return;
+	}
+	cout<<"erreur bulle non trouvee getItListBulle"<<endl;
+}
+
+
+/**
  * Fonction permettant de changer graphiquement la taille d'une sphere
  * (en fonction de sa taille actuelle)
  */
@@ -272,6 +315,8 @@ void Moteur::changerTailleSphere(std::list<Bulle*>::iterator it){
 	b->move=false;
 	switch( memGrille->getTabValue(b->x, b->y) ){
 		case 0:
+			//(*it)->noeudBulle->setVisible (false);
+			return;
 			break;
 		case 1:
 			tailleSphere=2.0f;

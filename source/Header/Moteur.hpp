@@ -4,6 +4,7 @@
 #include <irrlicht/irrlicht.h>
 #include "MyEvent.hpp"
 #include <list>
+#include "Algo.hpp"
 
 
 /**
@@ -26,7 +27,7 @@ struct Bulle{
  */
 class Moteur{
 	private:
-		bool actionEnCours;
+		bool actionEnCours, animEnCours;
 		irr::IrrlichtDevice *device;
 		irr::video::IVideoDriver* driver ;
 		irr::scene::ISceneManager *sceneManager;
@@ -35,6 +36,7 @@ class Moteur{
 		MyEventReceiver receiver;
 		std::list<Bulle*> lstSphere;
 		std::list<Bulle*>::iterator itLstSphere;
+AnimList memListAnim;
 	public:
 		Moteur();
 		void initSphere();
@@ -42,6 +44,8 @@ class Moteur{
 		bool launch();
 		void viderListeBulle();
 		void changerTailleSphere(std::list<Bulle*>::iterator it);
+		void getItListBulle(unsigned int x, unsigned int y);
+		
 		~Moteur();
 };
 

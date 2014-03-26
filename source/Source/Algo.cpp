@@ -142,6 +142,18 @@ void Algo::appliquerDestination(){
 }
 
 /**
+ *	 Fonction qui envoie (en lecture seule) les listes d'animation
+* suite a un eclatement
+ */
+	const	AnimList Algo::getListAnim(){
+	AnimList a;
+	a.memListOrigine=&memOrigineEclat;
+	a.memListDestination=&memDestinationBulle;
+	return a;
+}
+
+
+/**
  * @param x Indique l'abscice de l'origine
  * @param y Indique l'ordonnée de l'origine
  *	 Fonction qui trouve les destinations des "projectiles" apres l'éclatement
