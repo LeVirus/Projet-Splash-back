@@ -4,6 +4,7 @@
 #include "Moteur.hpp"
 #include "Case.hpp"
 #include "Grille.hpp"
+#include "constantes.hpp"
 
 using namespace std;
 
@@ -98,6 +99,7 @@ bool Moteur::initMoteur(){
  * Lis les donnees dans la classe Grille
  */
 void Moteur::initSphere(){
+cerr<<"debut initS"<<endl;
 	irr::scene::IMeshSceneNode *sphere;         // pointeur vers le node
 	irr::f32 x=0.0f ,y=0.0f,z=0.0f, tailleSphere;
 	unsigned int taille;
@@ -145,23 +147,26 @@ void Moteur::initSphere(){
 					irr::core::vector3df(1.0f, 1.0f, 1.0f) 
 					);	
 			Bulle *a=new Bulle;
-			a->triangleCol = sceneManager->createOctreeTriangleSelector(
-					sphere->getMesh(), sphere, 128);
+			irr::scene::ITriangleSelector *triangleCol=
+				sceneManager->createOctreeTriangleSelector(
+						sphere->getMesh(), sphere, 128);
 			a->noeudBulle=sphere;
 			a->x=i;
 			a->y=j;
-			a->move=false;
 
-			sphere->setTriangleSelector(a->triangleCol);
-
+			sphere->setTriangleSelector(triangleCol);
+			triangleCol->drop();
+			if(a)cout<<"deeede"<<endl;
 
 			lstSphere.push_back(a);//memo du pointeur de la sphere dans la liste
+			cout<<"deeede"<<endl;
 			x+=10.0f;
 			if(x>=60.0f){
 				x=0.0f;
 				y-=10.0f;
 			}
 		}
+cerr<<"fin initS"<<endl;
 
 }
 
@@ -176,29 +181,44 @@ bool Moteur::launch(){
 	irr::core::line3df ray; 
 	irr::scene::ISceneCollisionManager* collisionManager = 
 		sceneManager->getSceneCollisionManager();
-	unsigned int tempsInit, tempsCourrant;
+	unsigned int tempsInit; 
 	std::list<OrigineEclatement*>::iterator itOrigine;
 	//irr::core::vector3df nodePosition = 
 	//(* lstSphere.begin() )->getPosition();//tmp
 	while(device->run()) {
 		if( !receiver.leftButtonIsPressed() )actionEnCours=false;
+		//attendre que le bouton soit relacher pour reinitialiser
+		//la variable
 
 
+
+
+		//Animations ________________________________________________
 		if(animEnCours){
 			tempsCourrant=clock()-tempsInit;
-			if( itOrigine!=memListAnim.memListOrigine->end() ){
-				//comparaison du temps actuel convertis en secondes avec le temps
-				//du point Origine de l'eclatement
-				if((*itOrigine)->tempsO<=tempsCourrant/1000){
+			cout<<tempsCourrant<<"temps"<<endl;
+			//comparaison du temps actuel convertis en secondes avec le temps
+			//du point Origine de l'eclatement
+			while( itOrigine!=memListAnim.memListOrigine->end() 
+					&&	(*itOrigine)->tempsO<=tempsCourrant/1000){
 				//recup de l'iterator correspondant
-					getListeBulle( (*itOrigine)->x, (*itOrigine)->y );
-					changerTailleSphere( itLstSphere );
-//pusher les 4 spheres mouvantes
-//creer une nouvelle liste
-				}
+				getItListBulle( (*itOrigine)->coXO, (*itOrigine)->coYO );
+				changerTailleSphere( itLstSphere );
+				creerBulleMouvante(itLstSphere);
+				actionBullesMouvantes();
 				itOrigine++;
+				//pusher les 4 spheres mouvantes
+				//creer une nouvelle liste
+			}
+			if( itOrigine == memListAnim.memListOrigine->end() ){//tmp____
+
+				animEnCours=false;
 			}
 		}
+
+		//Animations ________________________________________________
+
+
 
 
 		//action souris________________________________________________
@@ -220,23 +240,25 @@ bool Moteur::launch(){
 				cerr<<"node detected"<<endl;
 				for(itLstSphere=lstSphere.begin(); 
 						itLstSphere!=lstSphere.end() ; ++itLstSphere){
-					if((*itLstSphere)->move)continue;//si bulle mouvante
 					if( (*itLstSphere)->noeudBulle == node ){
 						//identification du noeud
 						memGrille->appliquerChangeCase(
 								(*itLstSphere)->x, (*itLstSphere)->y);
 
+
+						//si eclatement_________________________________________
 						if( memGrille->getTabValue( 
 									(*itLstSphere)->x, (*itLstSphere)->y )
-								== 0 ){//si eclatement
-itOrigine=memListAnim.memListOrigine->begin();
+								== 0 ){
 							memListAnim=memoAlgo->getListAnim();
+							itOrigine=memListAnim.memListOrigine->begin();
+							itDestination=memListAnim.memListDestination->begin();
 							tempsInit=clock();//init du chrono
 							animEnCours=true;
-							posOrigine=0;
 						}
 
-						else{//si aucun eclatement
+						//si aucun eclatement____________________________________
+						else{
 							changerTailleSphere( itLstSphere );
 						}
 
@@ -255,20 +277,6 @@ itOrigine=memListAnim.memListOrigine->begin();
 
 
 
-		/*		if(receiver.IsKeyDown(irr::KEY_KEY_W))
-					nodePosition.Y += 2;//MOVEMENT_SPEED * frameDeltaTime;
-					else if(receiver.IsKeyDown(irr::KEY_KEY_S))
-					nodePosition.Y -=  2;//MOVEMENT_SPEED * frameDeltaTime;
-
-					if(receiver.IsKeyDown(irr::KEY_KEY_A))
-					nodePosition.X -=  2;//MOVEMENT_SPEED * frameDeltaTime;
-					else if(receiver.IsKeyDown(irr::KEY_KEY_D))
-					nodePosition.X +=  2;//MOVEMENT_SPEED * frameDeltaTime;
-
-					(* lstSphere.begin() )->setPosition(nodePosition);
-		 */
-		//tmp
-
 
 
 		driver->beginScene (true, true,
@@ -277,9 +285,9 @@ itOrigine=memListAnim.memListOrigine->begin();
 		driver->endScene ();
 
 
-
-		//cerr<<"ss"<<endl;
 	}
+
+	//cerr<<"ss"<<endl;
 	device->drop (); 
 	return true;
 }
@@ -312,7 +320,6 @@ void Moteur::changerTailleSphere(std::list<Bulle*>::iterator it){
 	Bulle *b=new Bulle;
 	b->x=(*it)->x;
 	b->y=(*it)->y;
-	b->move=false;
 	switch( memGrille->getTabValue(b->x, b->y) ){
 		case 0:
 			//(*it)->noeudBulle->setVisible (false);
@@ -348,9 +355,11 @@ void Moteur::changerTailleSphere(std::list<Bulle*>::iterator it){
 			//				const core::vector3df &		scale = 
 			irr::core::vector3df(1.0f, 1.0f, 1.0f) 
 			);	
-	b->triangleCol = sceneManager->createOctreeTriangleSelector(
-			b->noeudBulle->getMesh(), b->noeudBulle, 128);
-	b->noeudBulle->setTriangleSelector(b->triangleCol);
+	irr::scene::ITriangleSelector *triangleCol=
+		sceneManager->createOctreeTriangleSelector(
+				b->noeudBulle->getMesh(), b->noeudBulle, 128);
+	b->noeudBulle->setTriangleSelector(triangleCol);
+	triangleCol->drop();
 
 
 	lstSphere.push_back(b);//memo du pointeur de la sphere dans la liste
@@ -360,6 +369,82 @@ void Moteur::changerTailleSphere(std::list<Bulle*>::iterator it){
 	lstSphere.erase(it);
 }
 
+/**
+ * Fonction determinant les mouvements des bulles mouvantes
+ */
+void Moteur::actionBullesMouvantes(){
+	double tmp;
+	for(itLstSphereMouventeB=lstSphereMouvente.begin(); 
+			itLstSphereMouventeB!=lstSphereMouvente.end() ; 
+			++itLstSphereMouventeB){
+		//calcul de la position de la sphere en fonction du temps restant
+		//taille d'une case ==> 1000 ms
+		tmp=(  (*itLstSphereMouventeB)->tempsDestruction - 
+				tempsCourrant) / 1000 * TAILLE_CASE;
+		switch((*itLstSphereMouventeB)->direction){
+			case BAS:
+				(*itLstSphereMouventeB)->noeudBulle->
+					setPosition(irr::core::vector3df(
+								(*itLstSphereMouventeB)->x*TAILLE_CASE,
+								(*itLstSphereMouventeB)->y*TAILLE_CASE + 
+								tmp , 0.0f) );
+				break;
+			case GAUCHE:
+				(*itLstSphereMouventeB)->noeudBulle->
+					setPosition(irr::core::vector3df(
+								(*itLstSphereMouventeB)->x*TAILLE_CASE + tmp,
+								(*itLstSphereMouventeB)->y*TAILLE_CASE  , 
+								0.0f) );
+				break;
+			case HAUT:
+				(*itLstSphereMouventeB)->noeudBulle->
+					setPosition(irr::core::vector3df(
+								(*itLstSphereMouventeB)->x*TAILLE_CASE,
+								(*itLstSphereMouventeB)->y*TAILLE_CASE - 
+								tmp , 0.0f) );
+				break;
+			case DROITE:
+				(*itLstSphereMouventeB)->noeudBulle->
+					setPosition(irr::core::vector3df(
+								(*itLstSphereMouventeB)->x*TAILLE_CASE - tmp,
+								(*itLstSphereMouventeB)->y*TAILLE_CASE,  
+								0.0f) );
+				break;
+			default:
+				cout<<"erreur direction actions bulles"<<endl;
+				break;
+		}
+	}
+}
+
+/**
+ * Fonction permettant de creer les 4 bulles mouvantes
+ * a partir d'un eclatement 
+ */
+void Moteur::creerBulleMouvante(std::list<Bulle*>::iterator it ){
+	for(unsigned int i=0;i<4;++i){
+		BulleMouvante *b=new BulleMouvante;
+		b->x=(*itDestination)->coX;
+		b->y=(*itDestination)->coY;
+		b->noeudBulle = sceneManager->addSphereSceneNode	(	
+				2.0f, // taille rayon f32
+				16, //nombre de polycount?? s32
+				0,// noeud parent
+				-1, //id s32
+				//		const core::vector3df &		position = 
+				(*it)->noeudBulle->getPosition(),
+				//			const core::vector3df &		rotation = 
+				irr::core::vector3df(0, 0, 0),
+				//				const core::vector3df &		scale = 
+				irr::core::vector3df(1.0f, 1.0f, 1.0f) 
+				);	
+
+		b->direction=(*itDestination)->direction;
+		b->tempsDestruction=(*itDestination)->temps*1000+tempsCourrant;
+		lstSphereMouvente.push_back(b);//memo du pointeur de la sphere dans la liste
+		itDestination++;
+	}
+}
 
 
 /**
