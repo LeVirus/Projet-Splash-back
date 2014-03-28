@@ -65,13 +65,31 @@ void Algo::afficherList()const{
 	cout<<"FIN AFFICHAGE"<<endl;
 }
 
+
+/**
+ * @param lvl Indique le niveau actuel
+ * Generation de la grille aleatoirement la difficulte est determine
+ *  en fonction du niveau actuel
+ */
+		void Algo::viderListes(){
+	for(itMemOriginB=memOrigineEclat.begin();itMemOriginB!=memOrigineEclat.end();itMemOriginB++){
+	delete (*itMemOriginB);
+}
+	for(itMemBulleB=memDestinationBulle.begin();itMemBulleB!=memDestinationBulle.end();itMemBulleB++){
+	delete (*itMemBulleB);
+}
+memDestinationBulle.clear();
+memOrigineEclat.clear();
+}
+
+
 /**
  * @param lvl Indique le niveau actuel
  * Generation de la grille aleatoirement la difficulte est determine
  *  en fonction du niveau actuel
  */
 void Algo::resolutionEclatement(unsigned int x, unsigned int y){
-
+viderListes();
 		cout<<"resol Algo"<<endl;
 	OrigineEclatement* memOrigin;
 	memOrigin=new OrigineEclatement;//instancier le point d'eclatement
@@ -251,5 +269,5 @@ void Algo::trouverDestination(unsigned int x, unsigned int y){
 }
 
 Algo::~Algo(){
-
+viderListes();
 }

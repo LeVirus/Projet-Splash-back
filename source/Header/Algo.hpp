@@ -49,6 +49,7 @@ void liaisonGrille();
 		void appliquerDestination();
 	const	AnimList getListAnim();
 		void afficherList()const;
+		void viderListes();
 		~Algo();
 };
 
