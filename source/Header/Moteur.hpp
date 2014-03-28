@@ -4,6 +4,7 @@
 #include <irrlicht/irrlicht.h>
 #include "MyEvent.hpp"
 #include <list>
+#include <vector>
 #include "Algo.hpp"
 
 
@@ -13,8 +14,7 @@
  * ses coordonnées sur le tableau 
  */
 struct Bulle{
-	irr::scene::IMeshSceneNode *noeudBulle;
-	unsigned int x,y;
+	irr::scene::IMeshSceneNode *noeudCase, *noeudSphere;
 };
 
 /**
@@ -45,10 +45,10 @@ unsigned int tempsCourrant;
 		irr::scene::IMeshSceneNode* cube, *grille;
 	std::list<DestinationBulle*>::iterator itDestination;
 		MyEventReceiver receiver;
-		std::list<Bulle*> lstSphere;
-		std::list<Bulle*>::iterator itLstSphere;
-		std::list<BulleMouvante*> lstSphereMouvente;
-		std::list<BulleMouvante*>::iterator itLstSphereMouvente,
+		std::vector< std::vector < Bulle* > > vectSphere;
+		//std::vector<Bulle*>::iterator itLstSphere;
+		std::list<BulleMouvante*> lstSphereMouvante;
+		std::list<BulleMouvante*>::iterator itLstSphereMouvante,
 		itLstSphereMouventeB;
 		AnimList memListAnim;
 	public:
@@ -56,10 +56,9 @@ unsigned int tempsCourrant;
 		void initSphere();
 		bool initMoteur();
 		bool launch();
-		void viderListeBulle();
-		void changerTailleSphere(std::list<Bulle*>::iterator it);
-		void getItListBulle(unsigned int x, unsigned int y);
-		void creerBulleMouvante(std::list<Bulle*>::iterator it);
+		void viderVectBulle();
+		void changerTailleSphere(unsigned int x, unsigned int y);
+		void creerBulleMouvante(unsigned int x, unsigned int y);
 		void actionBullesMouvantes();
 		~Moteur();
 };
