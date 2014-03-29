@@ -225,6 +225,8 @@ cerr<<(*itOrigine)->coXO<<"sdf"<<(*itOrigine)->coYO<<endl;
 			if( itOrigine == memListAnim.memListOrigine->end() ){//tmp____
 
 				animEnCours=false;
+
+						memoAlgo->viderListes();
 			}
 		}
 
@@ -276,11 +278,11 @@ cerr<<(*itOrigine)->coXO<<"sdf"<<(*itOrigine)->coYO<<endl;
 							changerTailleSphere( i%NBR_CASE_X, i/NBR_CASE_X );
 						}
 
-						memGrille->afficherGrille();
 						//appel de la fonction dans Grille
 						break;
 					}
 				}
+						memGrille->afficherGrille();
 			}
 
 		}
@@ -340,10 +342,12 @@ memGrille->getTabValue(x, y)<<endl;
 return;
 			break;
 	}
+//supr du noeud bulle
 	if(vectSphere[x][y]->noeudSphere){
 		vectSphere[x][y]->noeudSphere->remove(); 
 		vectSphere[x][y]->noeudSphere=NULL;
 }
+//si taille == 0 le noeud n'est pas recréé
 	if(tailleSphere==0.0f)return;
 	vectSphere[x][y]->noeudSphere = sceneManager->addSphereSceneNode	(	
 
@@ -448,7 +452,8 @@ void Moteur::creerBulleMouvante(unsigned int x, unsigned int y){
 void Moteur::viderVectBulle(){
 	for(unsigned int j=0;j<vectSphere.size();j++)
 		for(unsigned int i=0;i<vectSphere[j].size();i++){
-			delete vectSphere[i][j];
+			Bulle *a=vectSphere[i][j];
+			delete a;
 }
 }
 

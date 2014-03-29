@@ -89,7 +89,6 @@ memOrigineEclat.clear();
  *  en fonction du niveau actuel
  */
 void Algo::resolutionEclatement(unsigned int x, unsigned int y){
-viderListes();
 		cout<<"resol Algo"<<endl;
 	OrigineEclatement* memOrigin;
 	memOrigin=new OrigineEclatement;//instancier le point d'eclatement
@@ -106,7 +105,7 @@ viderListes();
 	memOrigineEclat.push_back(memOrigin);
 
 	trouverDestination(x,y);
-	afficherList();
+	//afficherList();
 	// declenchement du traitement des destinations uniquement si premier eclatement
 	if( memOrigineEclat.size()==1 )appliquerDestination();
 }
@@ -133,10 +132,17 @@ std::list<OrigineEclatement*>::iterator Algo::findItEclat(unsigned int x, unsign
  *	 Fonction qui trouve les destinations des "projectiles" apres l'éclatement
  */
 void Algo::appliquerDestination(){
+		cerr<<"appl dest"<<endl;
 	unsigned int cmpt=0, max=0;
 	if(memDestinationBulle.empty())return;
 	do{
 		for(itMemBulle=memDestinationBulle.begin();itMemBulle!=memDestinationBulle.end();itMemBulle++){
+		cerr<<"loop"<<cmpt<<endl;
+		if( !(*itMemBulle) ){//tmp
+		cout<<"bug"<<endl;
+memoG-> afficherGrille();
+		cerr<<"bug"<<endl;
+		}//tmp
 			if((*itMemBulle)->traite)continue;
 			if( max < (*itMemBulle)->temps )max=(*itMemBulle)->temps;
 			//si projectile touche un bord
@@ -154,9 +160,12 @@ void Algo::appliquerDestination(){
 				(*itMemBulle)->traite=true;
 			}
 		}
+		cerr<<"aaacmpt++"<<cmpt<<endl;
 		cmpt++;
+		cerr<<max<<"cmpt++"<<cmpt<<endl;
 	}while(cmpt<=max);
-
+cerr<<"sortie boucle"<<endl;
+return;
 }
 
 /**
