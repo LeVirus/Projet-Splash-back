@@ -20,7 +20,7 @@ Algo::Algo(){
  */
 void Algo::liaisonGrille(){
 	memoG=memGrille;
-	if(!memGrille)cerr<<"erreur alloc"<<endl;
+	if(!memGrille)cout<<"erreur alloc"<<endl;
 }
 
 /**
@@ -89,7 +89,6 @@ memOrigineEclat.clear();
  *  en fonction du niveau actuel
  */
 void Algo::resolutionEclatement(unsigned int x, unsigned int y){
-		cout<<"resol Algo"<<endl;
 	OrigineEclatement* memOrigin;
 	memOrigin=new OrigineEclatement;//instancier le point d'eclatement
 	memOrigin->coXO=x;//init des variables positions
@@ -132,16 +131,11 @@ std::list<OrigineEclatement*>::iterator Algo::findItEclat(unsigned int x, unsign
  *	 Fonction qui trouve les destinations des "projectiles" apres l'éclatement
  */
 void Algo::appliquerDestination(){
-		cerr<<"appl dest"<<endl;
 	unsigned int cmpt=0, max=0;
 	if(memDestinationBulle.empty())return;
 	do{
 		for(itMemBulle=memDestinationBulle.begin();itMemBulle!=memDestinationBulle.end();itMemBulle++){
-		cerr<<"loop"<<cmpt<<endl;
 		if( !(*itMemBulle) ){//tmp
-		cout<<"bug"<<endl;
-memoG-> afficherGrille();
-		cerr<<"bug"<<endl;
 		}//tmp
 			if((*itMemBulle)->traite)continue;
 			if( max < (*itMemBulle)->temps )max=(*itMemBulle)->temps;
@@ -160,11 +154,8 @@ memoG-> afficherGrille();
 				(*itMemBulle)->traite=true;
 			}
 		}
-		cerr<<"aaacmpt++"<<cmpt<<endl;
 		cmpt++;
-		cerr<<max<<"cmpt++"<<cmpt<<endl;
 	}while(cmpt<=max);
-cerr<<"sortie boucle"<<endl;
 return;
 }
 
@@ -186,7 +177,6 @@ return;
  *	 Fonction qui trouve les destinations des "projectiles" apres l'éclatement
  */
 void Algo::trouverDestination(unsigned int x, unsigned int y){
-		cout<<"Alg trouver"<<endl;
 	DestinationBulle *tmp=new DestinationBulle;
 	itMemOriginB=findItEclat(x, y);
 	//trouver le temps initial du point d'eclatement

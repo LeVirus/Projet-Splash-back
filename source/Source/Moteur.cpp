@@ -16,11 +16,12 @@ extern Algo *memoAlgo;
  *	appel de la fonction "initMoteur()"
  */
 Moteur::Moteur(){
+	tempsInter=2000;
 	animEnCours=false;
 	actionEnCours=false;
 	vectSphere.resize(NBR_CASE_X);
 	for(unsigned int i=0;i<NBR_CASE_Y;++i)
-	vectSphere[i].resize(NBR_CASE_Y);
+		vectSphere[i].resize(NBR_CASE_Y);
 	initMoteur();
 }
 
@@ -57,17 +58,17 @@ bool Moteur::initMoteur(){
 					x,                          // origine en X
 					y,                          // origine en Y
 					z));                       // +20 unites en Z
-			Bulle *a=new Bulle;
+		Bulle *a=new Bulle;
 		cube->setMaterialFlag(irr::video::EMF_WIREFRAME, true);
-			irr::scene::ITriangleSelector *triangleCol=
-				sceneManager->createOctreeTriangleSelector(
-						cube->getMesh(), cube, 128);
+		irr::scene::ITriangleSelector *triangleCol=
+			sceneManager->createOctreeTriangleSelector(
+					cube->getMesh(), cube, 128);
 
-			cube->setTriangleSelector(triangleCol);
-			triangleCol->drop();
-			a->noeudCase=cube;
-			vectSphere[i%NBR_CASE_X][i/NBR_CASE_X]=a;
-			//memo de la case dans le tableau
+		cube->setTriangleSelector(triangleCol);
+		triangleCol->drop();
+		a->noeudCase=cube;
+		vectSphere[i%NBR_CASE_X][i/NBR_CASE_X]=a;
+		//memo de la case dans le tableau
 		x+=10.0f;
 		if(x>=60.0f){
 			x=0.0f;
@@ -111,7 +112,7 @@ bool Moteur::initMoteur(){
  * Lis les donnees dans la classe Grille
  */
 void Moteur::initSphere(){
-cerr<<"debut initS"<<endl;
+	cerr<<"debut initS"<<endl;
 	irr::scene::IMeshSceneNode *sphere;         // pointeur vers le node
 	irr::f32 x=0.0f ,y=0.0f,z=0.0f, tailleSphere;
 	unsigned int taille;
@@ -167,7 +168,7 @@ cerr<<"debut initS"<<endl;
 				y-=10.0f;
 			}
 		}
-cerr<<"fin initS"<<endl;
+	cerr<<"fin initS"<<endl;
 
 }
 
@@ -182,7 +183,6 @@ bool Moteur::launch(){
 	irr::core::line3df ray; 
 	irr::scene::ISceneCollisionManager* collisionManager = 
 		sceneManager->getSceneCollisionManager();
-	unsigned int tempsInit; 
 	std::list<OrigineEclatement*>::iterator itOrigine;
 	//irr::core::vector3df nodePosition = 
 	//(* vectSphere.begin() )->getPosition();//tmp
@@ -195,39 +195,39 @@ bool Moteur::launch(){
 
 
 		//Animations ________________________________________________
-		if(animEnCours){
-			tempsCourrant=clock()-tempsInit;
+		if(animEnCours  /*&& tempsInter<=clock()-tempsCourrant*/ ){
 			cout<<tempsCourrant<<"temps"<<endl;
 			//comparaison du temps actuel convertis en secondes avec le temps
 			//du point Origine de l'eclatement
-			if( itOrigine!=memListAnim.memListOrigine->end() 
-					&&	(*itOrigine)->tempsO<=tempsCourrant/1000){
-				changerTailleSphere( (*itOrigine)->coXO, (*itOrigine)->coYO );
-cerr<<(*itOrigine)->coXO<<"sdf"<<(*itOrigine)->coYO<<endl;
+			//tant qu'un eclatement se produit au temps T
+			while(true){
+				if( itOrigine!=memListAnim.memListOrigine->end() 
+						&&	(*itOrigine)->tempsO*1000>=iterationAct ){
+					changerTailleSphere( (*itOrigine)->coXO, (*itOrigine)->coYO );
+					cerr<<(*itOrigine)->coXO<<"sdf"<<(*itOrigine)->coYO<<endl;
 
 
 
-				//creerBulleMouvante((*itOrigine)->coXO, (*itOrigine)->coYO );
+					creerBulleMouvante((*itOrigine)->coXO, (*itOrigine)->coYO );
 
-//tmp
-	for(unsigned int i=0;i<4;++i){
-				changerTailleSphere( (*itDestination)->coX, (*itDestination)->coY );
-	itDestination++;
-	}
-	
-//tmp
 
-				itOrigine++;
-				//pusher les 4 spheres mouvantes
-				//creer une nouvelle liste
+					itOrigine++;
+					//pusher les 4 spheres mouvantes
+					//creer une nouvelle liste
+				}
+				else break;
 			}
-				//actionBullesMouvantes();
-			if( itOrigine == memListAnim.memListOrigine->end() ){//tmp____
+			actionBullesMouvantes();
+			if( lstSphereMouvante.empty() && 
+					itOrigine==memListAnim.memListOrigine->end() ){
 
 				animEnCours=false;
 
-						memoAlgo->viderListes();
+				memoAlgo->viderListes();
 			}
+			iterationAct+=200;
+
+			tempsCourrant=clock()-tempsCourrant;
 		}
 
 		//Animations ________________________________________________
@@ -252,14 +252,14 @@ cerr<<(*itOrigine)->coXO<<"sdf"<<(*itOrigine)->coYO<<endl;
 			//si !node aucune collision avec un noeud
 			if(node){
 				cerr<<"node detected"<<endl;
-		for(unsigned int i=0;
-			i<vectSphere[0].size()*vectSphere.size();i++){
+				for(unsigned int i=0;
+						i<vectSphere[0].size()*vectSphere.size();i++){
 					if(vectSphere[i%NBR_CASE_X][i/NBR_CASE_X]->
-						noeudCase==node ){
+							noeudCase==node ){
 						//identification du noeud
 						memGrille->appliquerChangeCase(
 								i%NBR_CASE_X, i/NBR_CASE_X);
-//modification de la valeur dans Grille
+						//modification de la valeur dans Grille
 
 						//si eclatement_________________________________________
 						if( memGrille->getTabValue( 
@@ -268,13 +268,14 @@ cerr<<(*itOrigine)->coXO<<"sdf"<<(*itOrigine)->coYO<<endl;
 							memListAnim=memoAlgo->getListAnim();
 							itOrigine=memListAnim.memListOrigine->begin();
 							itDestination=memListAnim.memListDestination->begin();
-							tempsInit=clock();//init du chrono
+							tempsCourrant=clock();//init du chrono
 							animEnCours=true;
+							iterationAct=0;
 						}
 
 						//si aucun eclatement____________________________________
 						else{
-				cerr<<i%NBR_CASE_X<<" detected"<<i/NBR_CASE_X<<endl;
+							cerr<<i%NBR_CASE_X<<" detected"<<i/NBR_CASE_X<<endl;
 							changerTailleSphere( i%NBR_CASE_X, i/NBR_CASE_X );
 						}
 
@@ -282,7 +283,7 @@ cerr<<(*itOrigine)->coXO<<"sdf"<<(*itOrigine)->coYO<<endl;
 						break;
 					}
 				}
-						memGrille->afficherGrille();
+				memGrille->afficherGrille();
 			}
 
 		}
@@ -318,7 +319,7 @@ void Moteur::changerTailleSphere(unsigned int x, unsigned int y){
 	unsigned int tailleSphere;
 	switch( memGrille->getTabValue(x, y) ){
 		case 0:
-cerr<<"taille 0"<<endl;
+			cerr<<"taille 0"<<endl;
 			tailleSphere=0.0f;
 			break;
 		case 1:
@@ -338,16 +339,16 @@ cerr<<"taille 0"<<endl;
 			break;
 		default:
 			cerr<<"erreur taille non valide initSphere"<<
-memGrille->getTabValue(x, y)<<endl;
-return;
+				memGrille->getTabValue(x, y)<<endl;
+			return;
 			break;
 	}
-//supr du noeud bulle
+	//supr du noeud bulle
 	if(vectSphere[x][y]->noeudSphere){
 		vectSphere[x][y]->noeudSphere->remove(); 
 		vectSphere[x][y]->noeudSphere=NULL;
-}
-//si taille == 0 le noeud n'est pas recréé
+	}
+	//si taille == 0 le noeud n'est pas recréé
 	if(tailleSphere==0.0f)return;
 	vectSphere[x][y]->noeudSphere = sceneManager->addSphereSceneNode	(	
 
@@ -371,48 +372,73 @@ return;
  * Fonction determinant les mouvements des bulles mouvantes
  */
 void Moteur::actionBullesMouvantes(){
-	double tmp;
+	bool debut=false;
 	for(itLstSphereMouventeB=lstSphereMouvante.begin(); 
 			itLstSphereMouventeB!=lstSphereMouvante.end() ; 
 			++itLstSphereMouventeB){
+
+		if(debut){
+			itLstSphereMouventeB--;
+			debut=false;
+		}
+		//
+		if( (*itLstSphereMouventeB)->tempsAct >= 
+				(*itLstSphereMouventeB)->tempsDestruction ){
+			(*itLstSphereMouventeB)->noeudBulle->remove();
+			//supression du maillon
+			delete (*itLstSphereMouventeB);
+			itLstSphereMouventeB=
+				lstSphereMouvante.erase(itLstSphereMouventeB);
+			//si fin de liste retour
+			if(itLstSphereMouventeB==lstSphereMouvante.end())return;
+			//si debut de liste signal de correction a la prochaine iteration
+			if(itLstSphereMouventeB!=lstSphereMouvante.begin()){
+				debut=true;
+				continue;
+			}
+			//sinon retour maillon precedant
+			itLstSphereMouventeB--;
+			continue;
+		}
+
 		//calcul de la position de la sphere en fonction du temps restant
 		//taille d'une case ==> 1000 ms
-		tmp=(  (*itLstSphereMouventeB)->tempsDestruction - 
-				tempsCourrant) / 1000 * TAILLE_CASE;
 		switch((*itLstSphereMouventeB)->direction){
 			case BAS:
 				(*itLstSphereMouventeB)->noeudBulle->
 					setPosition(irr::core::vector3df(
-								(*itLstSphereMouventeB)->x*TAILLE_CASE,
-								(*itLstSphereMouventeB)->y*TAILLE_CASE + 
-								tmp , 0.0f) );
+								(*itLstSphereMouventeB)->noeudBulle->getPosition().X,
+								(*itLstSphereMouventeB)->noeudBulle->getPosition().Y-2,
+								0.0f) );
 				break;
 			case GAUCHE:
 				(*itLstSphereMouventeB)->noeudBulle->
 					setPosition(irr::core::vector3df(
-								(*itLstSphereMouventeB)->x*TAILLE_CASE + tmp,
-								(*itLstSphereMouventeB)->y*TAILLE_CASE  , 
+								(*itLstSphereMouventeB)->noeudBulle->getPosition().X-2,
+								(*itLstSphereMouventeB)->noeudBulle->getPosition().Y,
 								0.0f) );
 				break;
 			case HAUT:
 				(*itLstSphereMouventeB)->noeudBulle->
 					setPosition(irr::core::vector3df(
-								(*itLstSphereMouventeB)->x*TAILLE_CASE,
-								(*itLstSphereMouventeB)->y*TAILLE_CASE - 
-								tmp , 0.0f) );
+								(*itLstSphereMouventeB)->noeudBulle->getPosition().X,
+								(*itLstSphereMouventeB)->noeudBulle->getPosition().Y+2
+								, 0.0f) );
 				break;
 			case DROITE:
 				(*itLstSphereMouventeB)->noeudBulle->
 					setPosition(irr::core::vector3df(
-								(*itLstSphereMouventeB)->x*TAILLE_CASE - tmp,
-								(*itLstSphereMouventeB)->y*TAILLE_CASE,  
+								(*itLstSphereMouventeB)->noeudBulle->getPosition().X+2,
+								(*itLstSphereMouventeB)->noeudBulle->getPosition().Y,
 								0.0f) );
 				break;
 			default:
 				cout<<"erreur direction actions bulles"<<endl;
 				break;
 		}
+		(*itLstSphereMouventeB)->tempsAct+=200;
 	}
+
 }
 
 /**
@@ -438,7 +464,9 @@ void Moteur::creerBulleMouvante(unsigned int x, unsigned int y){
 				);	
 
 		b->direction=(*itDestination)->direction;
-		b->tempsDestruction=(*itDestination)->temps*1000+tempsCourrant;
+		//VRR
+		b->tempsDestruction=(*itDestination)->temps*1000;
+		b->tempsAct=0;
 		lstSphereMouvante.push_back(b);//memo du pointeur de la sphere dans la liste
 		itDestination++;
 	}
@@ -454,7 +482,7 @@ void Moteur::viderVectBulle(){
 		for(unsigned int i=0;i<vectSphere[j].size();i++){
 			Bulle *a=vectSphere[i][j];
 			delete a;
-}
+		}
 }
 
 /**

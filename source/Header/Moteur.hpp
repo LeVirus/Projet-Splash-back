@@ -26,7 +26,7 @@ struct Bulle{
 struct BulleMouvante{
 	irr::scene::IMeshSceneNode *noeudBulle;
 	unsigned int direction, tempsDestruction;
-	unsigned int x,y;
+	unsigned int x,y, tempsAct;
 };
 
 /**
@@ -36,7 +36,7 @@ struct BulleMouvante{
  */
 class Moteur{
 	private:
-unsigned int tempsCourrant;
+unsigned int tempsCourrant, iterationAct, tempsInter;
 		bool actionEnCours, animEnCours;
 		irr::IrrlichtDevice *device;
 		irr::video::IVideoDriver* driver ;
@@ -46,7 +46,6 @@ unsigned int tempsCourrant;
 	std::list<DestinationBulle*>::iterator itDestination;
 		MyEventReceiver receiver;
 		std::vector< std::vector < Bulle* > > vectSphere;
-		//std::vector<Bulle*>::iterator itLstSphere;
 		std::list<BulleMouvante*> lstSphereMouvante;
 		std::list<BulleMouvante*>::iterator itLstSphereMouvante,
 		itLstSphereMouventeB;
