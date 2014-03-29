@@ -381,9 +381,11 @@ void Moteur::actionBullesMouvantes(){
 			itLstSphereMouventeB--;
 			debut=false;
 		}
-		//
+		//si bulle atteint destination
 		if( (*itLstSphereMouventeB)->tempsAct >= 
 				(*itLstSphereMouventeB)->tempsDestruction ){
+			changerTailleSphere((*itLstSphereMouventeB)->x,
+  (*itLstSphereMouventeB)->y);
 			(*itLstSphereMouventeB)->noeudBulle->remove();
 			//supression du maillon
 			delete (*itLstSphereMouventeB);
