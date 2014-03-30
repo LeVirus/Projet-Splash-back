@@ -75,11 +75,13 @@ const std::vector<std::vector<Case>> *Grille::getTab()const{
  * Affichage de la grille en console
  */
 void Grille::afficherGrille()const{
+	cout<<"AFFICHAGE"<<endl;
 	for(unsigned int j=0;j<tabGrille.size();++j)
 		for(unsigned int i=0;i<tabGrille[j].size();++i){
 			cout<<tabGrille[i][j].getEtat();
 			if(i==tabGrille[j].size()-1)cout<<endl;
 		}
+	cout<<"FIN AFFICHAGE"<<endl;
 }
 
 const std::vector<std::vector<Case>> &Grille::getTabGrille()const{

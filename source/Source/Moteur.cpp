@@ -128,19 +128,24 @@ void Moteur::initSphere(){
 						x=0.0f;
 						y-=10.0f;
 					}
+					vectSphere[i][j]->taille=0;
 					continue;
 					break;
 				case 1:
 					tailleSphere=2.0f;
+					vectSphere[i][j]->taille=1;
 					break;
 				case 2:
 					tailleSphere=3.0f;
+					vectSphere[i][j]->taille=2;
 					break;
 				case 3:
 					tailleSphere=4.0f;
+					vectSphere[i][j]->taille=3;
 					break;
 				case 4:
 					tailleSphere=5.0f;
+					vectSphere[i][j]->taille=4;
 					break;
 				default:
 					cerr<<"erreur taille non valide initSphere"<<endl;
@@ -196,7 +201,7 @@ bool Moteur::launch(){
 
 		//Animations ________________________________________________
 		if(animEnCours  /*&& tempsInter<=clock()-tempsCourrant*/ ){
-			cout<<tempsCourrant<<"temps"<<endl;
+			//cout<<tempsCourrant<<"temps"<<endl;
 			//comparaison du temps actuel convertis en secondes avec le temps
 			//du point Origine de l'eclatement
 			//tant qu'un eclatement se produit au temps T
@@ -204,8 +209,8 @@ bool Moteur::launch(){
 				if( itOrigine!=memListAnim.memListOrigine->end() 
 						&&	(*itOrigine)->tempsO*1000<=iterationAct ){
 					changerTailleSphere( (*itOrigine)->coXO, 
-						(*itOrigine)->coYO , true);
-					cerr<<(*itOrigine)->coXO<<"sdf"<<(*itOrigine)->coYO<<endl;
+							(*itOrigine)->coYO , true);
+
 
 
 
@@ -240,7 +245,6 @@ bool Moteur::launch(){
 
 		if(!actionEnCours  && !animEnCours  &&  receiver.leftButtonIsPressed()){
 			actionEnCours=true;
-			cerr<<"left detected"<<endl;
 			// Crée un rayon partant du curseur de la souris.
 			ray = collisionManager->getRayFromScreenCoordinates(
 					device->getCursorControl()->getPosition()
@@ -252,7 +256,6 @@ bool Moteur::launch(){
 
 			//si !node aucune collision avec un noeud
 			if(node){
-				cerr<<"node detected"<<endl;
 				for(unsigned int i=0;
 						i<vectSphere[0].size()*vectSphere.size();i++){
 					if(vectSphere[i%NBR_CASE_X][i/NBR_CASE_X]->
@@ -269,7 +272,7 @@ bool Moteur::launch(){
 							memListAnim=memoAlgo->getListAnim();
 							itOrigine=memListAnim.memListOrigine->begin();
 							itDestination=memListAnim.memListDestination->begin();
-							tempsCourrant=clock();//init du chrono
+							//				tempsCourrant=clock();//init du chrono
 							animEnCours=true;
 							iterationAct=0;
 						}
@@ -317,36 +320,21 @@ bool Moteur::launch(){
  * (en fonction de sa taille actuelle)
  */
 void Moteur::changerTailleSphere(unsigned int x, unsigned int y, bool lectAlg){
-	unsigned int tailleSphere, memoValue=1;
-//si lectAlgo lecture de la valeur dans Grille
-if(lectAlg){
-memoValue=memGrille->getTabValue(x, y);
-}
-//sinon incrementation de la valeur actuelle (dans Moteur)
-else if(vectSphere[x][y]->noeudSphere){
-//si la Sphere est instanciee
-	switch( vectSphere[x][y]->noeudSphere->size() ){ 
-		case 2.0f:
-			memoValue=2;
-			break;
-		case 3.0f:
-			memoValue=3;
-			break;
-		case 4.0f:
-			memoValue=4;
-			break;
-		case 5.0f:
-			memoValue=0;
-			break;
-		default:
-			cout<<"erreur size changerTailleSphere"<<endl;
-			return;
-			break;
-}
-}
-	switch(memoValue){ 
+	unsigned int tailleSphere;
+	//init valeur a 0
+	//si lectAlgo lecture de la valeur dans Grille
+	if(lectAlg){
+		vectSphere[x][y]->taille=memGrille->getTabValue(x, y);
+	}
+	//sinon incrementation de la valeur actuelle (dans Moteur)
+	else {
+		if(vectSphere[x][y]->taille==0)return;
+		vectSphere[x][y]->taille++;
+		if(vectSphere[x][y]->taille>4)vectSphere[x][y]->taille=0;
+	}
+	//si sphere non instanciée
+	switch(vectSphere[x][y]->taille){ 
 		case 0:
-			cerr<<"taille 0"<<endl;
 			tailleSphere=0.0f;
 			break;
 		case 1:
@@ -411,8 +399,11 @@ void Moteur::actionBullesMouvantes(){
 		//si bulle atteint destination
 		if( (*itLstSphereMouventeB)->tempsAct >= 
 				(*itLstSphereMouventeB)->tempsDestruction ){
-			changerTailleSphere((*itLstSphereMouventeB)->x,
-  (*itLstSphereMouventeB)->y, false);
+			//si la destination d'une bulle mouvante est un bord de la grille
+			if((*itLstSphereMouventeB)->x!=100 && 
+					(*itLstSphereMouventeB)->y!=100)
+				changerTailleSphere((*itLstSphereMouventeB)->x,
+						(*itLstSphereMouventeB)->y, false);
 			(*itLstSphereMouventeB)->noeudBulle->remove();
 			//supression du maillon
 			delete (*itLstSphereMouventeB);
@@ -495,7 +486,7 @@ void Moteur::creerBulleMouvante(unsigned int x, unsigned int y){
 		b->direction=(*itDestination)->direction;
 		//VRR
 		b->tempsDestruction=(*itDestination)->temps*1000;
-		b->tempsAct=0;
+		b->tempsAct=iterationAct;
 		lstSphereMouvante.push_back(b);//memo du pointeur de la sphere dans la liste
 		itDestination++;
 	}

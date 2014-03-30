@@ -27,8 +27,8 @@ struct OrigineEclatement{
 
 
 struct AnimList{
-		std::list<OrigineEclatement*> *memListOrigine;
-		std::list<DestinationBulle*> *memListDestination;
+	std::list<OrigineEclatement*> *memListOrigine;
+	std::list<DestinationBulle*> *memListDestination;
 };
 
 class Algo{
@@ -44,10 +44,10 @@ class Algo{
 		void resolutionEclatement(unsigned int x, unsigned int y);
 		std::list<OrigineEclatement*>::iterator findItEclat(unsigned int x, unsigned int y);
 		void jouer();
-void liaisonGrille();
+		void liaisonGrille();
 		void trouverDestination(unsigned int x, unsigned int y);
 		void appliquerDestination();
-	const	AnimList getListAnim();
+		const	AnimList getListAnim();
 		void afficherList()const;
 		void viderListes();
 		~Algo();

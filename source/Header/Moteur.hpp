@@ -15,6 +15,7 @@
  */
 struct Bulle{
 	irr::scene::IMeshSceneNode *noeudCase, *noeudSphere;
+	unsigned int taille;
 };
 
 /**
