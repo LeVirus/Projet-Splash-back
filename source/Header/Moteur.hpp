@@ -56,7 +56,7 @@ unsigned int tempsCourrant, iterationAct, tempsInter;
 		bool initMoteur();
 		bool launch();
 		void viderVectBulle();
-		void changerTailleSphere(unsigned int x, unsigned int y);
+		void changerTailleSphere(unsigned int x, unsigned int y, bool lectAlg);
 		void creerBulleMouvante(unsigned int x, unsigned int y);
 		void actionBullesMouvantes();
 		~Moteur();

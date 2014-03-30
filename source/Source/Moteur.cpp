@@ -202,8 +202,9 @@ bool Moteur::launch(){
 			//tant qu'un eclatement se produit au temps T
 			while(true){
 				if( itOrigine!=memListAnim.memListOrigine->end() 
-						&&	(*itOrigine)->tempsO*1000>=iterationAct ){
-					changerTailleSphere( (*itOrigine)->coXO, (*itOrigine)->coYO );
+						&&	(*itOrigine)->tempsO*1000<=iterationAct ){
+					changerTailleSphere( (*itOrigine)->coXO, 
+						(*itOrigine)->coYO , true);
 					cerr<<(*itOrigine)->coXO<<"sdf"<<(*itOrigine)->coYO<<endl;
 
 
@@ -276,7 +277,7 @@ bool Moteur::launch(){
 						//si aucun eclatement____________________________________
 						else{
 							cerr<<i%NBR_CASE_X<<" detected"<<i/NBR_CASE_X<<endl;
-							changerTailleSphere( i%NBR_CASE_X, i/NBR_CASE_X );
+							changerTailleSphere( i%NBR_CASE_X, i/NBR_CASE_X,true );
 						}
 
 						//appel de la fonction dans Grille
@@ -315,9 +316,35 @@ bool Moteur::launch(){
  * Fonction permettant de changer graphiquement la taille d'une sphere
  * (en fonction de sa taille actuelle)
  */
-void Moteur::changerTailleSphere(unsigned int x, unsigned int y){
-	unsigned int tailleSphere;
-	switch( memGrille->getTabValue(x, y) ){
+void Moteur::changerTailleSphere(unsigned int x, unsigned int y, bool lectAlg){
+	unsigned int tailleSphere, memoValue=1;
+//si lectAlgo lecture de la valeur dans Grille
+if(lectAlg){
+memoValue=memGrille->getTabValue(x, y);
+}
+//sinon incrementation de la valeur actuelle (dans Moteur)
+else if(vectSphere[x][y]->noeudSphere){
+//si la Sphere est instanciee
+	switch( vectSphere[x][y]->noeudSphere->size() ){ 
+		case 2.0f:
+			memoValue=2;
+			break;
+		case 3.0f:
+			memoValue=3;
+			break;
+		case 4.0f:
+			memoValue=4;
+			break;
+		case 5.0f:
+			memoValue=0;
+			break;
+		default:
+			cout<<"erreur size changerTailleSphere"<<endl;
+			return;
+			break;
+}
+}
+	switch(memoValue){ 
 		case 0:
 			cerr<<"taille 0"<<endl;
 			tailleSphere=0.0f;
@@ -385,7 +412,7 @@ void Moteur::actionBullesMouvantes(){
 		if( (*itLstSphereMouventeB)->tempsAct >= 
 				(*itLstSphereMouventeB)->tempsDestruction ){
 			changerTailleSphere((*itLstSphereMouventeB)->x,
-  (*itLstSphereMouventeB)->y);
+  (*itLstSphereMouventeB)->y, false);
 			(*itLstSphereMouventeB)->noeudBulle->remove();
 			//supression du maillon
 			delete (*itLstSphereMouventeB);
