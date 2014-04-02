@@ -399,11 +399,12 @@ void Moteur::actionBullesMouvantes(){
 		//si bulle atteint destination
 		if( (*itLstSphereMouventeB)->tempsAct >= 
 				(*itLstSphereMouventeB)->tempsDestruction ){
-			//si la destination d'une bulle mouvante est un bord de la grille
+			//si la destination d'une bulle mouvante n'est pas un bord de la grille
 			if((*itLstSphereMouventeB)->x!=100 && 
 					(*itLstSphereMouventeB)->y!=100)
 				changerTailleSphere((*itLstSphereMouventeB)->x,
 						(*itLstSphereMouventeB)->y, false);
+	cout<<(*itLstSphereMouventeB)->x<<"dirr"<<(*itLstSphereMouventeB)->y<<"cmpt"<<(*itLstSphereMouventeB)->tempsDestruction<<endl;
 			(*itLstSphereMouventeB)->noeudBulle->remove();
 			//supression du maillon
 			delete (*itLstSphereMouventeB);

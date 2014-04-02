@@ -150,7 +150,10 @@ void Algo::appliquerDestination(){
 				memoTempsEclat=(*itMemBulle)->temps;
 
 				if( memoG->getTabValue( (*itMemBulle)->coX , (*itMemBulle)->coY)
-						== 0	)corrigerDestinationBulle( (*itMemBulle) );
+						== 0	){
+corrigerDestinationBulle( (*itMemBulle) );
+continue;
+}
 				memoG->appliquerChangeCase( (*itMemBulle)->coX , (*itMemBulle)->coY);
 				(*itMemBulle)->traite=true;
 			}
@@ -169,26 +172,27 @@ void Algo::corrigerDestinationBulle(DestinationBulle *a){
 		case BAS:
 	for(unsigned int i=a->coY;i<NBR_CASE_Y;i++){
 		if(memoG->getTabValue(a->coX, i)>0){//si une case contient une bulle
-			a->coY=i;
 			a->temps += i - a->coY;
+		a->coY=i;
+	
 			break;
 		}
 		else if(i==NBR_CASE_Y-1){//si a->cun obsta->le rencontré
-			a->coY=100;//100 représente le bord corresponda->t en fonction de la->direction
 			a->temps += NBR_CASE_Y-a->coY;//temps=nbr ma-> de ca->e - pos init +1
+			a->coY=100;//100 représente le bord corresponda->t en fonction de la->direction
 		}
 	}
 			break;
 		case GAUCHE:
 	for(unsigned int i=a->coX;i<NBR_CASE_X;i--){
 		if(memoG->getTabValue(i, a->coY)>0){//si une case contient une bulle
+			a->temps+= a->coX - i;
 			a->coX=i;
-			a->temps= a->coX - i;
 			break;
 		}
 		else if(i==0){//si aucun obstacle rencontré
+			a->temps+= a->coX+1;
 			a->coX=100;
-			a->temps= a->coX+1;
 			break;
 		}
 	}
@@ -196,13 +200,13 @@ void Algo::corrigerDestinationBulle(DestinationBulle *a){
 		case HAUT:
 	for(unsigned int i=a->coY;i<NBR_CASE_Y;i--){
 		if(memoG->getTabValue(a->coX, i)>0){//si une case contient une bulle
+			a->temps+= a->coY-i;
 			a->coY=i;
-			a->temps= a->coY-i;
 			break;
 		}
 		else if(i==0){//si aucun obstacle rencontré
+			a->temps+= a->coY+1;
 			a->coY=100;
-			a->temps= a->coY+1;
 			break;
 		}
 	}
@@ -210,21 +214,22 @@ void Algo::corrigerDestinationBulle(DestinationBulle *a){
 		case DROITE:
 	for(unsigned int i=a->coX;i<NBR_CASE_X;i++){
 		if(memoG->getTabValue(i, a->coY)>0){//si une case contient une bulle
+			a->temps+= i-a->coX;
 			a->coX=i;
-			a->temps= i-a->coX;
 			break;
 		}
 		else if(i==NBR_CASE_X-1){//si aucun obstacle rencontré
+			a->temps+= NBR_CASE_X-a->coX+1;
 			a->coX=100;
-			a->temps= NBR_CASE_X-a->coX+1;
 			break;
 		}
 			break;
 	}
 		default:
-			cout<<"erreur direction"<<endl;
+			cout<<"erreur direction corrigerD"<<endl;
 			break;
 	}
+cout<<a->coX<<"correction"<<a->coY<<"temps"<<a->temps<<endl;
 }
 
 /**
