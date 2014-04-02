@@ -29,7 +29,7 @@ Grille::Grille(){
  * @param y coordonnee grille ordonnee de la case a traiter
  * Fonction qui reçois les parametres pour savoir quelle bulle
  * est a traiter
- * @return true si aucun problemes n'est repporte
+ * @return true si eclatement
  * @return false sinon
  */
 bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
@@ -37,9 +37,12 @@ bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
 		cout<<"erreur select"<<endl;
 			return false;
 }
-	if(tabGrille[x][y].changerEtat())
+//si eclatement
+	if(tabGrille[x][y].changerEtat()){
 		memAlgo->resolutionEclatement(x,y);
 	return true;
+	}
+			return false;
 }
 
 /**

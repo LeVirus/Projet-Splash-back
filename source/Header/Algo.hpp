@@ -50,6 +50,7 @@ class Algo{
 		const	AnimList getListAnim();
 		void afficherList()const;
 		void viderListes();
+		void corrigerDestinationBulle(DestinationBulle *a);
 		~Algo();
 };
 

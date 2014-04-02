@@ -71,15 +71,15 @@ void Algo::afficherList()const{
  * Generation de la grille aleatoirement la difficulte est determine
  *  en fonction du niveau actuel
  */
-		void Algo::viderListes(){
+void Algo::viderListes(){
 	for(itMemOriginB=memOrigineEclat.begin();itMemOriginB!=memOrigineEclat.end();itMemOriginB++){
-	delete (*itMemOriginB);
-}
+		delete (*itMemOriginB);
+	}
 	for(itMemBulleB=memDestinationBulle.begin();itMemBulleB!=memDestinationBulle.end();itMemBulleB++){
-	delete (*itMemBulleB);
-}
-memDestinationBulle.clear();
-memOrigineEclat.clear();
+		delete (*itMemBulleB);
+	}
+	memDestinationBulle.clear();
+	memOrigineEclat.clear();
 }
 
 
@@ -115,13 +115,13 @@ void Algo::resolutionEclatement(unsigned int x, unsigned int y){
  *	 Fonction qui trouve l'iterator qui a les coordonnées 
  */
 std::list<OrigineEclatement*>::iterator Algo::findItEclat(unsigned int x, unsigned int y){
-		std::list<OrigineEclatement*>::iterator itMemEclatT;
+	std::list<OrigineEclatement*>::iterator itMemEclatT;
 	for(itMemEclatT=memOrigineEclat.begin();itMemEclatT!=memOrigineEclat.end();itMemEclatT++){
 		if( (*itMemEclatT)->coXO == x  &&  (*itMemEclatT)->coYO == y )
 			return itMemEclatT;
 	}
 	cout<<"erreur iterator non trouve"<<endl;
-(*itMemEclatT)->coXO=1000;//indique une erreur dans l'iterator
+	(*itMemEclatT)->coXO=1000;//indique une erreur dans l'iterator
 	return itMemEclatT;
 }
 
@@ -135,8 +135,8 @@ void Algo::appliquerDestination(){
 	if(memDestinationBulle.empty())return;
 	do{
 		for(itMemBulle=memDestinationBulle.begin();itMemBulle!=memDestinationBulle.end();itMemBulle++){
-		if( !(*itMemBulle) ){//tmp
-		}//tmp
+			if( !(*itMemBulle) ){//tmp
+			}//tmp
 			if((*itMemBulle)->traite)continue;
 			if( max < (*itMemBulle)->temps )max=(*itMemBulle)->temps;
 			//si projectile touche un bord
@@ -149,21 +149,89 @@ void Algo::appliquerDestination(){
 				//memo du temps de la destination (utile pour l'eventuel éclatement)
 				memoTempsEclat=(*itMemBulle)->temps;
 
-
+				if( memoG->getTabValue( (*itMemBulle)->coX , (*itMemBulle)->coY)
+						== 0	)corrigerDestinationBulle( (*itMemBulle) );
 				memoG->appliquerChangeCase( (*itMemBulle)->coX , (*itMemBulle)->coY);
 				(*itMemBulle)->traite=true;
 			}
 		}
 		cmpt++;
 	}while(cmpt<=max);
-return;
+	return;
 }
 
 /**
  *	 Fonction qui envoie (en lecture seule) les listes d'animation
-* suite a un eclatement
+ * suite a un eclatement
  */
-	const	AnimList Algo::getListAnim(){
+void Algo::corrigerDestinationBulle(DestinationBulle *a){
+	switch(a->direction){
+		case BAS:
+	for(unsigned int i=a->coY;i<NBR_CASE_Y;i++){
+		if(memoG->getTabValue(a->coX, i)>0){//si une case contient une bulle
+			a->coY=i;
+			a->temps += i - a->coY;
+			break;
+		}
+		else if(i==NBR_CASE_Y-1){//si a->cun obsta->le rencontré
+			a->coY=100;//100 représente le bord corresponda->t en fonction de la->direction
+			a->temps += NBR_CASE_Y-a->coY;//temps=nbr ma-> de ca->e - pos init +1
+		}
+	}
+			break;
+		case GAUCHE:
+	for(unsigned int i=a->coX;i<NBR_CASE_X;i--){
+		if(memoG->getTabValue(i, a->coY)>0){//si une case contient une bulle
+			a->coX=i;
+			a->temps= a->coX - i;
+			break;
+		}
+		else if(i==0){//si aucun obstacle rencontré
+			a->coX=100;
+			a->temps= a->coX+1;
+			break;
+		}
+	}
+	break;
+		case HAUT:
+	for(unsigned int i=a->coY;i<NBR_CASE_Y;i--){
+		if(memoG->getTabValue(a->coX, i)>0){//si une case contient une bulle
+			a->coY=i;
+			a->temps= a->coY-i;
+			break;
+		}
+		else if(i==0){//si aucun obstacle rencontré
+			a->coY=100;
+			a->temps= a->coY+1;
+			break;
+		}
+	}
+			break;
+		case DROITE:
+	for(unsigned int i=a->coX;i<NBR_CASE_X;i++){
+		if(memoG->getTabValue(i, a->coY)>0){//si une case contient une bulle
+			a->coX=i;
+			a->temps= i-a->coX;
+			break;
+		}
+		else if(i==NBR_CASE_X-1){//si aucun obstacle rencontré
+			a->coX=100;
+			a->temps= NBR_CASE_X-a->coX+1;
+			break;
+		}
+			break;
+	}
+		default:
+			cout<<"erreur direction"<<endl;
+			break;
+	}
+}
+
+/**
+ *	 Fonction qui envoie (en lecture seule) les listes d'animation
+ * suite a un eclatement
+ */
+const	AnimList Algo::getListAnim(){
 	AnimList a;
 	a.memListOrigine=&memOrigineEclat;
 	a.memListDestination=&memDestinationBulle;
@@ -268,5 +336,5 @@ void Algo::trouverDestination(unsigned int x, unsigned int y){
 }
 
 Algo::~Algo(){
-viderListes();
+	viderListes();
 }
