@@ -267,7 +267,7 @@ void Algo::trouverDestination(unsigned int x, unsigned int y){
 		else if(i==NBR_CASE_Y-1){//si aucun obstacle rencontré
 			tmp->coX=x;
 			tmp->coY=100;//100 représente le bord correspondant en fonction de la direction
-			tmp->temps=tempsOrigine + NBR_CASE_Y-x+1;//temps=nbr max de case - pos init +1
+			tmp->temps=tempsOrigine + NBR_CASE_Y-y;//temps=nbr max de case - pos init +1
 		}
 	}
 	tmp->traite=false;
@@ -309,7 +309,7 @@ void Algo::trouverDestination(unsigned int x, unsigned int y){
 		else if(i==NBR_CASE_X-1){//si aucun obstacle rencontré
 			tmp->coX=100;
 			tmp->coY=y;
-			tmp->temps=tempsOrigine + NBR_CASE_X-x+1;
+			tmp->temps=tempsOrigine + NBR_CASE_X-x;
 			break;
 		}
 	}

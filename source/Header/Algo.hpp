@@ -34,7 +34,7 @@ struct AnimList{
 class Algo{
 	private:
 		Grille *memoG;
-		unsigned int memoTempsEclat;
+		unsigned int memoTempsEclat, coupsRestants;
 		std::list<OrigineEclatement*> memOrigineEclat;
 		std::list<OrigineEclatement*>::iterator itMemOrigin, itMemOriginB;
 		std::list<DestinationBulle*> memDestinationBulle;

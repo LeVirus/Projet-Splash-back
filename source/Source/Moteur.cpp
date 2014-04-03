@@ -191,6 +191,7 @@ bool Moteur::launch(){
 	std::list<OrigineEclatement*>::iterator itOrigine;
 	//irr::core::vector3df nodePosition = 
 	//(* vectSphere.begin() )->getPosition();//tmp
+	coupRestant=10;
 	while(device->run()) {
 		if( !receiver.leftButtonIsPressed() )actionEnCours=false;
 		//attendre que le bouton soit relacher pour reinitialiser
@@ -228,7 +229,11 @@ bool Moteur::launch(){
 					itOrigine==memListAnim.memListOrigine->end() ){
 
 				animEnCours=false;
-
+				if(verifTabVide()){
+					cout<<"niveau termine"<<endl;
+					break;
+				}
+coupRestant+=memListAnim.memListOrigine->size();
 				memoAlgo->viderListes();
 			}
 			iterationAct+=200;
@@ -243,7 +248,12 @@ bool Moteur::launch(){
 
 		//action souris________________________________________________
 
-		if(!actionEnCours  && !animEnCours  &&  receiver.leftButtonIsPressed()){
+		if(!actionEnCours  && !animEnCours  ){
+			if(coupRestant==0){
+				cout<<"jeu finis"<<endl;
+				break;//sortir de la boucle principalle
+			}
+			if( receiver.leftButtonIsPressed() ){
 			actionEnCours=true;
 			// Crée un rayon partant du curseur de la souris.
 			ray = collisionManager->getRayFromScreenCoordinates(
@@ -256,6 +266,7 @@ bool Moteur::launch(){
 
 			//si !node aucune collision avec un noeud
 			if(node){
+coupRestant--;
 				for(unsigned int i=0;
 						i<vectSphere[0].size()*vectSphere.size();i++){
 					if(vectSphere[i%NBR_CASE_X][i/NBR_CASE_X]->
@@ -287,9 +298,9 @@ bool Moteur::launch(){
 						break;
 					}
 				}
-				memGrille->afficherGrille();
+				//memGrille->afficherGrille();
 			}
-
+		}
 		}
 
 		//action souris________________________________________________
@@ -314,6 +325,9 @@ bool Moteur::launch(){
 }
 
 
+bool Moteur::verifTabVide(){
+	
+}
 
 /**
  * Fonction permettant de changer graphiquement la taille d'une sphere

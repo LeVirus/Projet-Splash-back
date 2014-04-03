@@ -37,7 +37,7 @@ struct BulleMouvante{
  */
 class Moteur{
 	private:
-unsigned int tempsCourrant, iterationAct, tempsInter;
+unsigned int tempsCourrant, iterationAct, tempsInter, coupRestant;
 		bool actionEnCours, animEnCours;
 		irr::IrrlichtDevice *device;
 		irr::video::IVideoDriver* driver ;
@@ -59,6 +59,7 @@ unsigned int tempsCourrant, iterationAct, tempsInter;
 		void viderVectBulle();
 		void changerTailleSphere(unsigned int x, unsigned int y, bool lectAlg);
 		void creerBulleMouvante(unsigned int x, unsigned int y);
+bool verifTabVide();
 		void actionBullesMouvantes();
 		~Moteur();
 };
