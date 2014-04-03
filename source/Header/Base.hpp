@@ -1,5 +1,5 @@
-#ifndef BAS
-#define BAS
+#ifndef BASE
+#define BASE
 
 #include "Grille.hpp"
 #include "Moteur.hpp"
@@ -14,7 +14,7 @@ class Base{
 		Algo algo;
 		Grille grille;
 		Moteur moteur;
-		unsigned int pointActuel, niveauActuel;
+		unsigned int niveauActuel;
 	public:
 		Base();
 		void initJeu();

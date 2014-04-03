@@ -2,6 +2,7 @@
 #include <vector>
 #include <ctime>
 #include "Moteur.hpp"
+#include "Base.hpp"
 #include "Case.hpp"
 #include "Grille.hpp"
 #include "constantes.hpp"
@@ -111,6 +112,15 @@ bool Moteur::initMoteur(){
  * Procedure d'initialisation des spheres a l'affichage
  * Lis les donnees dans la classe Grille
  */
+void Moteur::liaisonBase(Base *a){
+	if(!a)cout<<"erreur liaison Base Moteur cpp"<<endl;
+	memBase=a;
+}
+
+/**
+ * Procedure d'initialisation des spheres a l'affichage
+ * Lis les donnees dans la classe Grille
+ */
 void Moteur::initSphere(){
 	cerr<<"debut initS"<<endl;
 	irr::scene::IMeshSceneNode *sphere;         // pointeur vers le node
@@ -191,133 +201,139 @@ bool Moteur::launch(){
 	std::list<OrigineEclatement*>::iterator itOrigine;
 	//irr::core::vector3df nodePosition = 
 	//(* vectSphere.begin() )->getPosition();//tmp
-	coupRestant=10;
-	while(device->run()) {
-		if( !receiver.leftButtonIsPressed() )actionEnCours=false;
-		//attendre que le bouton soit relacher pour reinitialiser
-		//la variable
+	do{
+		coupRestant=10;
+		memBase->initJeu();
+		while(device->run()) {
+			if( !receiver.leftButtonIsPressed() )actionEnCours=false;
+			//attendre que le bouton soit relacher pour reinitialiser
+			//la variable
 
 
 
 
-		//Animations ________________________________________________
-		if(animEnCours  /*&& tempsInter<=clock()-tempsCourrant*/ ){
-			//cout<<tempsCourrant<<"temps"<<endl;
-			//comparaison du temps actuel convertis en secondes avec le temps
-			//du point Origine de l'eclatement
-			//tant qu'un eclatement se produit au temps T
-			while(true){
-				if( itOrigine!=memListAnim.memListOrigine->end() 
-						&&	(*itOrigine)->tempsO*1000<=iterationAct ){
-					changerTailleSphere( (*itOrigine)->coXO, 
-							(*itOrigine)->coYO , true);
+			//Animations ________________________________________________
+			if(animEnCours  /*&& tempsInter<=clock()-tempsCourrant*/ ){
+				//cout<<tempsCourrant<<"temps"<<endl;
+				//comparaison du temps actuel convertis en secondes avec le temps
+				//du point Origine de l'eclatement
+				//tant qu'un eclatement se produit au temps T
+				while(true){
+					if( itOrigine!=memListAnim.memListOrigine->end() 
+							&&	(*itOrigine)->tempsO*1000<=iterationAct ){
+						changerTailleSphere( (*itOrigine)->coXO, 
+								(*itOrigine)->coYO , true);
 
 
 
 
-					creerBulleMouvante((*itOrigine)->coXO, (*itOrigine)->coYO );
+						creerBulleMouvante((*itOrigine)->coXO, (*itOrigine)->coYO );
 
 
-					itOrigine++;
-					//pusher les 4 spheres mouvantes
-					//creer une nouvelle liste
+						itOrigine++;
+						//pusher les 4 spheres mouvantes
+						//creer une nouvelle liste
+					}
+					else break;
 				}
-				else break;
-			}
-			actionBullesMouvantes();
-			if( lstSphereMouvante.empty() && 
-					itOrigine==memListAnim.memListOrigine->end() ){
+				actionBullesMouvantes();
+				if( lstSphereMouvante.empty() && 
+						itOrigine==memListAnim.memListOrigine->end() ){
 
-				animEnCours=false;
-				if(verifTabVide()){
-					cout<<"niveau termine"<<endl;
-					break;
-				}
-coupRestant+=memListAnim.memListOrigine->size();
-				memoAlgo->viderListes();
-			}
-			iterationAct+=200;
-
-			tempsCourrant=clock()-tempsCourrant;
-		}
-
-		//Animations ________________________________________________
-
-
-
-
-		//action souris________________________________________________
-
-		if(!actionEnCours  && !animEnCours  ){
-			if(coupRestant==0){
-				cout<<"jeu finis"<<endl;
-				break;//sortir de la boucle principalle
-			}
-			if( receiver.leftButtonIsPressed() ){
-			actionEnCours=true;
-			// Crée un rayon partant du curseur de la souris.
-			ray = collisionManager->getRayFromScreenCoordinates(
-					device->getCursorControl()->getPosition()
-					, camera);
-
-			irr::scene::ISceneNode* node = 
-				collisionManager->getSceneNodeAndCollisionPointFromRay(
-						ray, outCollisionPoint, outTriangle);
-
-			//si !node aucune collision avec un noeud
-			if(node){
-coupRestant--;
-				for(unsigned int i=0;
-						i<vectSphere[0].size()*vectSphere.size();i++){
-					if(vectSphere[i%NBR_CASE_X][i/NBR_CASE_X]->
-							noeudCase==node ){
-						//identification du noeud
-						memGrille->appliquerChangeCase(
-								i%NBR_CASE_X, i/NBR_CASE_X);
-						//modification de la valeur dans Grille
-
-						//si eclatement_________________________________________
-						if( memGrille->getTabValue( 
-									i%NBR_CASE_X, i/NBR_CASE_X )
-								== 0 ){
-							memListAnim=memoAlgo->getListAnim();
-							itOrigine=memListAnim.memListOrigine->begin();
-							itDestination=memListAnim.memListDestination->begin();
-							//				tempsCourrant=clock();//init du chrono
-							animEnCours=true;
-							iterationAct=0;
-						}
-
-						//si aucun eclatement____________________________________
-						else{
-							cerr<<i%NBR_CASE_X<<" detected"<<i/NBR_CASE_X<<endl;
-							changerTailleSphere( i%NBR_CASE_X, i/NBR_CASE_X,true );
-						}
-
-						//appel de la fonction dans Grille
+					animEnCours=false;
+					if(verifTabVide()){
+						cout<<"niveau termine"<<endl;
 						break;
 					}
+					coupRestant+=(memListAnim.memListOrigine->size()-1)/2;
+					cout<<"coupRestant"<<coupRestant<<endl;
+					memoAlgo->viderListes();
 				}
-				//memGrille->afficherGrille();
+				iterationAct+=200;
+
+				tempsCourrant=clock()-tempsCourrant;
 			}
+
+			//Animations ________________________________________________
+
+
+
+
+			//action souris________________________________________________
+
+			if(!actionEnCours  && !animEnCours  ){
+				if(coupRestant==0){
+					cout<<"jeu finis"<<endl;
+					break;//sortir de la boucle principalle
+				}
+				if( receiver.leftButtonIsPressed() ){
+					actionEnCours=true;
+					// Crée un rayon partant du curseur de la souris.
+					ray = collisionManager->getRayFromScreenCoordinates(
+							device->getCursorControl()->getPosition()
+							, camera);
+
+					irr::scene::ISceneNode* node = 
+						collisionManager->getSceneNodeAndCollisionPointFromRay(
+								ray, outCollisionPoint, outTriangle);
+
+					//si !node aucune collision avec un noeud
+					if(node){
+						coupRestant--;
+						cout<<"sdfcoupRestant"<<coupRestant<<endl;
+						for(unsigned int i=0;
+								i<vectSphere[0].size()*vectSphere.size();i++){
+							if(vectSphere[i%NBR_CASE_X][i/NBR_CASE_X]->
+									noeudCase==node ){
+								//identification du noeud
+								memGrille->appliquerChangeCase(
+										i%NBR_CASE_X, i/NBR_CASE_X);
+								//modification de la valeur dans Grille
+
+								//si eclatement_________________________________________
+								if( memGrille->getTabValue( 
+											i%NBR_CASE_X, i/NBR_CASE_X )
+										== 0 ){
+									memListAnim=memoAlgo->getListAnim();
+									itOrigine=memListAnim.memListOrigine->begin();
+									itDestination=memListAnim.memListDestination->begin();
+									//				tempsCourrant=clock();//init du chrono
+									animEnCours=true;
+									iterationAct=0;
+								}
+
+								//si aucun eclatement____________________________________
+								else{
+									//cerr<<i%NBR_CASE_X<<" detected"<<i/NBR_CASE_X<<endl;
+									changerTailleSphere( i%NBR_CASE_X, i/NBR_CASE_X,true );
+								}
+
+								//appel de la fonction dans Grille
+								break;
+							}
+						}
+						//memGrille->afficherGrille();
+					}
+				}
+			}
+
+			//action souris________________________________________________
+
+
+
+
+
+
+
+			driver->beginScene (true, true,
+					irr::video::SColor(255,255,255,255));
+			sceneManager->drawAll ();
+			driver->endScene ();
+
+
 		}
-		}
-
-		//action souris________________________________________________
-
-
-
-
-
-
-
-		driver->beginScene (true, true,
-				irr::video::SColor(255,255,255,255));
-		sceneManager->drawAll ();
-		driver->endScene ();
-
-
-	}
+viderTabBulles();
+	}while(true);
 
 	//cerr<<"ss"<<endl;
 	device->drop (); 
@@ -325,8 +341,16 @@ coupRestant--;
 }
 
 
+/**
+ * Fonction verifiant si le tableau de bulle est vide
+ * return true si tableau vide
+ */
 bool Moteur::verifTabVide(){
-	
+	for(unsigned int j=0;j<vectSphere.size();j++)
+		for(unsigned int i=0;i<vectSphere[j].size();i++){
+			if(vectSphere[i][j]!=0)return false;
+		}
+	return true;
 }
 
 /**
@@ -400,6 +424,19 @@ void Moteur::changerTailleSphere(unsigned int x, unsigned int y, bool lectAlg){
 /**
  * Fonction determinant les mouvements des bulles mouvantes
  */
+void Moteur::viderTabBulles(){
+	for(unsigned int j=0;j<vectSphere.size();j++)
+		for(unsigned int i=0;i<vectSphere[j].size();i++){
+			if(vectSphere[i][j]->noeudSphere){
+				vectSphere[i][j]->noeudSphere->remove(); 
+				vectSphere[i][j]->noeudSphere=NULL;
+			}
+		}
+}
+
+/**
+ * Fonction determinant les mouvements des bulles mouvantes
+ */
 void Moteur::actionBullesMouvantes(){
 	bool debut=false;
 	for(itLstSphereMouventeB=lstSphereMouvante.begin(); 
@@ -418,7 +455,7 @@ void Moteur::actionBullesMouvantes(){
 					(*itLstSphereMouventeB)->y!=100)
 				changerTailleSphere((*itLstSphereMouventeB)->x,
 						(*itLstSphereMouventeB)->y, false);
-	cout<<(*itLstSphereMouventeB)->x<<"dirr"<<(*itLstSphereMouventeB)->y<<"cmpt"<<(*itLstSphereMouventeB)->tempsDestruction<<endl;
+			//cout<<(*itLstSphereMouventeB)->x<<"dirr"<<(*itLstSphereMouventeB)->y<<"cmpt"<<(*itLstSphereMouventeB)->tempsDestruction<<endl;
 			(*itLstSphereMouventeB)->noeudBulle->remove();
 			//supression du maillon
 			delete (*itLstSphereMouventeB);

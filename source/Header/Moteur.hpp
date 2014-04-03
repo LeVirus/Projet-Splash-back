@@ -6,7 +6,7 @@
 #include <list>
 #include <vector>
 #include "Algo.hpp"
-
+class Base;
 
 /**
  * @struct Bulle
@@ -37,6 +37,7 @@ struct BulleMouvante{
  */
 class Moteur{
 	private:
+		Base *memBase;
 unsigned int tempsCourrant, iterationAct, tempsInter, coupRestant;
 		bool actionEnCours, animEnCours;
 		irr::IrrlichtDevice *device;
@@ -54,6 +55,7 @@ unsigned int tempsCourrant, iterationAct, tempsInter, coupRestant;
 	public:
 		Moteur();
 		void initSphere();
+		void liaisonBase(Base *a);
 		bool initMoteur();
 		bool launch();
 		void viderVectBulle();
@@ -61,6 +63,7 @@ unsigned int tempsCourrant, iterationAct, tempsInter, coupRestant;
 		void creerBulleMouvante(unsigned int x, unsigned int y);
 bool verifTabVide();
 		void actionBullesMouvantes();
+		void viderTabBulles();
 		~Moteur();
 };
 

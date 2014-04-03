@@ -9,23 +9,30 @@ using namespace std;
  */
 Base::Base(){
 	niveauActuel=0;
-	pointActuel=10;
 }
 
 /**
  * Fonction permettant de lancer le jeu aprés avoir verifié
  * toutes les conditions necessaires au lancement( verif() )
  */
+		void Base::initJeu(){
+		grille.genererGrille(niveauActuel);
+		niveauActuel++;
+		moteur.initSphere();
+		}
+
+/**
+ * Fonction permettant de lancer le jeu aprés avoir verifié
+ * toutes les conditions necessaires au lancement( verif() )
+ */
 void Base::lancerJeu(){
-	//tmp
-		grille.genererGrille(0);
+	//initJeu();
+	moteur.liaisonBase(this);
 		grille.afficherGrille();
 	algo.liaisonGrille();
-		moteur.initSphere();
 		moteur.launch();
 		return;
-	//tmp
-	unsigned int x, y;
+	/*unsigned int x, y;
 	algo.liaisonGrille();
 	grille.genererGrille(0);
 	do{
@@ -40,7 +47,7 @@ void Base::lancerJeu(){
 			continue;
 		}
 		pointActuel--;
-	}while(true);
+	}while(true);*/
 }
 
 /**
@@ -48,7 +55,7 @@ void Base::lancerJeu(){
  */
 void Base::afficherEtatActuel()const{
 	grille.afficherGrille();
-	cout<<"pointActuel"<<pointActuel<<"   niveauActuel"<<niveauActuel<<endl;
+	//cout<<"pointActuel"<<pointActuel<<"   niveauActuel"<<niveauActuel<<endl;
 }
 
 /**
