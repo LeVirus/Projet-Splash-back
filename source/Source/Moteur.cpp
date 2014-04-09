@@ -44,8 +44,14 @@ bool Moteur::initMoteur(){
 	sceneManager = device->getSceneManager ();
 	device->getCursorControl ()-> setVisible (true);
 
+
 	//recup de la gui dans le moteur
 gui = device->getGUIEnvironment();
+
+	font = gui->getFont("Ressources/Roboto-Medium.ttf");
+	if(!font)cerr<<"sdfs"<<endl;
+			font->setKerningHeight	(	20	);//modif la hauteur	
+			font->setKerningWidth	(	20	);	//modif la longueur	
 
 	irr::scene::IMeshSceneNode* cube;         // pointeur vers le node
 	irr::f32 x=0.0f ,y=0.0f,z=0.0f;
@@ -197,9 +203,15 @@ bool Moteur::launch(){
 	irr::scene::ISceneCollisionManager* collisionManager = 
 		sceneManager->getSceneCollisionManager();
 	std::list<OrigineEclatement*>::iterator itOrigine;
-				irr::gui::IGUIStaticText *texte = gui->addStaticText(L"Apprendre Irrlicht les yeux fermés avec le\n"
+	texte = gui->addStaticText(L"Apprendre Irrlicht les yeux fermés avec le\n"
 						    " 'Petit guide d'Irrlicht' de Kevin Leonhart",
 								    irr::core::rect<irr::s32>(100,20,300,100), true, true, 0, -1, true);
+				texte->setOverrideFont(font);
+				//tailleTexte = font->getDimension(" les yeux fermés avec le");
+				//pour rect:: 2 premiers parametre le coin sup gauche
+				//2 derniers parametres coin inf droit
+	
+
 	//irr::core::vector3df nodePosition = 
 	//(* vectSphere.begin() )->getPosition();//tmp
 	do{
