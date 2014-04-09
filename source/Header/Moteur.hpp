@@ -38,13 +38,14 @@ struct BulleMouvante{
 class Moteur{
 	private:
 		Base *memBase;
-unsigned int tempsCourrant, iterationAct, tempsInter, coupRestant;
+unsigned int iterationAct, coupRestant;
 		bool actionEnCours, animEnCours;
 		irr::IrrlichtDevice *device;
 		irr::video::IVideoDriver* driver ;
 		irr::scene::ISceneManager *sceneManager;
 		irr::scene::ICameraSceneNode *camera;
-		irr::scene::IMeshSceneNode* cube, *grille;
+		irr::scene::IMeshSceneNode* cube;
+		irr::gui::IGUIEnvironment *gui;
 	std::list<DestinationBulle*>::iterator itDestination;
 		MyEventReceiver receiver;
 		std::vector< std::vector < Bulle* > > vectSphere;

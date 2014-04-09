@@ -1,6 +1,5 @@
 #include <iostream>
 #include <vector>
-#include <ctime>
 #include "Moteur.hpp"
 #include "Base.hpp"
 #include "Case.hpp"
@@ -17,7 +16,6 @@ extern Algo *memoAlgo;
  *	appel de la fonction "initMoteur()"
  */
 Moteur::Moteur(){
-	tempsInter=2000;
 	animEnCours=false;
 	actionEnCours=false;
 	vectSphere.resize(NBR_CASE_X);
@@ -45,8 +43,9 @@ bool Moteur::initMoteur(){
 	driver = device->getVideoDriver();
 	sceneManager = device->getSceneManager ();
 	device->getCursorControl ()-> setVisible (true);
-	//sceneManager = irr::core::vector3df (5,0,0)); // scene manager		
 
+	//recup de la gui dans le moteur
+gui = device->getGUIEnvironment();
 
 	irr::scene::IMeshSceneNode* cube;         // pointeur vers le node
 	irr::f32 x=0.0f ,y=0.0f,z=0.0f;
@@ -77,10 +76,6 @@ bool Moteur::initMoteur(){
 		}
 	}
 
-
-	//grille=sceneManager->addMeshSceneNode (sceneManager->getMesh ("Ressources/Grille.obj"));//0 noeud parent(racine)
-	//grille->setMaterialFlag(irr::video::EMF_WIREFRAME, true);
-	//1 id
 
 	// pointeur vers le node
 	irr::SKeyMap keyMap[5];                    // re-assigne les commandes
@@ -175,6 +170,9 @@ void Moteur::initSphere(){
 					//				const core::vector3df &		scale = 
 					irr::core::vector3df(1.0f, 1.0f, 1.0f) 
 					);	
+			//sceneManager->getMeshManipulator()->makePlanarTextureMapping(sphere->getMesh(), 0.04f);
+
+ //sphere->setMaterialTexture( 0, driver->getTexture("Ressources/blackbuck.bmp") );
 			vectSphere[i][j]->noeudSphere=sphere;
 
 			x+=10.0f;
@@ -199,6 +197,9 @@ bool Moteur::launch(){
 	irr::scene::ISceneCollisionManager* collisionManager = 
 		sceneManager->getSceneCollisionManager();
 	std::list<OrigineEclatement*>::iterator itOrigine;
+				irr::gui::IGUIStaticText *texte = gui->addStaticText(L"Apprendre Irrlicht les yeux fermés avec le\n"
+						    " 'Petit guide d'Irrlicht' de Kevin Leonhart",
+								    irr::core::rect<irr::s32>(100,20,300,100), true, true, 0, -1, true);
 	//irr::core::vector3df nodePosition = 
 	//(* vectSphere.begin() )->getPosition();//tmp
 	do{
@@ -251,7 +252,6 @@ bool Moteur::launch(){
 				}
 				iterationAct+=200;
 
-				tempsCourrant=clock()-tempsCourrant;
 			}
 
 			//Animations ________________________________________________
@@ -328,6 +328,7 @@ bool Moteur::launch(){
 			driver->beginScene (true, true,
 					irr::video::SColor(255,255,255,255));
 			sceneManager->drawAll ();
+			gui->drawAll();
 			driver->endScene ();
 
 
@@ -417,7 +418,6 @@ void Moteur::changerTailleSphere(unsigned int x, unsigned int y, bool lectAlg){
 			//				const core::vector3df &		scale = 
 			irr::core::vector3df(1.0f, 1.0f, 1.0f) 
 			);	
-
 
 }
 
