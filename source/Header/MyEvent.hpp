@@ -6,7 +6,7 @@
 /**
  * @class MyEventReceiver
  * Classe fille de IEventReceiver (irrlicht)
- *	Recupere les evenement et les traite.
+ *	Recupere les evenement souris et les traite
  */
 class MyEventReceiver: public irr::IEventReceiver{
 	private:
@@ -16,6 +16,10 @@ class MyEventReceiver: public irr::IEventReceiver{
 
 
 		// Nous créons une structure pour enregistrer les informations sur l'état de la souris.
+/**
+ * @struct SMouseState
+ * Stocke les informations sur l'état de la souris
+ */
 		struct SMouseState{
 			irr::core::position2di Position;
 			bool LeftButtonDown;

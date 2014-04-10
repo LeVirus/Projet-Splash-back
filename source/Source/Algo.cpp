@@ -8,15 +8,15 @@ using namespace std;
 
 extern Grille *memGrille;
 
+/**
+ * Constructeur de la classe Algo
+ */
 Algo::Algo(){
 	memoAlgo=this;
-	//memTabGrille=memGrille->getTab();
 }
 
 /**
- * @param lvl Indique le niveau actuel
- * Generation de la grille aleatoirement la difficulte est determine
- *  en fonction du niveau actuel
+ * Liaison de l'adresse de l'objet Grille  
  */
 void Algo::liaisonGrille(){
 	memoG=memGrille;
@@ -24,26 +24,7 @@ void Algo::liaisonGrille(){
 }
 
 /**
- * @param lvl Indique le niveau actuel
- * Generation de la grille aleatoirement la difficulte est determine
- *  en fonction du niveau actuel
- */
-void Algo::jouer(){
-	unsigned int x, y;
-	do{
-		if(!memGrille)return;
-		cout<<"x?"<<endl;
-		cin>>x;
-		cout<<"y?"<<endl;
-		cin>>y;
-		//	memGrille->appliquerClick(x,y);
-	}while(true);
-}
-
-/**
- * @param lvl Indique le niveau actuel
- * Generation de la grille aleatoirement la difficulte est determine
- *  en fonction du niveau actuel
+ * Affichage console des animations éclatements(stockés dans des listes)
  */
 void Algo::afficherList()const{
 	std::list<DestinationBulle*>::const_iterator itMemBulleT;
@@ -67,9 +48,7 @@ void Algo::afficherList()const{
 
 
 /**
- * @param lvl Indique le niveau actuel
- * Generation de la grille aleatoirement la difficulte est determine
- *  en fonction du niveau actuel
+ * Fonction permettant de vider les listes d'animations
  */
 void Algo::viderListes(){
 	for(itMemOriginB=memOrigineEclat.begin();itMemOriginB!=memOrigineEclat.end();itMemOriginB++){
@@ -84,9 +63,11 @@ void Algo::viderListes(){
 
 
 /**
- * @param lvl Indique le niveau actuel
- * Generation de la grille aleatoirement la difficulte est determine
- *  en fonction du niveau actuel
+ * Fonction de calcul de résolution d'éclatement 
+ * L'origine Eclatement courrante est stocké dans la liste 
+ * La fonction trouverDestination est appelée
+ * @param x : coordonnée abscisse de l'origine éclatement 
+ * @param y : coordonnée ordonnée de l'origine éclatement 
  */
 void Algo::resolutionEclatement(unsigned int x, unsigned int y){
 	OrigineEclatement* memOrigin;
@@ -110,9 +91,11 @@ void Algo::resolutionEclatement(unsigned int x, unsigned int y){
 }
 
 /**
+ *	 Fonction retournant l'iterator correspondant aux 
+ *	 coordonnées envoyées en parametres
  * @param x Indique l'absisce de iterator recherché
  * @param y Indique l'ordonnée de iterator recherché
- *	 Fonction qui trouve l'iterator qui a les coordonnées 
+ * @return iterator<OrigineEclatement*> : 
  */
 std::list<OrigineEclatement*>::iterator Algo::findItEclat(unsigned int x, unsigned int y){
 	std::list<OrigineEclatement*>::iterator itMemEclatT;
@@ -126,9 +109,9 @@ std::list<OrigineEclatement*>::iterator Algo::findItEclat(unsigned int x, unsign
 }
 
 /**
- * @param x Indique l'abscice de l'origine
- * @param y Indique l'ordonnée de l'origine
  *	 Fonction qui trouve les destinations des "projectiles" apres l'éclatement
+ *Le tableau est parcouru dans les 4 directions 
+ *jusqu'a trouvé une bulle(fixe) ou un bord
  */
 void Algo::appliquerDestination(){
 	unsigned int cmpt=0, max=0;
@@ -151,9 +134,9 @@ void Algo::appliquerDestination(){
 
 				if( memoG->getTabValue( (*itMemBulle)->coX , (*itMemBulle)->coY)
 						== 0	){
-corrigerDestinationBulle( (*itMemBulle) );
-continue;
-}
+					corrigerDestinationBulle( (*itMemBulle) );
+					continue;
+				}
 				memoG->appliquerChangeCase( (*itMemBulle)->coX , (*itMemBulle)->coY);
 				(*itMemBulle)->traite=true;
 			}
@@ -164,76 +147,79 @@ continue;
 }
 
 /**
- *	 Fonction qui envoie (en lecture seule) les listes d'animation
- * suite a un eclatement
+ *	 Fonction de correction de destination dans le cas de collisions simultanées
+ *	 sur une même bulle
+ *	 La destinations est recalculé
+ *	 @param DestinationBulle* : le pointeur de la destination à corriger
  */
 void Algo::corrigerDestinationBulle(DestinationBulle *a){
 	switch(a->direction){
 		case BAS:
-	for(unsigned int i=a->coY;i<NBR_CASE_Y;i++){
-		if(memoG->getTabValue(a->coX, i)>0){//si une case contient une bulle
-			a->temps += i - a->coY;
-		a->coY=i;
-	
-			break;
-		}
-		else if(i==NBR_CASE_Y-1){//si a->cun obsta->le rencontré
-			a->temps += NBR_CASE_Y-a->coY;//temps=nbr ma-> de ca->e - pos init +1
-			a->coY=100;//100 représente le bord corresponda->t en fonction de la->direction
-		}
-	}
+			for(unsigned int i=a->coY;i<NBR_CASE_Y;i++){
+				if(memoG->getTabValue(a->coX, i)>0){//si une case contient une bulle
+					a->temps += i - a->coY;
+					a->coY=i;
+
+					break;
+				}
+				else if(i==NBR_CASE_Y-1){//si a->cun obsta->le rencontré
+					a->temps += NBR_CASE_Y-a->coY;//temps=nbr ma-> de ca->e - pos init +1
+					a->coY=100;//100 représente le bord corresponda->t en fonction de la->direction
+				}
+			}
 			break;
 		case GAUCHE:
-	for(unsigned int i=a->coX;i<NBR_CASE_X;i--){
-		if(memoG->getTabValue(i, a->coY)>0){//si une case contient une bulle
-			a->temps+= a->coX - i;
-			a->coX=i;
+			for(unsigned int i=a->coX;i<NBR_CASE_X;i--){
+				if(memoG->getTabValue(i, a->coY)>0){//si une case contient une bulle
+					a->temps+= a->coX - i;
+					a->coX=i;
+					break;
+				}
+				else if(i==0){//si aucun obstacle rencontré
+					a->temps+= a->coX+1;
+					a->coX=100;
+					break;
+				}
+			}
 			break;
-		}
-		else if(i==0){//si aucun obstacle rencontré
-			a->temps+= a->coX+1;
-			a->coX=100;
-			break;
-		}
-	}
-	break;
 		case HAUT:
-	for(unsigned int i=a->coY;i<NBR_CASE_Y;i--){
-		if(memoG->getTabValue(a->coX, i)>0){//si une case contient une bulle
-			a->temps+= a->coY-i;
-			a->coY=i;
-			break;
-		}
-		else if(i==0){//si aucun obstacle rencontré
-			a->temps+= a->coY+1;
-			a->coY=100;
-			break;
-		}
-	}
+			for(unsigned int i=a->coY;i<NBR_CASE_Y;i--){
+				if(memoG->getTabValue(a->coX, i)>0){//si une case contient une bulle
+					a->temps+= a->coY-i;
+					a->coY=i;
+					break;
+				}
+				else if(i==0){//si aucun obstacle rencontré
+					a->temps+= a->coY+1;
+					a->coY=100;
+					break;
+				}
+			}
 			break;
 		case DROITE:
-	for(unsigned int i=a->coX;i<NBR_CASE_X;i++){
-		if(memoG->getTabValue(i, a->coY)>0){//si une case contient une bulle
-			a->temps+= i-a->coX;
-			a->coX=i;
-			break;
-		}
-		else if(i==NBR_CASE_X-1){//si aucun obstacle rencontré
-			a->temps+= NBR_CASE_X-a->coX+1;
-			a->coX=100;
-			break;
-		}
-			break;
-	}
+			for(unsigned int i=a->coX;i<NBR_CASE_X;i++){
+				if(memoG->getTabValue(i, a->coY)>0){//si une case contient une bulle
+					a->temps+= i-a->coX;
+					a->coX=i;
+					break;
+				}
+				else if(i==NBR_CASE_X-1){//si aucun obstacle rencontré
+					a->temps+= NBR_CASE_X-a->coX+1;
+					a->coX=100;
+					break;
+				}
+				break;
+			}
 		default:
 			cout<<"erreur direction corrigerD"<<endl;
 			break;
 	}
-cout<<a->coX<<"correction"<<a->coY<<"temps"<<a->temps<<endl;
+	cout<<a->coX<<"correction"<<a->coY<<"temps"<<a->temps<<endl;
 }
 
 /**
- *	 Fonction qui envoie (en lecture seule) les listes d'animation
+ *	 Fonction qui envoie (en lecture seule) les listes 
+ *	 d'animation(stocké dans une structure)
  * suite a un eclatement
  */
 const	AnimList Algo::getListAnim(){
@@ -340,6 +326,10 @@ void Algo::trouverDestination(unsigned int x, unsigned int y){
 	memDestinationBulle.push_back(tmp);
 }
 
+/**
+ *Destructeur de la classe Algo
+ * la fonction viderListe est appelée
+ */
 Algo::~Algo(){
 	viderListes();
 }

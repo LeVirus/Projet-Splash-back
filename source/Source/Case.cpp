@@ -13,7 +13,7 @@ Case::Case(){
 
 /**
  * Constructeur de la classe Case.
- * @param taille l'etat initial de la case créée 
+ * @param taille : l'etat initial de la case créée 
  */
 Case::Case(unsigned int taille){
 	if(etat>4)etat=4;
@@ -24,7 +24,7 @@ Case::Case(unsigned int taille){
 
 /**
  * Fonction permettant de modifier l'état de la bulle
- * @param nbr La nouvelle valeur de la bulle
+ * @param nbr : La nouvelle valeur de la bulle
  */
 void Case::setEtat(unsigned int nbr){
 	etat=nbr;

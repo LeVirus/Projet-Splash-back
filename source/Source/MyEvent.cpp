@@ -12,16 +12,20 @@ MyEventReceiver::MyEventReceiver(){
 }
 
 /**
- *  Fonction renvoie LeftButtonDown
+ *  Fonction renvoyant LeftButtonDown si le bouton 
+ *  gauche de la souris est pressé
+ *  return true : indefinis
+ *  return false : indefinis
  */
 bool MyEventReceiver::leftButtonIsPressed(){
 	return MouseState.LeftButtonDown;
 }
 
 /**
- *	Fonction (surchargee) qui recupere l'evenement
+ *	Fonction (surchargee) qui recupere l'evenement courrant
+ *  return true : si LeftButtonDown est à true
+ *  return false : si LeftButtonDown est à false
  */
-// Ceci est la méthode que nous devons implémenter
 bool MyEventReceiver::OnEvent(const irr::SEvent& event){
 	// Se souvient si la touche est enfoncée ou relâchée
 	if (event.EventType == irr::EET_KEY_INPUT_EVENT)
@@ -55,8 +59,9 @@ bool MyEventReceiver::OnEvent(const irr::SEvent& event){
 
 /**
  * Fonction verifaiant si une touche est enfoncee
+ * @return true : si la touche est enfoncée
+ * @return false :si la touche n'est pas enfoncée
  */
-// Ceci est utilisé pour vérifier si une touche est enfoncée
 bool MyEventReceiver::IsKeyDown(irr::EKEY_CODE keyCode) const{
 	return KeyIsDown[keyCode];
 }

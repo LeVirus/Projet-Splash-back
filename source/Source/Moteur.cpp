@@ -13,7 +13,9 @@ extern Algo *memoAlgo;
 
 /**
  * Constructeur de la classe Moteur.
- *	appel de la fonction "initMoteur()"
+ * Initialisation des variables de base,
+ * du tableau(vector) de stockage des bulles
+ * et	appel de la fonction "initMoteur()"
  */
 Moteur::Moteur(){
 	animEnCours=false;
@@ -26,8 +28,11 @@ Moteur::Moteur(){
 
 /**
  * Initialisation des objets necessaires au moteur
- * @return true tous les objets sont créés avec succés
- * @return false sinon
+ * Module créés : GUI, SceneManager, Caméra 
+ * Assignation des touches(clavier)
+ * Creation de la grille (cube et bulle)
+ * @return true : si tous les objets sont créés avec succés
+ * @return false : si un probleme est survenu
  */
 bool Moteur::initMoteur(){
 
@@ -46,12 +51,16 @@ bool Moteur::initMoteur(){
 
 
 	//recup de la gui dans le moteur
-gui = device->getGUIEnvironment();
+	gui = device->getGUIEnvironment();
 
-	font = gui->getFont("Ressources/Roboto-Medium.ttf");
-	if(!font)cerr<<"sdfs"<<endl;
-			font->setKerningHeight	(	20	);//modif la hauteur	
-			font->setKerningWidth	(	20	);	//modif la longueur	
+//BUUUGGG
+
+	//font = gui->getFont("Ressources/Roboto-Medium.ttf");
+	//if(!font)cerr<<"sdfs"<<endl;
+	//font->setKerningHeight	(	20	);//modif la hauteur	
+	//font->setKerningWidth	(	20	);	//modif la longueur	
+
+//BUUUGGG
 
 	irr::scene::IMeshSceneNode* cube;         // pointeur vers le node
 	irr::f32 x=0.0f ,y=0.0f,z=0.0f;
@@ -110,8 +119,9 @@ gui = device->getGUIEnvironment();
 }
 
 /**
- * Procedure d'initialisation des spheres a l'affichage
- * Lis les donnees dans la classe Grille
+ * Fonction qui mémorise l'adresse de l'objet Base
+ * Si le pointeur est NULL un message d'erreur est affiché
+ * @param a : Le pointeur de l'objet Base
  */
 void Moteur::liaisonBase(Base *a){
 	if(!a)cout<<"erreur liaison Base Moteur cpp"<<endl;
@@ -119,11 +129,12 @@ void Moteur::liaisonBase(Base *a){
 }
 
 /**
- * Procedure d'initialisation des spheres a l'affichage
- * Lis les donnees dans la classe Grille
+ * Procedure d'initialisation des spheres a l'affichage(Irrlicht)
+ * Création des différents noeuds spheres à l'endroit requis 
+ * Lis les donnees à partir de la classe Grille (le tableau qui stocke 
+ * l'état des bulles est récupéré par référence) 
  */
 void Moteur::initSphere(){
-	cerr<<"debut initS"<<endl;
 	irr::scene::IMeshSceneNode *sphere;         // pointeur vers le node
 	irr::f32 x=0.0f ,y=0.0f,z=0.0f, tailleSphere;
 	unsigned int taille;
@@ -178,7 +189,7 @@ void Moteur::initSphere(){
 					);	
 			//sceneManager->getMeshManipulator()->makePlanarTextureMapping(sphere->getMesh(), 0.04f);
 
- //sphere->setMaterialTexture( 0, driver->getTexture("Ressources/blackbuck.bmp") );
+			//sphere->setMaterialTexture( 0, driver->getTexture("Ressources/blackbuck.bmp") );
 			vectSphere[i][j]->noeudSphere=sphere;
 
 			x+=10.0f;
@@ -187,14 +198,18 @@ void Moteur::initSphere(){
 				y-=10.0f;
 			}
 		}
-	cerr<<"fin initS"<<endl;
 
 }
 
 /**
  * Boucle générale du moteur physique
- * @return false si la fonction a fermer suite à un problème
- * @return true Si la fonction a fermer aprés avoir reçu un signal d'arret
+ * Initialisation de la détection des evenements souris
+ * Gestion des mises à jour et des animations des bulles(communication avec 
+ * les classes Grille et Algo)
+ * Gestion des évenements souris
+ * A la fin de la fonction le device est supprimé 
+ * @return false : si la fonction a fermée suite à un problème
+ * @return true : si la fonction a fermée aprés avoir reçu un signal d'arret(alt+f4)
  */
 bool Moteur::launch(){
 	irr::core::vector3df outCollisionPoint;
@@ -204,16 +219,14 @@ bool Moteur::launch(){
 		sceneManager->getSceneCollisionManager();
 	std::list<OrigineEclatement*>::iterator itOrigine;
 	texte = gui->addStaticText(L"Apprendre Irrlicht les yeux fermés avec le\n"
-						    " 'Petit guide d'Irrlicht' de Kevin Leonhart",
-								    irr::core::rect<irr::s32>(100,20,300,100), true, true, 0, -1, true);
-				texte->setOverrideFont(font);
-				//tailleTexte = font->getDimension(" les yeux fermés avec le");
-				//pour rect:: 2 premiers parametre le coin sup gauche
-				//2 derniers parametres coin inf droit
-	
+			" 'Petit guide d'Irrlicht' de Kevin Leonhart",
+			irr::core::rect<irr::s32>(100,20,300,100), true, true, 0, -1, true);
+	//texte->setOverrideFont(font);
+	//tailleTexte = font->getDimension(" les yeux fermés avec le");
+	//pour rect:: 2 premiers parametre le coin sup gauche
+	//2 derniers parametres coin inf droit
 
-	//irr::core::vector3df nodePosition = 
-	//(* vectSphere.begin() )->getPosition();//tmp
+
 	do{
 		coupRestant=10;
 		memBase->initJeu();
@@ -226,8 +239,7 @@ bool Moteur::launch(){
 
 
 			//Animations ________________________________________________
-			if(animEnCours  /*&& tempsInter<=clock()-tempsCourrant*/ ){
-				//cout<<tempsCourrant<<"temps"<<endl;
+			if(animEnCours  ){
 				//comparaison du temps actuel convertis en secondes avec le temps
 				//du point Origine de l'eclatement
 				//tant qu'un eclatement se produit au temps T
@@ -256,8 +268,10 @@ bool Moteur::launch(){
 					animEnCours=false;
 					if(verifTabVide()){
 						cout<<"niveau termine"<<endl;
+		memBase->setCurrentLvl(true);
 						break;
 					}
+
 					coupRestant+=(memListAnim.memListOrigine->size()-1)/2;
 					cout<<"coupRestant"<<coupRestant<<endl;
 					memoAlgo->viderListes();
@@ -276,6 +290,7 @@ bool Moteur::launch(){
 			if(!actionEnCours  && !animEnCours  ){
 				if(coupRestant==0){
 					cout<<"jeu finis"<<endl;
+		memBase->setCurrentLvl(false);
 					break;//sortir de la boucle principalle
 				}
 				if( receiver.leftButtonIsPressed() ){
@@ -292,7 +307,7 @@ bool Moteur::launch(){
 					//si !node aucune collision avec un noeud
 					if(node){
 						coupRestant--;
-						cout<<"sdfcoupRestant"<<coupRestant<<endl;
+						cout<<"coupRestant"<<coupRestant<<endl;
 						for(unsigned int i=0;
 								i<vectSphere[0].size()*vectSphere.size();i++){
 							if(vectSphere[i%NBR_CASE_X][i/NBR_CASE_X]->
@@ -320,11 +335,9 @@ bool Moteur::launch(){
 									changerTailleSphere( i%NBR_CASE_X, i/NBR_CASE_X,true );
 								}
 
-								//appel de la fonction dans Grille
 								break;
 							}
 						}
-						//memGrille->afficherGrille();
 					}
 				}
 			}
@@ -345,7 +358,7 @@ bool Moteur::launch(){
 
 
 		}
-viderTabBulles();
+		viderTabBulles();
 	}while(true);
 
 	//cerr<<"ss"<<endl;
@@ -356,19 +369,26 @@ viderTabBulles();
 
 /**
  * Fonction verifiant si le tableau de bulle est vide
- * return true si tableau vide
+ * @return true : si tableau vide
+ * @return false : sinon
  */
 bool Moteur::verifTabVide(){
 	for(unsigned int j=0;j<vectSphere.size();j++)
 		for(unsigned int i=0;i<vectSphere[j].size();i++){
-			if(vectSphere[i][j]!=0)return false;
+			if(vectSphere[i][j]->taille!=0){
+				return false;
+			}
 		}
 	return true;
 }
 
 /**
  * Fonction permettant de changer graphiquement la taille d'une sphere
- * (en fonction de sa taille actuelle)
+ * le booleen détermine si la taille de la bulle doit être
+ * directement incrémentée(false) ou mise a jour à partir de la classe Grille(true)
+ * @param x : l'abscisse de la case à traiter
+ * @param y : l'ordonnée de la case à traiter
+ * @param lectAlg : mode de traitement
  */
 void Moteur::changerTailleSphere(unsigned int x, unsigned int y, bool lectAlg){
 	unsigned int tailleSphere;
@@ -434,7 +454,8 @@ void Moteur::changerTailleSphere(unsigned int x, unsigned int y, bool lectAlg){
 }
 
 /**
- * Fonction determinant les mouvements des bulles mouvantes
+ * Fonction permettant de supprimer les noeuds spheres 
+ * contenus dans le tableau
  */
 void Moteur::viderTabBulles(){
 	for(unsigned int j=0;j<vectSphere.size();j++)
@@ -448,6 +469,8 @@ void Moteur::viderTabBulles(){
 
 /**
  * Fonction determinant les mouvements des bulles mouvantes
+ * en fonction de leurs caractéristiques
+ * Les bulles mouvantes sont stockées dans une liste
  */
 void Moteur::actionBullesMouvantes(){
 	bool debut=false;
@@ -527,7 +550,11 @@ void Moteur::actionBullesMouvantes(){
 
 /**
  * Fonction permettant de creer les 4 bulles mouvantes
- * a partir d'un eclatement 
+ * Aprés un éclatement 
+ * L'origine des noeuds créés est récupéré sur le noeud case correspondant
+ * trouvé grace aux aux coordonnées envoyées en paramètres
+ * @param x : coordonnée abscisse d'origine des bulles mouvantes
+ * @param y : coordonnée ordonnée d'origine des bulles mouvantes
  */
 void Moteur::creerBulleMouvante(unsigned int x, unsigned int y){
 	for(unsigned int i=0;i<4;++i){
@@ -558,7 +585,8 @@ void Moteur::creerBulleMouvante(unsigned int x, unsigned int y){
 
 
 /**
- * Fonction permettant de vider le vector en suprimmant 
+ * Fonction permettant de vider le vector qui stocke les noeuds 
+ * bulles en suprimmant 
  * les objet declaré dynamiquement
  */
 void Moteur::viderVectBulle(){
@@ -570,7 +598,8 @@ void Moteur::viderVectBulle(){
 }
 
 /**
- * Destructeur de la class Moteur.  
+ * Destructeur de la class Moteur.
+ * Appel de la fonction viderVectBulle
  */
 Moteur::~Moteur(){
 	viderVectBulle();

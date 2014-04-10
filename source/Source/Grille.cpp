@@ -25,10 +25,9 @@ Grille::Grille(){
 }
 
 /**
+ * Fonction qui traite la bulle dont les coordonnées sont envoyées en paramêtres
  * @param x coordonnee grille abscisse de la case a traiter
  * @param y coordonnee grille ordonnee de la case a traiter
- * Fonction qui reçois les parametres pour savoir quelle bulle
- * est a traiter
  * @return true si eclatement
  * @return false sinon
  */
@@ -46,9 +45,10 @@ bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
 }
 
 /**
- * @param lvl Indique le niveau actuel
- * Generation de la grille aleatoirement la difficulte est determine
- *  en fonction du niveau actuel
+ * Fonction retournant l'état de la case envoyée en paramêtre
+ * @param x coordonnee grille abscisse de la case a traiter
+ * @param y coordonnee grille ordonnee de la case a traiter
+ * @return valeurTableau : L'état de la case correspondante
  */
 unsigned int Grille::getTabValue(unsigned int x, unsigned int y)const{
 	if(x>=largeurG || y>=longueurG)return 1000;//si erreur
@@ -56,9 +56,9 @@ unsigned int Grille::getTabValue(unsigned int x, unsigned int y)const{
 }
 
 /**
- * @param lvl Indique le niveau actuel
  * Generation de la grille aleatoirement la difficulte est determine
- *  en fonction du niveau actuel
+ *  en fonction du niveau actuel(paramètre lvl)
+ * @param lvl : niveau actuel
  */
 void Grille::genererGrille(unsigned int lvl){
 	for(unsigned int j=0;j<tabGrille.size();++j)
@@ -69,6 +69,7 @@ void Grille::genererGrille(unsigned int lvl){
 
 /**
  * Renvoie une référence constante du tableau représentatif du jeu
+ * @return Tableau<Case*> : ref const du tableau stocké
  */
 const std::vector<std::vector<Case>> *Grille::getTab()const{
 	return &tabGrille;

@@ -10,7 +10,8 @@ class Grille;
 
 /**                                                                    
  * @struct DestinationBulle
- *Structure de memorisation et de gestion des evenements de la grille
+ * Structure de memorisation de la destination d'une bulle mouvante
+ * contient le temps d'arrivée la direction et les coordonnées d'arrivée
  */
 struct DestinationBulle{
 	unsigned int temps, direction, coX, coY;
@@ -19,18 +20,30 @@ struct DestinationBulle{
 
 /**
  * @struct OrigineEclatement
- *Structure de memorisation de l'origine des eclatements
+ * Structure de memorisation de l'origine des eclatements
+ * (origine des bulles mouvantes)
+ * contient le temps et les coordonnées de déclenchement
  */
 struct OrigineEclatement{
 	unsigned int coXO, coYO, tempsO;                                     
 };
 
 
+/**
+ * @struct AnimList
+ * Structure contenant les 2 listes nécessaires à la mémorisation
+ * des animations d'éclatements
+ */
 struct AnimList{
 	std::list<OrigineEclatement*> *memListOrigine;
 	std::list<DestinationBulle*> *memListDestination;
 };
 
+/**
+ * @class Algo 
+ * Classe de gestion algorithmique des éclatements
+ * Calcul et mémorisations des animations
+ */
 class Algo{
 	private:
 		Grille *memoG;

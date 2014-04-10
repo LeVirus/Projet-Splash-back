@@ -11,51 +11,42 @@ Base::Base(){
 	niveauActuel=0;
 }
 
-/**
- * Fonction permettant de lancer le jeu aprés avoir verifié
- * toutes les conditions necessaires au lancement( verif() )
+/** //debuggage
+ * Fonction d'initialisation du programme
+ * init de Grille et Moteur
  */
-		void Base::initJeu(){
-		grille.genererGrille(niveauActuel);
-		niveauActuel++;
-		moteur.initSphere();
-		}
+void Base::initJeu(){
+	grille.genererGrille(niveauActuel);
+	moteur.initSphere();
+}
 
 /**
- * Fonction permettant de lancer le jeu aprés avoir verifié
- * toutes les conditions necessaires au lancement( verif() )
+ * Fonction modifiant le niveau actuel
+ * @param choose : determine la façon de traiter la variable
+ */
+void Base::setCurrentLvl(bool choose){
+	if(choose)niveauActuel++;
+	else niveauActuel=0;	
+}
+
+/**
+ * Fonction permettant de lancer le jeu aprés avoir établie
+ * les liaisons entre les objets du logiciel
  */
 void Base::lancerJeu(){
-	//initJeu();
 	moteur.liaisonBase(this);
-		grille.afficherGrille();
+	grille.afficherGrille();
 	algo.liaisonGrille();
-		moteur.launch();
-		return;
-	/*unsigned int x, y;
-	algo.liaisonGrille();
-	grille.genererGrille(0);
-	do{
-		if(pointActuel==0)break;
-		afficherEtatActuel();
-		cout<<"x?"<<endl;
-		cin>>x;
-		cout<<"y?"<<endl;
-		cin>>y;
-		if(!grille.appliquerChangeCase(x,y)){
-			cout<<"erreur entre case"<<endl;
-			continue;
-		}
-		pointActuel--;
-	}while(true);*/
+	moteur.launch();
+	return;
 }
 
 /**
  * Fonction d'affichage des parametres globaux 
+ * (Grille)
  */
 void Base::afficherEtatActuel()const{
 	grille.afficherGrille();
-	//cout<<"pointActuel"<<pointActuel<<"   niveauActuel"<<niveauActuel<<endl;
 }
 
 /**

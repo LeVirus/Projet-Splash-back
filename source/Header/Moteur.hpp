@@ -9,9 +9,9 @@
 class Base;
 
 /**
- * @struct Bulle
- * Structure contenant un pointeur vers un noeud bulle
- * ses coordonnées sur le tableau 
+ * \struct Bulle
+ * Structure contenant un pointeur vers un noeud bulle, son noeud case associé
+ * ainsi que sa taille
  */
 struct Bulle{
 	irr::scene::IMeshSceneNode *noeudCase, *noeudSphere;
@@ -19,10 +19,10 @@ struct Bulle{
 };
 
 /**
- * @struct BulleMouvante
+ * \struct BulleMouvante
  * Structure contenant un pointeur vers un noeud bulle
-* La direction vers laquelle il bouge et le temps 
-* du moment de la destruction
+ * La direction vers laquelle cette dernière bouge et le temps 
+ * du moment de sa destruction
  */
 struct BulleMouvante{
 	irr::scene::IMeshSceneNode *noeudBulle;
@@ -31,14 +31,15 @@ struct BulleMouvante{
 };
 
 /**
- * @class Moteur
+ * \class Moteur
  * classe contenants tous les objets de la bibliotheque irrlicht
  * ainsi que toutes les fonctions qui gerent ces derniers
+ * Cette classe contient également la boucle principalle du logiciel.
  */
 class Moteur{
 	private:
 		Base *memBase;
-unsigned int iterationAct, coupRestant;
+		unsigned int iterationAct, coupRestant;
 		bool actionEnCours, animEnCours;
 		irr::IrrlichtDevice *device;
 		irr::video::IVideoDriver* driver ;
@@ -47,14 +48,14 @@ unsigned int iterationAct, coupRestant;
 		irr::scene::IMeshSceneNode* cube;
 		irr::gui::IGUIEnvironment *gui;
 		irr::gui::IGUIFont *font;
-		 irr::gui::IGUIStaticText *texte;
-		 irr::core::dimension2d<irr::u32 > tailleTexte;
-	std::list<DestinationBulle*>::iterator itDestination;
+		irr::gui::IGUIStaticText *texte;
+		irr::core::dimension2d<irr::u32 > tailleTexte;
+		std::list<DestinationBulle*>::iterator itDestination;
 		MyEventReceiver receiver;
 		std::vector< std::vector < Bulle* > > vectSphere;
 		std::list<BulleMouvante*> lstSphereMouvante;
 		std::list<BulleMouvante*>::iterator itLstSphereMouvante,
-		itLstSphereMouventeB;
+			itLstSphereMouventeB;
 		AnimList memListAnim;
 	public:
 		Moteur();
@@ -65,7 +66,7 @@ unsigned int iterationAct, coupRestant;
 		void viderVectBulle();
 		void changerTailleSphere(unsigned int x, unsigned int y, bool lectAlg);
 		void creerBulleMouvante(unsigned int x, unsigned int y);
-bool verifTabVide();
+		bool verifTabVide();
 		void actionBullesMouvantes();
 		void viderTabBulles();
 		~Moteur();

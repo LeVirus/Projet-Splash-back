@@ -8,6 +8,7 @@
 /**
  * @class Base
  * classe contenant tous les objets necessaires au logiciel
+ * Posséde les fonctions de base pour lancer le logiciel
  */
 class Base{
 	private:
@@ -20,6 +21,7 @@ class Base{
 		void initJeu();
 		void lancerJeu();
 		void afficherEtatActuel()const;
+		void setCurrentLvl(bool choose);
 		~Base();
 };
 
