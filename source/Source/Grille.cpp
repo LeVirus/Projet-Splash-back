@@ -13,6 +13,7 @@ Grille *memGrille;
  *	Initialise la grille (tableau 2 dimensions), 
  */
 Grille::Grille(){
+	srand(time(NULL));
 	if(memoAlgo)memAlgo=memoAlgo;
 	else cout<<"erreur alloc memAlgo"<<endl;
 	memGrille=this;
@@ -34,14 +35,14 @@ Grille::Grille(){
 bool Grille::appliquerChangeCase(unsigned int x, unsigned int y){
 	if(largeurG<x || longueurG<y){
 		cout<<"erreur select"<<endl;
-			return false;
-}
-//si eclatement
+		return false;
+	}
+	//si eclatement
 	if(tabGrille[x][y].changerEtat()){
 		memAlgo->resolutionEclatement(x,y);
-	return true;
+		return true;
 	}
-			return false;
+	return false;
 }
 
 /**
@@ -61,9 +62,81 @@ unsigned int Grille::getTabValue(unsigned int x, unsigned int y)const{
  * @param lvl : niveau actuel
  */
 void Grille::genererGrille(unsigned int lvl){
+	unsigned int nbrB4, nbrB3, nbrB2, nbrB1, nbrB0=36,finall;
+	bool correct=false;
+	if(lvl<4){
+		nbrB4=5+rand()%3;
+		nbrB0-=nbrB4;
+		nbrB3=9+rand()%4;
+		nbrB0-=nbrB3;
+		nbrB2=9+rand()%3;
+		nbrB0-=nbrB2;
+		nbrB1=5+rand()%3;
+		nbrB0-=nbrB1;
+	}
+	if(lvl<4){
+		nbrB4=5+rand()%3;
+		nbrB0-=nbrB4;
+		nbrB3=9+rand()%4;
+		nbrB0-=nbrB3;
+		nbrB2=9+rand()%3;
+		nbrB0-=nbrB2;
+		nbrB1=5+rand()%3;
+		nbrB0-=nbrB1;
+	}
+	if(lvl<4){
+		nbrB4=5+rand()%3;
+		nbrB0-=nbrB4;
+		nbrB3=9+rand()%4;
+		nbrB0-=nbrB3;
+		nbrB2=9+rand()%3;
+		nbrB0-=nbrB2;
+		nbrB1=5+rand()%3;
+		nbrB0-=nbrB1;
+	}
+	if(lvl<4){
+		nbrB4=5+rand()%3;
+		nbrB0-=nbrB4;
+		nbrB3=9+rand()%4;
+		nbrB0-=nbrB3;
+		nbrB2=9+rand()%3;
+		nbrB0-=nbrB2;
+		nbrB1=5+rand()%3;
+		nbrB0-=nbrB1;
+	}
 	for(unsigned int j=0;j<tabGrille.size();++j)
 		for(unsigned int i=0;i<tabGrille[j].size();++i){
-			tabGrille[j][i].setEtat(rand()%4);//aleatoire pour le moment
+			int tmp=rand()%5;
+			do{
+				correct=false;
+				switch(tmp){
+					case 0:
+						if(nbrB0==0)correct=true;
+						break;
+					case 1:
+						if(nbrB1==0)correct=true;
+						break;
+					case 2:
+						if(nbrB2==0)correct=true;
+						break;
+					case 3:
+						if(nbrB3==0)correct=true;
+						break;
+					case 4:
+						if(nbrB4==0)correct=true;
+						break;
+					default:
+						cout<<"erreur rand"<<endl;
+						break;
+				}
+				if(!correct)finall=tmp;
+				else{
+					tmp++;
+					if(tmp>4)tmp=0;
+				}
+
+			}while(correct);
+			tabGrille[j][i].setEtat(finall);//aleatoire pour le moment
 		}
 }
 
