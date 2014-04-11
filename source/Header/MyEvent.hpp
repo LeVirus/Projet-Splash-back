@@ -22,7 +22,7 @@ class MyEventReceiver: public irr::IEventReceiver{
  */
 		struct SMouseState{
 			irr::core::position2di Position;
-			bool LeftButtonDown;
+			bool LeftButtonDown, RightButtonDown;
 			SMouseState() : LeftButtonDown(false) { }
 		} MouseState;
 
@@ -31,6 +31,7 @@ class MyEventReceiver: public irr::IEventReceiver{
 		virtual bool OnEvent(const irr::SEvent& event);
 		virtual bool IsKeyDown(irr::EKEY_CODE keyCode) const;
 		bool leftButtonIsPressed();
+		bool rightButtonIsPressed();
 };
 
 #endif

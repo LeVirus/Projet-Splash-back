@@ -9,6 +9,7 @@ MyEventReceiver::MyEventReceiver(){
 	for (irr::u32 i=0; i<irr::KEY_KEY_CODES_COUNT; ++i)
 		KeyIsDown[i] = false;
 	MouseState.LeftButtonDown=false;
+	MouseState.RightButtonDown=false;
 }
 
 /**
@@ -22,6 +23,16 @@ bool MyEventReceiver::leftButtonIsPressed(){
 }
 
 /**
+ *  Fonction renvoyant RightButtonDown si le bouton 
+ *  gauche de la souris est pressé
+ *  return true : indefinis
+ *  return false : indefinis
+ */
+bool MyEventReceiver::rightButtonIsPressed(){
+	return MouseState.RightButtonDown ;
+}
+
+/**
  *	Fonction (surchargee) qui recupere l'evenement courrant
  *  return true : si LeftButtonDown est à true
  *  return false : si LeftButtonDown est à false
@@ -30,6 +41,7 @@ bool MyEventReceiver::OnEvent(const irr::SEvent& event){
 	// Se souvient si la touche est enfoncée ou relâchée
 	if (event.EventType == irr::EET_KEY_INPUT_EVENT)
 		KeyIsDown[event.KeyInput.Key] = event.KeyInput.PressedDown;
+
 
 	// Se rappelle de l'état de la souris.
 	else if (event.EventType == irr::EET_MOUSE_INPUT_EVENT){
@@ -40,6 +52,14 @@ bool MyEventReceiver::OnEvent(const irr::SEvent& event){
 
 			case irr::EMIE_LMOUSE_LEFT_UP:
 				MouseState.LeftButtonDown = false;
+				break;
+
+			case irr::EMIE_RMOUSE_PRESSED_DOWN:
+				MouseState.RightButtonDown = true;
+				break;
+
+			case irr::EMIE_RMOUSE_LEFT_UP:
+				MouseState.RightButtonDown = false;
 				break;
 
 			case irr::EMIE_MOUSE_MOVED:

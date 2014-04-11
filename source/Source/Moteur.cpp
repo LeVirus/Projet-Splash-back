@@ -18,6 +18,7 @@ extern Algo *memoAlgo;
  * et	appel de la fonction "initMoteur()"
  */
 Moteur::Moteur(){
+	quit=false;
 	animEnCours=false;
 	actionEnCours=false;
 	vectSphere.resize(NBR_CASE_X);
@@ -55,8 +56,8 @@ bool Moteur::initMoteur(){
 
 //BUUUGGG
 
-	//font = gui->getFont("Ressources/Roboto-Medium.ttf");
-	//if(!font)cerr<<"sdfs"<<endl;
+	font = gui->getFont("Ressources/Roboto-Medium.ttf");
+	if(!font)cerr<<"erreur chargement hihihihi"<<endl;
 	//font->setKerningHeight	(	20	);//modif la hauteur	
 	//font->setKerningWidth	(	20	);	//modif la longueur	
 
@@ -102,9 +103,6 @@ bool Moteur::initMoteur(){
 	keyMap[2].KeyCode = irr::KEY_KEY_Q;        // a
 	keyMap[3].Action = irr::EKA_STRAFE_RIGHT;  // a droite
 	keyMap[3].KeyCode = irr::KEY_KEY_D;        // d
-	keyMap[4].Action = irr::EKA_JUMP_UP;       // saut
-	keyMap[4].KeyCode = irr::KEY_SPACE;        // barre espace
-
 	camera = sceneManager->addCameraSceneNodeFPS(       
 			// ajout de la camera FPS
 			0,                                     // pas de noeud parent
@@ -222,7 +220,6 @@ bool Moteur::launch(){
 			" 'Petit guide d'Irrlicht' de Kevin Leonhart",
 			irr::core::rect<irr::s32>(100,20,300,100), true, true, 0, -1, true);
 	//texte->setOverrideFont(font);
-	//tailleTexte = font->getDimension(" les yeux fermés avec le");
 	//pour rect:: 2 premiers parametre le coin sup gauche
 	//2 derniers parametres coin inf droit
 
@@ -293,6 +290,10 @@ bool Moteur::launch(){
 		memBase->setCurrentLvl(false);
 					break;//sortir de la boucle principalle
 				}
+				if( receiver.rightButtonIsPressed() ){
+					quit=true;
+					break;
+				}
 				if( receiver.leftButtonIsPressed() ){
 					actionEnCours=true;
 					// Crée un rayon partant du curseur de la souris.
@@ -359,7 +360,7 @@ bool Moteur::launch(){
 
 		}
 		viderTabBulles();
-	}while(true);
+	}while(!quit);
 
 	//cerr<<"ss"<<endl;
 	device->drop (); 

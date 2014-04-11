@@ -40,7 +40,7 @@ class Moteur{
 	private:
 		Base *memBase;
 		unsigned int iterationAct, coupRestant;
-		bool actionEnCours, animEnCours;
+		bool actionEnCours, animEnCours, quit;
 		irr::IrrlichtDevice *device;
 		irr::video::IVideoDriver* driver ;
 		irr::scene::ISceneManager *sceneManager;
