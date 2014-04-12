@@ -54,14 +54,14 @@ bool Moteur::initMoteur(){
 	//recup de la gui dans le moteur
 	gui = device->getGUIEnvironment();
 
-//BUUUGGG
+	//BUUUGGG
 
 	font = gui->getFont("Ressources/Roboto-Medium.ttf");
 	if(!font)cerr<<"erreur chargement hihihihi"<<endl;
 	//font->setKerningHeight	(	20	);//modif la hauteur	
 	//font->setKerningWidth	(	20	);	//modif la longueur	
 
-//BUUUGGG
+	//BUUUGGG
 
 	irr::scene::IMeshSceneNode* cube;         // pointeur vers le node
 	irr::f32 x=0.0f ,y=0.0f,z=0.0f;
@@ -216,8 +216,8 @@ bool Moteur::launch(){
 	irr::scene::ISceneCollisionManager* collisionManager = 
 		sceneManager->getSceneCollisionManager();
 	std::list<OrigineEclatement*>::iterator itOrigine;
-	texte = gui->addStaticText(L"Apprendre Irrlicht les yeux fermés avec le\n"
-			" 'Petit guide d'Irrlicht' de Kevin Leonhart",
+	texte = gui->addStaticText(L" Niveau::\n"
+			" 'Coups Restants::",
 			irr::core::rect<irr::s32>(100,20,300,100), true, true, 0, -1, true);
 	//texte->setOverrideFont(font);
 	//pour rect:: 2 premiers parametre le coin sup gauche
@@ -265,7 +265,8 @@ bool Moteur::launch(){
 					animEnCours=false;
 					if(verifTabVide()){
 						cout<<"niveau termine"<<endl;
-		memBase->setCurrentLvl(true);
+						memBase->setCurrentLvl(true);
+						coupRestant++;
 						break;
 					}
 
@@ -287,7 +288,7 @@ bool Moteur::launch(){
 			if(!actionEnCours  && !animEnCours  ){
 				if(coupRestant==0){
 					cout<<"jeu finis"<<endl;
-		memBase->setCurrentLvl(false);
+					memBase->setCurrentLvl(false);
 					break;//sortir de la boucle principalle
 				}
 				if( receiver.rightButtonIsPressed() ){

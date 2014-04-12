@@ -9,7 +9,7 @@
 class Base;
 
 /**
- * \struct Bulle
+ * @struct Bulle
  * Structure contenant un pointeur vers un noeud bulle, son noeud case associé
  * ainsi que sa taille
  */
@@ -19,7 +19,7 @@ struct Bulle{
 };
 
 /**
- * \struct BulleMouvante
+ * @struct BulleMouvante
  * Structure contenant un pointeur vers un noeud bulle
  * La direction vers laquelle cette dernière bouge et le temps 
  * du moment de sa destruction
@@ -31,7 +31,7 @@ struct BulleMouvante{
 };
 
 /**
- * \class Moteur
+ * @class Moteur
  * classe contenants tous les objets de la bibliotheque irrlicht
  * ainsi que toutes les fonctions qui gerent ces derniers
  * Cette classe contient également la boucle principalle du logiciel.

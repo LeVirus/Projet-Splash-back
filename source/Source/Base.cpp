@@ -16,6 +16,7 @@ Base::Base(){
  * init de Grille et Moteur
  */
 void Base::initJeu(){
+	algo.viderListes();
 	grille.genererGrille(niveauActuel);
 	moteur.initSphere();
 }
@@ -35,7 +36,7 @@ void Base::setCurrentLvl(bool choose){
  */
 void Base::lancerJeu(){
 	moteur.liaisonBase(this);
-	grille.afficherGrille();
+	//grille.afficherGrille();
 	algo.liaisonGrille();
 	moteur.launch();
 	return;

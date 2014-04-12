@@ -65,43 +65,43 @@ void Grille::genererGrille(unsigned int lvl){
 	unsigned int nbrB4, nbrB3, nbrB2, nbrB1, nbrB0=36,finall;
 	bool correct=false;
 	if(lvl<4){
-		nbrB4=5+rand()%3;
+		nbrB4=5+rand()%2;
 		nbrB0-=nbrB4;
-		nbrB3=9+rand()%4;
+		nbrB3=9+rand()%2;
 		nbrB0-=nbrB3;
-		nbrB2=9+rand()%3;
+		nbrB2=9+rand()%2;
 		nbrB0-=nbrB2;
-		nbrB1=5+rand()%3;
+		nbrB1=5+rand()%2;
 		nbrB0-=nbrB1;
 	}
-	if(lvl<4){
-		nbrB4=5+rand()%3;
+	else if(lvl<7){
+		nbrB4=4+rand()%2;
 		nbrB0-=nbrB4;
-		nbrB3=9+rand()%4;
+		nbrB3=7+rand()%2;
 		nbrB0-=nbrB3;
-		nbrB2=9+rand()%3;
+		nbrB2=10+rand()%2;
 		nbrB0-=nbrB2;
-		nbrB1=5+rand()%3;
+		nbrB1=7+rand()%2;
 		nbrB0-=nbrB1;
 	}
-	if(lvl<4){
-		nbrB4=5+rand()%3;
+	else if(lvl<10){
+		nbrB4=3+rand()%2;
 		nbrB0-=nbrB4;
-		nbrB3=9+rand()%4;
+		nbrB3=5+rand()%2;
 		nbrB0-=nbrB3;
-		nbrB2=9+rand()%3;
+		nbrB2=10+rand()%2;
 		nbrB0-=nbrB2;
-		nbrB1=5+rand()%3;
+		nbrB1=10+rand()%2;
 		nbrB0-=nbrB1;
 	}
-	if(lvl<4){
-		nbrB4=5+rand()%3;
+	else{
+		nbrB4=2+rand()%2;
 		nbrB0-=nbrB4;
-		nbrB3=9+rand()%4;
+		nbrB3=3+rand()%2;
 		nbrB0-=nbrB3;
-		nbrB2=9+rand()%3;
+		nbrB2=11+rand()%2;
 		nbrB0-=nbrB2;
-		nbrB1=5+rand()%3;
+		nbrB1=12+rand()%2;
 		nbrB0-=nbrB1;
 	}
 	for(unsigned int j=0;j<tabGrille.size();++j)
@@ -136,7 +136,7 @@ void Grille::genererGrille(unsigned int lvl){
 				}
 
 			}while(correct);
-			tabGrille[j][i].setEtat(finall);//aleatoire pour le moment
+			tabGrille[j][i].setEtat(finall);
 		}
 }
 
