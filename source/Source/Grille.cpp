@@ -57,6 +57,85 @@ unsigned int Grille::getTabValue(unsigned int x, unsigned int y)const{
 }
 
 /**
+ * Fonction de resolution de la grille
+ */
+void Grille::resolv(){
+	unsigned int search=4, cmptX, cmptY, coupRest;
+	do{
+		for(unsigned int j=0;tabGrille.size();++j)				
+			for(unsigned int i=0;tabGrille[j].size();++i){
+				switch(tabGrille[i][j]){
+					case 0:
+						continue;
+						break;
+					case 1:
+						break;
+					case 2:
+						break;
+					case 3:
+						break;
+					case 4:
+						break;
+					default:
+						cout<<"erreur resolv"<<endl;
+						break;
+				}
+			}				
+	}while();	
+}
+
+/**
+ * Fonction de recherche des bulles les plus proches(r?cursive)
+ * dans le cadre de la r?solution 
+ * @param x coordonnee grille abscisse de la case a traiter
+ * @param y coordonnee grille ordonnee de la case a traiter
+ * @param note la note initiale envoy?e
+ * @return note : La note attribu?e au coup
+ */
+unsigned int Grille::recursFind(unsigned int x, unsigned int y,unsigned int note){
+			//NORD
+			for(unsigned int i=y;i<tabGrille.size();--i){
+				if( tabGrille[x][i] > 0 ){
+						note+=tabGrille[x][i];
+					if(tabGrille[x][i]==4)
+						note+=recursFind( x,  i, note);
+					break;
+				}
+			}				
+			//SUD
+			for(unsigned int i=y;i<tabGrille.size();++i){
+				if( tabGrille[x][i] > 0){
+						note+=tabGrille[x][i];
+					if(tabGrille[x][i]==4)
+						note+=recursFind( x,  i, note);
+					break;
+				}
+					
+			}				
+			//EST
+			for(unsigned int i=y;i<tabGrille[0].size();--i){
+				if( tabGrille[i][y] > maxE ){
+						note+=tabGrille[i][y];
+					if(tabGrille[i][y]==4)
+						note+=recursFind( i,  y, note);
+					break;
+				}
+					
+			}				
+			//OUEST
+			for(unsigned int i=y;i<tabGrille[0].size();++i){
+				if( tabGrille[i][y] > maxO ){
+						note+=tabGrille[i][y];
+					if(tabGrille[i][y]==4)
+						note+=recursFind( i,  y, note);
+					break;
+				}
+					
+			}				
+			return note;
+}
+
+/**
  * Generation de la grille aleatoirement la difficulte est determine
  *  en fonction du niveau actuel(paramètre lvl)
  * @param lvl : niveau actuel
@@ -136,7 +215,7 @@ void Grille::genererGrille(unsigned int lvl){
 				}
 
 			}while(correct);
-			tabGrille[j][i].setEtat(finall);
+			tabGrille[i][j].setEtat(finall);
 		}
 }
 

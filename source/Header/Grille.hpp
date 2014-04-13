@@ -20,6 +20,8 @@ class Grille{
 		Grille();
 		void genererGrille(unsigned int lvl);
 		bool appliquerChangeCase(unsigned int x, unsigned int y);
+		void resolv();
+unsigned int recursFind();
 		void afficherGrille()const;
 		const std::vector<std::vector<Case>> &getTabGrille()const;
 		const std::vector<std::vector<Case>> *getTab()const;

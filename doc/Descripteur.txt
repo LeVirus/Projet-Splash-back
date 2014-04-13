@@ -3,8 +3,22 @@ Grille de 6*6 cases
 Bulle:: 5 etats(0==> pas de bulle dans la case) de 0 à 4 
 cliquer fais passer un etat au dessus
 cliquer sur une bulle niveau 4 fait eclater la bulle et envoie des projectiles dans toutes les directions possibles
-(4 si 2d)
 un compteur est initialise en debut de partie(à 10 points) 1 point est perdu a chaque clic
-un point est gagne toutes les 3 bulles eclatees; hors bulle cliquee; 
+un point est gagne toutes les 2 bulles eclatees; hors bulle cliquee; 
 si le compteur est a 0 a la fin de la resolution des bulles eclates la partie est terminee
+et le jeu est r?initialis?
 Si une case vide est cliquee une bulle d'etat 1 est alors créée
+
+Lorsque la grille est vide on passe au niveau suivant(une nouvelle grille est g?n?r?e) 
+et le compteur de coups restants est incr?ment?
+
+Les capteurs de collisions sont sur les cubes de la grille
+
+Commandes:: 
+Camera 1ere personne(FPS)
+	Z::avancer
+	S::reculer
+	Q::se d?caler ? gauche
+	D::se d?caler ? droite
+Click gauche::interaction Bulle
+Click droit::Quitter Jeu
