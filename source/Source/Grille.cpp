@@ -84,55 +84,74 @@ void Grille::resolv(){
 	}while();	
 }
 
+
 /**
- * Fonction de recherche des bulles les plus proches(r?cursive)
- * dans le cadre de la r?solution 
+ * Fonction de recherche des bulles les plus proches(récursive)
+ * dans le cadre de la résolution 
  * @param x coordonnee grille abscisse de la case a traiter
  * @param y coordonnee grille ordonnee de la case a traiter
- * @param note la note initiale envoy?e
- * @return note : La note attribu?e au coup
+ * @return note : La note attribuée au coup
  */
-unsigned int Grille::recursFind(unsigned int x, unsigned int y,unsigned int note){
-			//NORD
-			for(unsigned int i=y;i<tabGrille.size();--i){
-				if( tabGrille[x][i] > 0 ){
-						note+=tabGrille[x][i];
-					if(tabGrille[x][i]==4)
-						note+=recursFind( x,  i, note);
-					break;
-				}
-			}				
-			//SUD
-			for(unsigned int i=y;i<tabGrille.size();++i){
-				if( tabGrille[x][i] > 0){
-						note+=tabGrille[x][i];
-					if(tabGrille[x][i]==4)
-						note+=recursFind( x,  i, note);
-					break;
-				}
-					
-			}				
-			//EST
-			for(unsigned int i=y;i<tabGrille[0].size();--i){
-				if( tabGrille[i][y] > maxE ){
-						note+=tabGrille[i][y];
-					if(tabGrille[i][y]==4)
-						note+=recursFind( i,  y, note);
-					break;
-				}
-					
-			}				
-			//OUEST
-			for(unsigned int i=y;i<tabGrille[0].size();++i){
-				if( tabGrille[i][y] > maxO ){
-						note+=tabGrille[i][y];
-					if(tabGrille[i][y]==4)
-						note+=recursFind( i,  y, note);
-					break;
-				}
-					
-			}				
-			return note;
+unsigned int Grille::recursFind(unsigned int x, unsigned int y, unsigned int coupsRestants){
+unsigned int note=0, nombreEclatement=0, noteN, noteE, noteS, noteO;
+	//NORD
+	for(unsigned int i=y;i<tabGrille.size();--i){
+		if( tabGrille[x][i] > 0 ){
+			if( coupsRestants - ( 4-tabGrille[x][i] ) > 0 )
+				//représente le nombre de coups a réaliser sur la 
+				//case(en plus de la bulle mouvante)pour la faire éclater
+				noteN=recursFind( x,  i, coupsRestants - ( 4-tabGrille[x][i] ) );
+			if(tabGrille[x][i]==4){
+				nombreEclatement++;
+				note+=noteS;
+			}
+			break;
+		}
+	}				
+	note=noteN;
+	//SUD
+	for(unsigned int i=y;i<tabGrille.size();++i){
+		if( tabGrille[x][i] > 0){
+			if( coupsRestants - ( 4-tabGrille[x][i] ) > 0 )
+				noteS=recursFind( x,  i, coupsRestants - ( 4-tabGrille[x][i] ) );
+			if(tabGrille[x][i]==4){
+				nombreEclatement++;
+				note+=noteS;
+			}
+			break;
+		}
+
+	}				
+	if(note<noteS)note=noteS;
+	//EST
+	for(unsigned int i=y;i<tabGrille[0].size();--i){
+		if( tabGrille[i][y] > 0 ){
+			if( coupsRestants - ( 4-tabGrille[i][y] ) > 0 )
+				noteE=recursFind( i,  y, coupsRestants - ( 4-tabGrille[i][y] ) );
+			if(tabGrille[i][y]==4){
+				nombreEclatement++;
+				note+=noteE;
+			}
+			break;
+		}
+
+	}				
+	if(note<noteE)note=noteE;
+	//OUEST
+	for(unsigned int i=y;i<tabGrille[0].size();++i){
+		if( tabGrille[i][y] > 0 ){
+			if( coupsRestants - ( 4-tabGrille[i][y] ) > 0 )
+				noteO=recursFind( i,  y, coupsRestants - ( 4-tabGrille[i][y] ) );
+			if(tabGrille[i][y]==4){
+				nombreEclatement++;
+				note+=noteO;
+			}
+			break;
+		}
+
+	}				
+	if(note<noteO)note=noteO;
+	return note;
 }
 
 /**
