@@ -58,30 +58,33 @@ unsigned int Grille::getTabValue(unsigned int x, unsigned int y)const{
 
 /**
  * Fonction de resolution de la grille
+ * Parcour de la grille et selection de la case ayant la meilleure
+ * note
+ * Appel de la fonction recursFind avec les coordonnées de la case
+ * sélectionnée
  */
 void Grille::resolv(){
-	unsigned int search=4, cmptX, cmptY, coupRest;
-	do{
-		for(unsigned int j=0;tabGrille.size();++j)				
-			for(unsigned int i=0;tabGrille[j].size();++i){
-				switch(tabGrille[i][j]){
-					case 0:
-						continue;
-						break;
-					case 1:
-						break;
-					case 2:
-						break;
-					case 3:
-						break;
-					case 4:
-						break;
-					default:
-						cout<<"erreur resolv"<<endl;
-						break;
-				}
-			}				
-	}while();	
+	unsigned int noteCurrent=0, noteFinal=0, memX, memY,coupRest;
+	for(unsigned int j=0;tabGrille.size();++j)				
+		for(unsigned int i=0;tabGrille[j].size();++i){
+			if(tabGrille[i][j].getEtat()==0 || coupRest < 5-tabGrille[i][j].getEtat())continue;
+			//si case =0 OU nombre coups restants insuffisant pour éclater case continue
+	recursFind(i,j , coupRest);
+	/*		noteCurrent=attribuerNote(i,j)- 2*(5-tabGrille[i][j].getEtat());
+			//soustradction du nombre de coups nécéssaires*2 à la note
+			if(noteFinal<noteCurrent){
+				noteFinal=noteCurrent;
+				memX=i;
+				memY=j;
+			}
+		}			
+	MemRes *a=new MemRes;
+	a->X=memX;
+	a->Y=memY;
+	a->coupsN=5-tabGrille[memX][memY].getEtat();
+	lstMem.push_front(a);
+	//pusher le case dans la liste
+	recursFind(memX, memY, coupRest-a->coupsN);*/
 }
 
 
@@ -93,66 +96,139 @@ void Grille::resolv(){
  * @return note : La note attribuée au coup
  */
 unsigned int Grille::recursFind(unsigned int x, unsigned int y, unsigned int coupsRestants){
-unsigned int note=0, nombreEclatement=0, noteN, noteE, noteS, noteO;
-	//NORD
-	for(unsigned int i=y;i<tabGrille.size();--i){
-		if( tabGrille[x][i] > 0 ){
-			if( coupsRestants - ( 4-tabGrille[x][i] ) > 0 )
-				//représente le nombre de coups a réaliser sur la 
-				//case(en plus de la bulle mouvante)pour la faire éclater
-				noteN=recursFind( x,  i, coupsRestants - ( 4-tabGrille[x][i] ) );
-			if(tabGrille[x][i]==4){
-				nombreEclatement++;
-				note+=noteS;
-			}
-			break;
+	unsigned int note=0, noteFinal=0;
+	/*	if(note<noteO)note=noteO;
+			return note;*/
+	MemRes *a=NULL;
+	for(unsigned int j=BAS;j<=DROITE;++j){
+		a=findCase( x,  y,j );
+		note=attribuerNote(a->X,a->Y);
+		if(noteFinal<note){
+			noteFinal=note;
+			memX=i;
+			memY=j;
 		}
-	}				
-	note=noteN;
-	//SUD
-	for(unsigned int i=y;i<tabGrille.size();++i){
-		if( tabGrille[x][i] > 0){
-			if( coupsRestants - ( 4-tabGrille[x][i] ) > 0 )
-				noteS=recursFind( x,  i, coupsRestants - ( 4-tabGrille[x][i] ) );
-			if(tabGrille[x][i]==4){
-				nombreEclatement++;
-				note+=noteS;
-			}
-			break;
-		}
-
-	}				
-	if(note<noteS)note=noteS;
-	//EST
-	for(unsigned int i=y;i<tabGrille[0].size();--i){
-		if( tabGrille[i][y] > 0 ){
-			if( coupsRestants - ( 4-tabGrille[i][y] ) > 0 )
-				noteE=recursFind( i,  y, coupsRestants - ( 4-tabGrille[i][y] ) );
-			if(tabGrille[i][y]==4){
-				nombreEclatement++;
-				note+=noteE;
-			}
-			break;
-		}
-
-	}				
-	if(note<noteE)note=noteE;
-	//OUEST
-	for(unsigned int i=y;i<tabGrille[0].size();++i){
-		if( tabGrille[i][y] > 0 ){
-			if( coupsRestants - ( 4-tabGrille[i][y] ) > 0 )
-				noteO=recursFind( i,  y, coupsRestants - ( 4-tabGrille[i][y] ) );
-			if(tabGrille[i][y]==4){
-				nombreEclatement++;
-				note+=noteO;
-			}
-			break;
-		}
-
-	}				
-	if(note<noteO)note=noteO;
-	return note;
+	}
 }
+
+/**
+ * Fonction permettant de trouver la case de collision à partir des 
+ * coordonnées d'éclatement(fictif) et de la direction 
+ * @param x : coordonnée grille
+ * @param y : coordonnée grille
+ * @param direction : la direction
+ * @return : structure memoCase contient les coordonnées et la valeur de la case
+ */
+MemRes* Grille::findCase(unsigned int x, unsigned int y, unsigned int direction){
+	MemRes *a=NULL;
+	switch(direction){
+		case HAUT:
+			//NORD
+			for(unsigned int i=y;i<tabGrille.size();--i){
+				if( tabGrille[x][i].getEtat() > 0 ){
+					a=new MemRes;
+					a->X=x;
+					a->Y=i;
+					a->coupsN=5-tabGrille[x][i].getEtat();
+					return a;
+				}
+			}				
+			return NULL;
+		case BAS:
+			//SUD
+			for(unsigned int i=y;i<tabGrille.size();++i){
+				if( tabGrille[x][i].getEtat() > 0 ){
+					a=new MemRes;
+					a->X=x;
+					a->Y=i;
+					a->coupsN=5-tabGrille[x][i].getEtat();
+					return a;
+				}
+			}				
+			return NULL;
+		case GAUCHE:
+			//OUEST
+			for(unsigned int i=y;i<tabGrille[0].size();++i){
+				if( tabGrille[i][y].getEtat() > 0 ){
+					a=new MemRes;
+					a->X=i;
+					a->Y=y;
+					a->coupsN=5-tabGrille[i][y].getEtat();
+					return a;
+				}
+			}				
+			return NULL;
+		case DROITE:
+			//EST
+			for(unsigned int i=y;i<tabGrille[0].size();--i){
+				if( tabGrille[i][y].getEtat() > 0 ){
+					a=new MemRes;
+					a->X=i;
+					a->Y=y;
+					a->coupsN=5-tabGrille[i][y].getEtat();
+					return a;
+				}
+			}				
+			return NULL;
+		default:
+			cout<<"erreur direction find Cse"<<endl;
+			break;
+	}
+
+}
+
+
+/**
+ * Fonction de détermination de la note suite à l'éclatement(théorique)
+ * @param x : coordonnée grille
+ * @param y : coordonnée grille
+ * @return note: la note associée à l'éclatement
+ */
+unsigned int Grille::attribuerNote(unsigned int x, unsigned int y){
+	unsigned int finall=0;
+	//f( coupsRestants - ( 4-tabGrille[x][i] ) > 0 )
+	//représente le nombre de coups a réaliser sur la 
+	//case(en plus de la bulle mouvante)pour la faire éclater
+	//noteN=recursFind( x,  i, coupsRestants - ( 4-tabGrille[x][i] ) );
+	MemRes *memC;
+	//NORD
+	for(unsigned int j=BAS;j<=DROITE;++j){
+		memC=findCase(x, y,  j);
+		if(memC){
+			finall+=5-memC->coupsN;//add valeur case touchée
+			if(memC->coupsN==1){
+				finall+=attribuerNote( memC->X, memC->Y);//si eclatement ajout des points obtenus avec le nouvel eclatement
+			}
+		}
+	}
+	//SUD
+	/*memC=findCase(x, y,  BAS);
+		if(memC){
+		finall+=5-memC->coupsN;//add valeur case touchée
+		if(memC->getEtat()==4){
+		finall+=attribuerNote( memC->X, memC->Y);//si eclatement ajout des points obtenus avec le nouvel eclatement
+		}
+		}
+
+	//EST
+	memC=findCase(x, y,  DROITE);
+	if(memC){
+	finall+=5-memC->coupsN;//add valeur case touchée
+	if(memC->getEtat()==4){
+	finall+=attribuerNote( memC->X, memC->Y);//si eclatement ajout des points obtenus avec le nouvel eclatement
+	}
+	}
+
+	//OUEST
+	memC=findCase(x, y,  GAUCHE);
+	if(memC){
+	finall+=5-memC->coupsN;//add valeur case touchée
+	if(memC->getEtat()==4){
+	finall+=attribuerNote( memC->X, memC->Y);//si eclatement ajout des points obtenus avec le nouvel eclatement
+	}
+	}*/
+}
+
 
 /**
  * Generation de la grille aleatoirement la difficulte est determine

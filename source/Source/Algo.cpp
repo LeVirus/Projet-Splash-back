@@ -118,8 +118,6 @@ void Algo::appliquerDestination(){
 	if(memDestinationBulle.empty())return;
 	do{
 		for(itMemBulle=memDestinationBulle.begin();itMemBulle!=memDestinationBulle.end();itMemBulle++){
-			if( !(*itMemBulle) ){//tmp
-			}//tmp
 			if((*itMemBulle)->traite)continue;
 			if( max < (*itMemBulle)->temps )max=(*itMemBulle)->temps;
 			//si projectile touche un bord
