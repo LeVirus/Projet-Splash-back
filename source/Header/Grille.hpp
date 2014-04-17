@@ -23,7 +23,7 @@ struct MemRes{
 class Grille{
 	private:
 		Algo *memAlgo;
-		std::vector<std::vector<Case>> tabGrille;
+		std::vector<std::vector<Case>> tabGrille, resolTabGrille;
 		std::list<MemRes*> lstMem;
 		unsigned int largeurG, longueurG, hauteurG;
 	public:
@@ -31,6 +31,7 @@ class Grille{
 		void genererGrille(unsigned int lvl);
 		bool appliquerChangeCase(unsigned int x, unsigned int y);
 		void resolv(unsigned int x, unsigned int y);
+		void copieTabResolv();
 		unsigned int recursFind(unsigned int x, unsigned int y, unsigned int coupsRestants);
 		void afficherGrille()const;
 		const std::vector<std::vector<Case>> &getTabGrille()const;
