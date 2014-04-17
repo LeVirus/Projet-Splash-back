@@ -57,7 +57,7 @@ bool Moteur::initMoteur(){
 	//BUUUGGG
 
 	font = gui->getFont("Ressources/Roboto-Medium.ttf");
-	if(!font)cerr<<"erreur chargement hihihihi"<<endl;
+	if(!font)cerr<<"erreur chargement"<<endl;
 	//font->setKerningHeight	(	20	);//modif la hauteur	
 	//font->setKerningWidth	(	20	);	//modif la longueur	
 
@@ -326,7 +326,6 @@ bool Moteur::launch(){
 									memListAnim=memoAlgo->getListAnim();
 									itOrigine=memListAnim.memListOrigine->begin();
 									itDestination=memListAnim.memListDestination->begin();
-									//				tempsCourrant=clock();//init du chrono
 									animEnCours=true;
 									iterationAct=0;
 								}
