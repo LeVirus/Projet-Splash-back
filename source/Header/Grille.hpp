@@ -32,7 +32,7 @@ class Grille{
 		bool appliquerChangeCase(unsigned int x, unsigned int y);
 		void resolv(unsigned int x, unsigned int y);
 		void copieTabResolv();
-		unsigned int recursFind(unsigned int x, unsigned int y, unsigned int coupsRestants);
+		unsigned int recursFind(/*unsigned int x, unsigned int y, unsigned int coupsRestants*/);
 		void afficherGrille()const;
 		const std::vector<std::vector<Case>> &getTabGrille()const;
 		const std::vector<std::vector<Case>> *getTab()const;

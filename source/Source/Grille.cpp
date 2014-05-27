@@ -64,15 +64,15 @@ unsigned int Grille::getTabValue(unsigned int x, unsigned int y)const{
  * sélectionnée
  */
 void Grille::resolv(){
-	unsigned int noteCurrent=0, noteFinal=0, memX, memY,coupRest, memo;
+	unsigned int /*noteCurrent=0, noteFinal=0, memX, memY,coupRest,*/ memo;
 	copieTabResolv();
 	for(unsigned int j=0;resolTabGrille.size();++j)				
 		for(unsigned int i=0;resolTabGrille[j].size();++i){
-			if(resolTabGrille[i][j].getEtat()==0 || coupRest < 5-resolTabGrille[i][j].getEtat())continue;
+			//if(resolTabGrille[i][j].getEtat()==0 || coupRest < 5-resolTabGrille[i][j].getEtat())continue;
 			//si case =0 OU nombre coups restants insuffisant pour éclater case continue
 			memo=resolTabGrille[i][j].getEtat();
 			resolTabGrille[i][j].setEtat(0);
-			recursFind(i,j , coupRest-(5-resolTabGrille[i][j].getEtat()));
+			//recursFind(i,j , coupRest-(5-resolTabGrille[i][j].getEtat()));
 			resolTabGrille[i][j].setEtat(memo);
 		}
 }
@@ -84,11 +84,11 @@ void Grille::resolv(){
  * @param y coordonnee grille ordonnee de la case a traiter
  * @return note : La note attribuée au coup
  */
-unsigned int Grille::recursFind(unsigned int x, unsigned int y, unsigned int coupsRestants){
-	unsigned int note=0, noteFinal=0, memo;
+unsigned int Grille::recursFind(/*unsigned int x, unsigned int y, unsigned int coupsRestants*/){
+	//unsigned int note=0, noteFinal=0, memo;
 	/*	if(note<noteO)note=noteO;
 			return note;*/
-	MemRes *a=NULL;
+	/*MemRes *a=NULL;
 	for(unsigned int j=BAS;j<=DROITE;++j){
 		a=findCase( x,  y,j );
 		if( coupRest < a->coupsN-1)continue;
@@ -103,7 +103,8 @@ unsigned int Grille::recursFind(unsigned int x, unsigned int y, unsigned int cou
 			memY=j;
 		}
 	}
-	return noteFinal;
+	return noteFinal;*/
+	return 0;//tmp
 }
 
 
@@ -182,6 +183,7 @@ MemRes* Grille::findCase(unsigned int x, unsigned int y, unsigned int direction)
 			return NULL;
 		default:
 			cout<<"erreur direction find Cse"<<endl;
+			return NULL;
 			break;
 	}
 
@@ -211,6 +213,7 @@ unsigned int Grille::attribuerNote(unsigned int x, unsigned int y){
 			}
 		}
 	}
+	return 0;
 	//SUD
 	/*memC=findCase(x, y,  BAS);
 		if(memC){
