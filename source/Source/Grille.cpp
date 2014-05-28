@@ -64,17 +64,43 @@ unsigned int Grille::getTabValue(unsigned int x, unsigned int y)const{
  * sélectionnée
  */
 void Grille::resolv(){
-	unsigned int /*noteCurrent=0, noteFinal=0, memX, memY,coupRest,*/ memo;
+	unsigned int coupRest;
+	MemRes *a=NULL;
+	RetourResol *rr=NULL, *rrM=NULL;
+	coupRest=memAlgo->getCoupsR();
 	copieTabResolv();
 	for(unsigned int j=0;resolTabGrille.size();++j)				
 		for(unsigned int i=0;resolTabGrille[j].size();++i){
-			//if(resolTabGrille[i][j].getEtat()==0 || coupRest < 5-resolTabGrille[i][j].getEtat())continue;
+			if(resolTabGrille[i][j].getEtat()==0 || coupRest < 5-resolTabGrille[i][j].getEtat())continue;
 			//si case =0 OU nombre coups restants insuffisant pour éclater case continue
-			memo=resolTabGrille[i][j].getEtat();
-			resolTabGrille[i][j].setEtat(0);
-			//recursFind(i,j , coupRest-(5-resolTabGrille[i][j].getEtat()));
-			resolTabGrille[i][j].setEtat(memo);
+			//memo=resolTabGrille[i][j].getEtat();
+			//resolTabGrille[i][j].setEtat(0);
+			unsigned int mem=coupRest-(5-resolTabGrille[i][j].getEtat());
+			while(!appliquerChangeCase( i,  j));
+			recursFind(i,j , mem);
+		rrM=recursFind(a->X, a->Y,mem);
+		if( rrM && rr && rr->note<rrM->note){
+				std::list<MemRes*>::iterator itMem;                 
+				   for(itMem=rr->lstMem->begin();itMem!=rr->lstMem->end();itMem++){
+							delete (*itMem);
+					   }
+					 delete rr;
+			rr=rrM;
+			//memo des actions	
 		}
+		else if(rrM && !rr){
+			rr=rrM;
+		}
+		else if(rrM && rr && rr->note>=rrM->note ){
+				std::list<MemRes*>::iterator itMem;                 
+				   for(itMem=rrM->lstMem->begin();itMem!=rrM->lstMem->end();itMem++){
+							delete (*itMem);
+					   }
+					 delete rrM;
+			//resolTabGrille[i][j].setEtat(memo);
+		}
+		}
+
 }
 
 /**
@@ -84,27 +110,61 @@ void Grille::resolv(){
  * @param y coordonnee grille ordonnee de la case a traiter
  * @return note : La note attribuée au coup
  */
-unsigned int Grille::recursFind(/*unsigned int x, unsigned int y, unsigned int coupsRestants*/){
-	//unsigned int note=0, noteFinal=0, memo;
-	/*	if(note<noteO)note=noteO;
-			return note;*/
-	/*MemRes *a=NULL;
+RetourResol *Grille::recursFind(unsigned int x, unsigned int y, unsigned int coupsRestants){
+
+
+	RetourResol *rr=NULL, *rrM=NULL;
+	unsigned int note=0, noteFinal=0, coupR=memAlgo->getCoupsR();
+	noteFinal=coupR-coupsRestants;
+	note=noteFinal;
+	//if(note<noteO)note=noteO;
+	//return note;
+	MemRes *a=NULL, *memDest=NULL;
 	for(unsigned int j=BAS;j<=DROITE;++j){
 		a=findCase( x,  y,j );
-		if( coupRest < a->coupsN-1)continue;
-		memo=resolTabGrille[i][j].getEtat();
-		resolTabGrille[i][j].setEtat(0);
-		note=attribuerNote(a->X,a->Y);
-
-		resolTabGrille[i][j].setEtat(memo);
-		if(noteFinal<note){
-			noteFinal=note;
-			memX=i;
-			memY=j;
+		if( !a || coupsRestants < a->coupsN-1)continue;
+		unsigned int mem=coupsRestants-(5-resolTabGrille[a->X][a->Y].getEtat());
+		while(!appliquerChangeCase( a->X,  a->Y));
+		rrM=recursFind(a->X, a->Y,mem);
+		if( rrM && rr && rr->note<rrM->note){
+			noteFinal=rrM->note;
+				std::list<MemRes*>::iterator itMem;                 
+				   for(itMem=rr->lstMem->begin();itMem!=rr->lstMem->end();itMem++){
+							delete (*itMem);
+					   }
+					 delete rr;
+			rr=rrM;
+			//memo des actions	
 		}
+		else if(rrM && !rr){
+			rr=rrM;
+		}
+		else if(rrM && rr && rr->note>=rrM->note ){
+				std::list<MemRes*>::iterator itMem;                 
+				   for(itMem=rrM->lstMem->begin();itMem!=rrM->lstMem->end();itMem++){
+							delete (*itMem);
+					   }
+					 delete rrM;
+		
+		}
+		//copier l'etat du tableau avant sa
+		//memo=resolTabGrille[i][j].getEtat();
+		//resolTabGrille[i][j].setEtat(0);
+		//note=attribuerNote(a->X,a->Y);
+
+		//resolTabGrille[i][j].setEtat(memo);
 	}
-	return noteFinal;*/
-	return 0;//tmp
+		memDest=new MemRes;
+		memDest->X=x;
+		memDest->Y=y;
+		memDest->coupsN=coupR;
+		if(!rr){
+		rr=new RetourResol;
+		rr->note=note;
+		}
+		rr->lstMem->push_front(memDest);
+		rr->note+=note;
+			return rr;
 }
 
 

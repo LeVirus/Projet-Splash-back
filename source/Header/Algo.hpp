@@ -64,6 +64,7 @@ class Algo{
 		void afficherList()const;
 		void viderListes();
 		void corrigerDestinationBulle(DestinationBulle *a);
+		unsigned int getCoupsR()const;
 		~Algo();
 };
 

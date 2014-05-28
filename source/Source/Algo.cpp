@@ -61,6 +61,10 @@ void Algo::viderListes(){
 	memOrigineEclat.clear();
 }
 
+		unsigned int Algo::getCoupsR()const{
+			return coupsRestants;
+		
+		}
 
 /**
  * Fonction de calcul de résolution d'éclatement 

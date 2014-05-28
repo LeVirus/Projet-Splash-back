@@ -18,6 +18,7 @@ extern Algo *memoAlgo;
  * et	appel de la fonction "initMoteur()"
  */
 Moteur::Moteur(){
+	debut=true;
 	quit=false;
 	animEnCours=false;
 	actionEnCours=false;
@@ -51,11 +52,11 @@ bool Moteur::initMoteur(){
 	device->getCursorControl ()-> setVisible (true);
 
 
+
 	//recup de la gui dans le moteur
 	gui = device->getGUIEnvironment();
 
 	//BUUUGGG
-
 	font = gui->getFont("Ressources/Roboto-Medium.ttf");
 	if(!font)cerr<<"erreur chargement"<<endl;
 	//font->setKerningHeight	(	20	);//modif la hauteur	
@@ -225,8 +226,9 @@ bool Moteur::launch(){
 
 
 	do{
-		coupRestant=10;
+		if(debut)coupRestant=10;
 		memBase->initJeu();
+		debut=false;
 		while(device->run()) {
 			if( !receiver.leftButtonIsPressed() )actionEnCours=false;
 			//attendre que le bouton soit relacher pour reinitialiser
@@ -288,6 +290,7 @@ bool Moteur::launch(){
 			if(!actionEnCours  && !animEnCours  ){
 				if(coupRestant==0){
 					cout<<"jeu finis"<<endl;
+					debut=true;
 					memBase->setCurrentLvl(false);
 					break;//sortir de la boucle principalle
 				}
