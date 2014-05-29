@@ -1,0 +1,30 @@
+Classe Base::
+	Contient les classes Grille, Algo et Moteur
+
+Cette classe permet d'initialiser le jeu et de le lancer (le tout en coordonnant les classes entre elles).
+
+Classe Algo::
+	La classe Algo calculent la resolution des eclatement. Les données des éclatements sont mémorisé dans 
+2 liste(une liste stocke l'origine des éclatements::struct OrigineEclatement, et l'autre stocke 
+les destinations des bulles mouvantes:: struct DestinationBulle).
+Quand la resolution des eclatements est terminée ces 2 listes sont envoyé à la classe Moteur (par référence) pour les animations,
+la classe Grille est mise à jour pendant la résolution.
+
+Classe Grille::
+	Cette classe stocke la grille de jeu (Tableau 2 dimentions de Cases).
+Elle permet de générer les valeurs de la grille en fonction du niveau de difficulté.
+Elle permet également d'acceder aux valeurs des cases(ex: modifier valeur d'une case après un click)
+
+Classe Case::
+Classe representant une Case de la grille, elle permet de modifier la valeur de la case(accés par la classe Grille).
+
+Classe Moteur::
+	Classe de gestion du moteur irrlicht.
+Elle contient tous les modules utilisés d'irrlicht. 
+Elle contient également tous les éléments graphiques affichés (cases, bulle)
+Cette classe contient la boucle principale du programme.
+
+Classe MyEventReceiver::
+	Classe de reception des évenements souris.
+Fonction dérivée de irr::IEventReceiver
+
