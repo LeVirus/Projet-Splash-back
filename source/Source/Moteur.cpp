@@ -217,9 +217,9 @@ bool Moteur::launch(){
 	irr::scene::ISceneCollisionManager* collisionManager = 
 		sceneManager->getSceneCollisionManager();
 	std::list<OrigineEclatement*>::iterator itOrigine;
-	texte = gui->addStaticText(L" Niveau::\n"
-			" 'Coups Restants::",
-			irr::core::rect<irr::s32>(100,20,300,100), true, true, 0, -1, true);
+	//texte = gui->addStaticText(L" Niveau::\n"
+		//	" 'Coups Restants::",
+			//irr::core::rect<irr::s32>(100,20,300,100), true, true, 0, -1, true);
 	//texte->setOverrideFont(font);
 	//pour rect:: 2 premiers parametre le coin sup gauche
 	//2 derniers parametres coin inf droit

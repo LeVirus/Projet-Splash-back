@@ -31,21 +31,20 @@ class Grille{
 	private:
 		Algo *memAlgo;
 		std::vector<std::vector<Case>> tabGrille, resolTabGrille;
-		std::list<MemRes*> lstMem;
 		unsigned int largeurG, longueurG, hauteurG;
 	public:
 		Grille();
 		void genererGrille(unsigned int lvl);
 		bool appliquerChangeCase(unsigned int x, unsigned int y);
 		void resolv(unsigned int x, unsigned int y);
-		void copieTabResolv();
+std::vector<std::vector<Case>> *copieTabResolv();
 		RetourResol *recursFind(unsigned int x, unsigned int y, unsigned int coupsRestants);
 		void afficherGrille()const;
+		void restoreGrille(std::vector<std::vector<Case>> *memG);
 		const std::vector<std::vector<Case>> &getTabGrille()const;
 		const std::vector<std::vector<Case>> *getTab()const;
 		void resolv();
 		unsigned int getTabValue(unsigned int x, unsigned int y)const;
-		unsigned int attribuerNote(unsigned int x, unsigned int y);
 		MemRes* findCase(unsigned int x, unsigned int y, unsigned int direction);
 		~Grille();
 };

@@ -67,8 +67,9 @@ void Grille::resolv(){
 	unsigned int coupRest;
 	MemRes *a=NULL;
 	RetourResol *rr=NULL, *rrM=NULL;
+	std::vector<std::vector<Case>> *memGr=copieTabResolv();
 	coupRest=memAlgo->getCoupsR();
-	copieTabResolv();
+
 	for(unsigned int j=0;resolTabGrille.size();++j)				
 		for(unsigned int i=0;resolTabGrille[j].size();++i){
 			if(resolTabGrille[i][j].getEtat()==0 || coupRest < 5-resolTabGrille[i][j].getEtat())continue;
@@ -78,33 +79,42 @@ void Grille::resolv(){
 			unsigned int mem=coupRest-(5-resolTabGrille[i][j].getEtat());
 			while(!appliquerChangeCase( i,  j));
 			recursFind(i,j , mem);
-		rrM=recursFind(a->X, a->Y,mem);
-		if( rrM && rr && rr->note<rrM->note){
+			rrM=recursFind(a->X, a->Y,mem);
+			if( rrM && rr && rr->note<rrM->note){
 				std::list<MemRes*>::iterator itMem;                 
-				   for(itMem=rr->lstMem->begin();itMem!=rr->lstMem->end();itMem++){
-							delete (*itMem);
-					   }
-					 delete rr;
-			rr=rrM;
-			//memo des actions	
-		}
-		else if(rrM && !rr){
-			rr=rrM;
-		}
-		else if(rrM && rr && rr->note>=rrM->note ){
+				for(itMem=rr->lstMem->begin();itMem!=rr->lstMem->end();itMem++){
+					delete (*itMem);
+				}
+				delete rr;
+				rr=rrM;
+				//memo des actions	
+			}
+			else if(rrM && !rr){
+				rr=rrM;
+			}
+			else if(rrM && rr && rr->note>=rrM->note ){
 				std::list<MemRes*>::iterator itMem;                 
-				   for(itMem=rrM->lstMem->begin();itMem!=rrM->lstMem->end();itMem++){
-							delete (*itMem);
-					   }
-					 delete rrM;
-			//resolTabGrille[i][j].setEtat(memo);
-		}
-		}
+				for(itMem=rrM->lstMem->begin();itMem!=rrM->lstMem->end();itMem++){
+					delete (*itMem);
+				}
+				delete rrM;
+				//resolTabGrille[i][j].setEtat(memo);
+			}
 
+	restoreGrille(memGr);
+		}
+	delete memGr;
+
+				std::list<MemRes*>::iterator itMem;                 
+				//affichage bulle a eclater
+				for(itMem=rr->lstMem->begin();itMem!=rrM->lstMem->end();itMem++){
+cout<<"x::"<<(*itMem)->X<<"y::"<<(*itMem)->Y<<endl;
+				}
 }
 
 /**
- * Fonction de recherche des bulles les plus proches(récursive)
+ * Fonction de recherche des bulles qui obtiendrait 
+ * les meilleures notes à l'éclatement(récursive)
  * dans le cadre de la résolution 
  * @param x coordonnee grille abscisse de la case a traiter
  * @param y coordonnee grille ordonnee de la case a traiter
@@ -113,26 +123,32 @@ void Grille::resolv(){
 RetourResol *Grille::recursFind(unsigned int x, unsigned int y, unsigned int coupsRestants){
 
 
+	std::vector<std::vector<Case>> *memGr=NULL;
 	RetourResol *rr=NULL, *rrM=NULL;
-	unsigned int note=0, noteFinal=0, coupR=memAlgo->getCoupsR();
-	noteFinal=coupR-coupsRestants;
-	note=noteFinal;
+	unsigned int noteFinal=0, coupR=memAlgo->getCoupsR();
+	noteFinal=coupR-coupsRestants;//calcul note
 	//if(note<noteO)note=noteO;
 	//return note;
 	MemRes *a=NULL, *memDest=NULL;
-	for(unsigned int j=BAS;j<=DROITE;++j){
-		a=findCase( x,  y,j );
+	memGr=copieTabResolv();//memo grille actuelle
+	for(unsigned int j=BAS;j<=DROITE;++j){//test des 4 directions
+		a=findCase( x,  y,j );//trouver la case
+		/*si case non trouvée ou coupRestant insuffisant 
+		pour causer éclatement continue*/
 		if( !a || coupsRestants < a->coupsN-1)continue;
 		unsigned int mem=coupsRestants-(5-resolTabGrille[a->X][a->Y].getEtat());
+		//causer éclatement
 		while(!appliquerChangeCase( a->X,  a->Y));
+		//appel récursif(apres eclatement)
 		rrM=recursFind(a->X, a->Y,mem);
+		//test si nouvelle note calculé est superieure a l'ancienne
 		if( rrM && rr && rr->note<rrM->note){
 			noteFinal=rrM->note;
-				std::list<MemRes*>::iterator itMem;                 
-				   for(itMem=rr->lstMem->begin();itMem!=rr->lstMem->end();itMem++){
-							delete (*itMem);
-					   }
-					 delete rr;
+			std::list<MemRes*>::iterator itMem;                 
+			for(itMem=rr->lstMem->begin();itMem!=rr->lstMem->end();itMem++){
+				delete (*itMem);
+			}
+			delete rr;
 			rr=rrM;
 			//memo des actions	
 		}
@@ -140,45 +156,58 @@ RetourResol *Grille::recursFind(unsigned int x, unsigned int y, unsigned int cou
 			rr=rrM;
 		}
 		else if(rrM && rr && rr->note>=rrM->note ){
-				std::list<MemRes*>::iterator itMem;                 
-				   for(itMem=rrM->lstMem->begin();itMem!=rrM->lstMem->end();itMem++){
-							delete (*itMem);
-					   }
-					 delete rrM;
-		
-		}
-		//copier l'etat du tableau avant sa
-		//memo=resolTabGrille[i][j].getEtat();
-		//resolTabGrille[i][j].setEtat(0);
-		//note=attribuerNote(a->X,a->Y);
+			std::list<MemRes*>::iterator itMem;                 
+			for(itMem=rrM->lstMem->begin();itMem!=rrM->lstMem->end();itMem++){
+				delete (*itMem);
+			}
+			delete rrM;
 
-		//resolTabGrille[i][j].setEtat(memo);
-	}
-		memDest=new MemRes;
-		memDest->X=x;
-		memDest->Y=y;
-		memDest->coupsN=coupR;
-		if(!rr){
-		rr=new RetourResol;
-		rr->note=note;
 		}
-		rr->lstMem->push_front(memDest);
-		rr->note+=note;
-			return rr;
+		restoreGrille(memGr);
+	}
+	memDest=new MemRes;
+	memDest->X=x;
+	memDest->Y=y;
+	memDest->coupsN=coupR;
+	//si on se trouve sur une feuille(de l'arbre de parcour)
+	if(!rr){
+		rr=new RetourResol;
+		rr->note=noteFinal;
+	}
+	rr->lstMem->push_front(memDest);
+	rr->note+=noteFinal;
+	restoreGrille(memGr);
+	delete memGr;
+	return rr;
 }
 
+
+void Grille::restoreGrille(std::vector<std::vector<Case>> *memG){
+	for(unsigned int j=0;j<tabGrille.size();++j)
+		for(unsigned int i=0;i<tabGrille[j].size();++i){
+			Case a=(*memG)[i][j];
+			tabGrille[i][j].setEtat((*memG)[i][j].getEtat());
+			cout<<"i j"<<i<<"  "<<j<<endl;
+		}
+
+}
 
 /**
  * Fonction de copie du tableau "réel" vers le tableau de résolution
  * (dans le cadre de la résolution) 
  */
-void Grille::copieTabResolv(){
+std::vector<std::vector<Case>> *Grille::copieTabResolv(){
+	std::vector<std::vector<Case>> *tab=new std::vector<std::vector<Case>>;
+
+	(*tab).resize(6);
 	for(unsigned int i=0;i<resolTabGrille.size();++i)
-		resolTabGrille[i].resize(6);
+		(*tab)[i].resize(6);
 	for(unsigned int j=0;j<tabGrille.size();++j)
 		for(unsigned int i=0;i<tabGrille[j].size();++i){
-			resolTabGrille[i][j].setEtat(tabGrille[i][j].getEtat());
+			(*tab)[i][j].setEtat(tabGrille[i][j].getEtat());
+			cout<<"i j"<<i<<"  "<<j<<endl;
 		}
+	return tab;
 }
 
 
@@ -247,59 +276,6 @@ MemRes* Grille::findCase(unsigned int x, unsigned int y, unsigned int direction)
 			break;
 	}
 
-}
-
-
-/**
- * Fonction de détermination de la note suite à l'éclatement(théorique)
- * @param x : coordonnée grille
- * @param y : coordonnée grille
- * @return note: la note associée à l'éclatement
- */
-unsigned int Grille::attribuerNote(unsigned int x, unsigned int y){
-	unsigned int finall=0;
-	//f( coupsRestants - ( 4-tabGrille[x][i] ) > 0 )
-	//représente le nombre de coups a réaliser sur la 
-	//case(en plus de la bulle mouvante)pour la faire éclater
-	//noteN=recursFind( x,  i, coupsRestants - ( 4-tabGrille[x][i] ) );
-	MemRes *memC;
-	//NORD
-	for(unsigned int j=BAS;j<=DROITE;++j){
-		memC=findCase(x, y,  j);
-		if(memC){
-			finall+=5-memC->coupsN;//add valeur case touchée
-			if(memC->coupsN==1){
-				finall+=attribuerNote( memC->X, memC->Y);//si eclatement ajout des points obtenus avec le nouvel eclatement
-			}
-		}
-	}
-	return 0;
-	//SUD
-	/*memC=findCase(x, y,  BAS);
-		if(memC){
-		finall+=5-memC->coupsN;//add valeur case touchée
-		if(memC->getEtat()==4){
-		finall+=attribuerNote( memC->X, memC->Y);//si eclatement ajout des points obtenus avec le nouvel eclatement
-		}
-		}
-
-	//EST
-	memC=findCase(x, y,  DROITE);
-	if(memC){
-	finall+=5-memC->coupsN;//add valeur case touchée
-	if(memC->getEtat()==4){
-	finall+=attribuerNote( memC->X, memC->Y);//si eclatement ajout des points obtenus avec le nouvel eclatement
-	}
-	}
-
-	//OUEST
-	memC=findCase(x, y,  GAUCHE);
-	if(memC){
-	finall+=5-memC->coupsN;//add valeur case touchée
-	if(memC->getEtat()==4){
-	finall+=attribuerNote( memC->X, memC->Y);//si eclatement ajout des points obtenus avec le nouvel eclatement
-	}
-	}*/
 }
 
 
