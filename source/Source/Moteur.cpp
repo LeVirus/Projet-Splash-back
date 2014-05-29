@@ -57,12 +57,11 @@ bool Moteur::initMoteur(){
 	gui = device->getGUIEnvironment();
 
 	//BUUUGGG
-	font = gui->getFont("Ressources/Roboto-Medium.ttf");
-	if(!font)cerr<<"erreur chargement"<<endl;
+	//font = gui->getFont("Ressources/Roboto-Medium.ttf");
+	//if(!font)cerr<<"erreur chargement"<<endl;
 	//font->setKerningHeight	(	20	);//modif la hauteur	
 	//font->setKerningWidth	(	20	);	//modif la longueur	
 
-	//BUUUGGG
 
 	irr::scene::IMeshSceneNode* cube;         // pointeur vers le node
 	irr::f32 x=0.0f ,y=0.0f,z=0.0f;
